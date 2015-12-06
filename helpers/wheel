@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# -*- coding: utf-8 -*-
+
+# create a wheel package
+
+helpers/clean
+python setup.py bdist_wheel
+gpg --detach-sign -a dist/*.whl

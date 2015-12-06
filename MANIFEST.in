@@ -1,0 +1,8 @@
+recursive-include tests *
+include AUTHORS.rst
+include CHANGES.rst
+include CONTRIBUTING.rst
+include TODO.rst
+include LICENSE
+include README.rst
+include *requirements.txt

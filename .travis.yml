@@ -1,0 +1,31 @@
+sudo: false
+language: python
+python: '2.7'
+
+notifications:
+  email:
+    on_success: always
+
+branches:
+  except:
+    - /^v[0-9]/
+
+install: pip install -r dev-requirements.txt
+
+script:
+  - manage lint
+  - manage test
+
+after_success:
+  - if [[ "$TRAVIS_PULL_REQUEST" == "true" ]]; then exit 0; fi
+  - if [[ "$TRAVIS_BRANCH" != "master" ]]; then exit 0; fi
+
+deploy:
+  provider: pypi
+  user: reubano
+  password:
+    secure: password
+
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
