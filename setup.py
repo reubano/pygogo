@@ -5,7 +5,7 @@ import sys
 import gogo
 import pkutils
 
-from os import p
+from os import path as p
 
 try:
     from setuptools import setup, find_packages
