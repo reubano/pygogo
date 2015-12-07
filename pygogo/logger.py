@@ -2,7 +2,7 @@
 # vim: sw=4:ts=4:expandtab
 
 """
-gogo.logger
+pygogo.logger
 ~~~~~~~~~~~
 
 Loggers
@@ -23,7 +23,7 @@ from __future__ import (
 import logging
 import hashlib
 
-from gogo import handlers, formatters
+from pygogo import handlers, formatters
 
 
 class LogFilter(logging.Filter):
@@ -50,7 +50,7 @@ class LogFilter(logging.Filter):
 
         Examples:
             >>> LogFilter(40)  # doctest: +ELLIPSIS
-            <gogo.logger.LogFilter object at 0x...>
+            <pygogo.logger.LogFilter object at 0x...>
         """
         self.high_level = level
 
@@ -110,7 +110,7 @@ class Logger(object):
 
         Examples:
             >>> Logger('name') # doctest: +ELLIPSIS
-            <gogo.logger.Logger object at 0x...>
+            <pygogo.logger.Logger object at 0x...>
         """
         self.high_level = getattr(logging, high_level.upper(), None)
         self.low_level = getattr(logging, low_level.upper(), None)

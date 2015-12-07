@@ -2,7 +2,7 @@
 # vim: sw=4:ts=4:expandtab
 
 """
-gogo.formatters
+pygogo.formatters
 ~~~~~~~~~~~~~~~
 
 Log formatters
@@ -63,7 +63,7 @@ class StructuredMessage(object):
     """
 
     Examples
-        >>> from gogo.handlers import stdout_hdlr
+        >>> from pygogo.handlers import stdout_hdlr
         >>>
         >>> logger = logging.getLogger('structured_message')
         >>> hdlr = stdout_hdlr()
@@ -93,7 +93,7 @@ class StructuredFormatter(logging.Formatter):
     """testing
 
     Examples
-        >>> from gogo.handlers import stdout_hdlr
+        >>> from pygogo.handlers import stdout_hdlr
         >>>
         >>> logger = logging.getLogger('structured_logger')
         >>> hdlr = stdout_hdlr()

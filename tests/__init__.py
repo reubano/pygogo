@@ -12,7 +12,7 @@ from __future__ import (
     absolute_import, division, print_function, with_statement,
     unicode_literals)
 
-from gogo.logger import Logger
+from pygogo.logger import Logger
 
 logger = Logger(__name__).logger
 initialized = False

@@ -29,7 +29,7 @@ require:
 	pip freeze -l | grep -vxFf dev-requirements.txt > requirements.txt
 
 lint:
-	flake8 gogo tests
+	flake8 pygogo tests
 
 test:
 	helpers/test

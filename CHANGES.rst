@@ -2,7 +2,7 @@
 Changelog
 =========
 
-Here you can find the recent changes to gogo..
+Here you can find the recent changes to pygogo..
 
 .. changelog::
     :version: dev

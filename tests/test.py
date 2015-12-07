@@ -6,7 +6,7 @@
 tests.test
 ~~~~~~~~~~
 
-Provides scripttests gogo CLI functionality.
+Provides scripttests pygogo CLI functionality.
 """
 
 from __future__ import (
@@ -21,8 +21,8 @@ from StringIO import StringIO
 from scripttest import TestFileEnvironment
 from timeit import default_timer as timer
 
-from gogo import __version__ as version
-from gogo.logger import Logger
+from pygogo import __version__ as version
+from pygogo.logger import Logger
 
 
 def main(script, tests, verbose=False, stop=True):
@@ -82,11 +82,11 @@ def main(script, tests, verbose=False, stop=True):
 
 if __name__ == '__main__':
     parent_dir = p.abspath(p.dirname(p.dirname(__file__)))
-    script = p.join(parent_dir, 'bin', 'gogo')
+    script = p.join(parent_dir, 'bin', 'pygogo')
 
     tests = [
         (['--help'], [''], True),
-        (['--version'], [''], 'gogo v%s\n' % version),
+        (['--version'], [''], 'pygogo v%s\n' % version),
         ([], ['hello world'], 'hello world\n'),
     ]
 

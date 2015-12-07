@@ -2,7 +2,7 @@
 # vim: sw=4:ts=4:expandtab
 
 """
-gogo
+pygogo
 ~~~~
 
 A Python logging library with super powers
@@ -22,7 +22,7 @@ from __future__ import (
 
 __version__ = '0.2.2'
 
-__title__ = 'gogo'
+__title__ = 'pygogo'
 __author__ = 'Reuben Cummings'
 __description__ = 'A Python logging library with super powers'
 __email__ = 'reubano@gmail.com'

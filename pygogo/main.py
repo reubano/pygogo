@@ -14,14 +14,14 @@ import itertools as it
 from os import curdir
 from argparse import RawTextHelpFormatter, ArgumentParser
 
-from gogo import __version__ as version, handlers
-from gogo.logger import Logger
+from pygogo import __version__ as version, handlers
+from pygogo.logger import Logger
 
 hdlrs = filter(lambda h: h.endswith('hdlr'), dir(handlers))
 choices = [h[:-5] for h in hdlrs]
 
 parser = ArgumentParser(
-    description='description: Command description', prog='gogo',
+    description='description: Command description', prog='pygogo',
     usage='%(prog)s [options] <message>', formatter_class=RawTextHelpFormatter)
 
 parser.add_argument(
@@ -98,10 +98,10 @@ args = parser.parse_args()
 
 def run():
     level = 'DEBUG' if args.verbose else 'INFO'
-    gogo_logger = Logger(__name__, low_level=level).logger
+    pygogo_logger = Logger(__name__, low_level=level).logger
 
     if args.version:
-        gogo_logger.info('gogo v%s' % version)
+        pygogo_logger.info('pygogo v%s' % version)
         exit(0)
 
     counted = set(['get', 'tcp'])

@@ -30,7 +30,7 @@ project_root = os.path.dirname(cwd)
 sys.path.insert(0, project_root)
 from ..package_metadata import p
 
-import gogo
+import pygogo
 
 # -- General configuration -----------------------------------------------------
 
@@ -279,6 +279,6 @@ changelog_inner_tag_sort = ["feature", "bug"]
 # how to render changelog links - these are plain
 # python string templates, ticket/pullreq/changeset number goes
 # in "%s"
-changelog_render_ticket = "https://github.com/reubano/gogo/issues/%s"
-changelog_render_pullreq = "https://github.com/reubano/gogo/pulls/%s"
-changelog_render_changeset = "https://github.com/reubano/gogo/commit/%s"
+changelog_render_ticket = "https://github.com/reubano/pygogo/issues/%s"
+changelog_render_pullreq = "https://github.com/reubano/pygogo/pulls/%s"
+changelog_render_changeset = "https://github.com/reubano/pygogo/commit/%s"
