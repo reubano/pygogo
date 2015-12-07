@@ -3,9 +3,9 @@
 
 """
 gogo
-~~~~~
+~~~~
 
-A Python logger with super powers
+A Python logging framework with super powers
 
 Examples:
     literal blocks::
@@ -24,7 +24,7 @@ __version__ = '0.1.0'
 
 __title__ = 'gogo'
 __author__ = 'Reuben Cummings'
-__description__ = 'A Python logger with super powers'
+__description__ = 'A Python logging framework with super powers'
 __email__ = 'reubano@gmail.com'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2015 Reuben Cummings'
