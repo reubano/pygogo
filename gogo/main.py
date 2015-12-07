@@ -34,24 +34,24 @@ parser.add_argument(
 
 parser.add_argument('-n', '--name', help="The logger name", default=curdir)
 parser.add_argument(
-    '--prim-hdlr', help="the primary log handler (default: stdout)",
+    '--high-hdlr', help="the high pass log handler (default: stdout)",
     choices=choices, default='stdout')
 
 parser.add_argument(
-    '--sec-hdlr', help="the secondary log handler (default: stdout)",
+    '--low-hdlr', help="the low pass log handler (default: stdout)",
     choices=choices, default='stdout')
 
 parser.add_argument(
-    '-L', '--prim-level', metavar='LEVEL', default='warning',
-    help="The min level to log to primary handler")
+    '-L', '--high-level', metavar='LEVEL', default='warning',
+    help="The min level to log to the high pass handler")
 
 parser.add_argument(
-    '-e', '--sec-level', metavar='LEVEL', default='debug',
-    help="The min level to log to secondary handler")
+    '-e', '--low-level', metavar='LEVEL', default='debug',
+    help="The min level to log to the low pass handler")
 
 parser.add_argument(
-    '-m', '--multilog', action='store_true', default=False,
-    help="always log to secondary handler")
+    '-d', '--monolog', action='store_true', default=False,
+    help="log high level events only to high pass handler")
 
 parser.add_argument(
     '-f', '--filename', action='append', default=[''],
@@ -98,7 +98,7 @@ args = parser.parse_args()
 
 def run():
     level = 'DEBUG' if args.verbose else 'INFO'
-    gogo_logger = Logger(__name__, sec_level=level).logger
+    gogo_logger = Logger(__name__, low_level=level).logger
 
     if args.version:
         gogo_logger.info('gogo v%s' % version)
@@ -110,22 +110,22 @@ def run():
     counted_args = filter(lambda x: x[0] in counted, items)
     appended_args = filter(lambda x: x[0] in appended, items)
 
-    prim_appended_args = [(k, v[0]) for k, v in appended_args]
-    prim_counted_args = [(k, v > 0) for k, v in counted_args]
-    prim_kwargs = dict(it.chain(prim_appended_args, prim_counted_args))
+    high_appended_args = [(k, v[0]) for k, v in appended_args]
+    high_counted_args = [(k, v > 0) for k, v in counted_args]
+    high_kwargs = dict(it.chain(high_appended_args, high_counted_args))
 
-    sec_appended_args = [(k, v[-1]) for k, v in appended_args]
-    sec_counted_args = [(k, v > 1) for k, v in counted_args]
-    sec_kwargs = dict(it.chain(sec_appended_args, sec_counted_args))
+    low_appended_args = [(k, v[-1]) for k, v in appended_args]
+    low_counted_args = [(k, v > 1) for k, v in counted_args]
+    low_kwargs = dict(it.chain(low_appended_args, low_counted_args))
 
-    primary_hdlr = getattr(handlers, '%s_hdlr' % args.prim_hdlr)
-    secondary_hdlr = getattr(handlers, '%s_hdlr' % args.sec_hdlr)
+    high_pass_hdlr = getattr(handlers, '%s_hdlr' % args.high_hdlr)
+    low_pass_hdlr = getattr(handlers, '%s_hdlr' % args.low_hdlr)
     nkwargs = {
-        'prim_level': args.prim_level,
-        'sec_level': args.sec_level,
-        'multilog': args.multilog,
-        'primary_hdlr': primary_hdlr(**prim_kwargs),
-        'secondary_hdlr': secondary_hdlr(**sec_kwargs)}
+        'high_level': args.high_level,
+        'low_level': args.low_level,
+        'monolog': args.monolog,
+        'high_pass_hdlr': high_pass_hdlr(**high_kwargs),
+        'low_pass_hdlr': low_pass_hdlr(**low_kwargs)}
 
     logger = Logger(args.name, **nkwargs).logger
 

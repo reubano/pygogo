@@ -52,7 +52,7 @@ class LogFilter(logging.Filter):
             >>> LogFilter(40)  # doctest: +ELLIPSIS
             <gogo.logger.LogFilter object at 0x...>
         """
-        self.prim_level = level
+        self.high_level = level
 
     def filter(self, record):
         """Double argument.
@@ -61,7 +61,7 @@ class LogFilter(logging.Filter):
             record (obj): The event to (potentially) log
 
         Returns:
-            bool: True if the event level is lower than self.prim_level
+            bool: True if the event level is lower than self.high_level
 
         Examples:
             >>> attrs = {'levelno': logging.INFO}
@@ -69,7 +69,7 @@ class LogFilter(logging.Filter):
             >>> LogFilter(40).filter(record)
             True
         """
-        return record.levelno < self.prim_level
+        return record.levelno < self.high_level
 
 
 class Logger(object):
@@ -80,19 +80,30 @@ class Logger(object):
 
     Attributes:
         name (string): The logger name.
-        prim_level (string): The min level to log to primary_hdlr.
-        sec_level (string): The min level to log to secondary_hdlr.
-            messages < sec_level               -> ignore
-            sec_level <= messages < prim_level -> secondary_hdlr
-            prim_level <= messages             -> primary_hdlr
+        high_level (string): The min level to log to high_pass_hdlr.
+        low_level (string): The min level to log to low_pass_hdlr.
+            messages < low_level               -> ignore
+            low_level <= messages < high_level -> low_pass_hdlr
+            high_level <= messages             -> high_pass_hdlr
     """
-    def __init__(self, name, prim_level='warning', sec_level='debug', **kwargs):
+    def __init__(self, name, high_level='warning', low_level='debug', **kwargs):
         """Initialization method.
 
         Args:
             name (string): The logger name.
-            prim_level (string): The min level to log to primary_hdlr.
-            sec_level (string): The min level to log to secondary_hdlr.
+            high_level (string): The min level to log to high_pass_hdlr.
+            low_level (string): The min level to log to low_pass_hdlr.
+            kwargs (dict): Keyword arguments.
+
+        Kwargs:
+            high_pass_hdlr (obj): The high pass log handler (a
+                `logging.handlers` instance, default: stderr StreamHandler)
+
+            low_pass_hdlr (obj): The low pass log handler (a
+                `logging.handlers` instance, default: stdout StreamHandler).
+
+            monolog (bool): Log high level events only to high pass handler (
+                default: False)
 
         Returns:
             New instance of :class:`Logger`
@@ -101,27 +112,27 @@ class Logger(object):
             >>> Logger('name') # doctest: +ELLIPSIS
             <gogo.logger.Logger object at 0x...>
         """
-        self.prim_level = getattr(logging, prim_level.upper(), None)
-        self.sec_level = getattr(logging, sec_level.upper(), None)
+        self.high_level = getattr(logging, high_level.upper(), None)
+        self.low_level = getattr(logging, low_level.upper(), None)
 
-        if not isinstance(self.prim_level, int):
-            raise ValueError('Invalid prim_level: %s' % self.prim_level)
-        elif not isinstance(self.sec_level, int):
-            raise ValueError('Invalid sec_level: %s' % self.sec_level)
-        elif not self.prim_level >= self.sec_level:
-            raise ValueError('prim_level must be >= sec_level')
+        if not isinstance(self.high_level, int):
+            raise ValueError('Invalid high_level: %s' % self.high_level)
+        elif not isinstance(self.low_level, int):
+            raise ValueError('Invalid low_level: %s' % self.low_level)
+        elif not self.high_level >= self.low_level:
+            raise ValueError('high_level must be >= low_level')
 
-        primary_hdlr = handlers.stderr_hdlr()
-        secondary_hdlr = handlers.stdout_hdlr()
+        high_pass_hdlr = handlers.stderr_hdlr()
+        low_pass_hdlr = handlers.stdout_hdlr()
         self.name = name
-        self.primary_hdlr = kwargs.get('primary_hdlr', primary_hdlr)
-        self.secondary_hdlr = kwargs.get('secondary_hdlr', secondary_hdlr)
-        self.primary_hdlr.setLevel(self.prim_level)
-        self.secondary_hdlr.setLevel(self.sec_level)
+        self.high_pass_hdlr = kwargs.get('high_pass_hdlr', high_pass_hdlr)
+        self.low_pass_hdlr = kwargs.get('low_pass_hdlr', low_pass_hdlr)
+        self.high_pass_hdlr.setLevel(self.high_level)
+        self.low_pass_hdlr.setLevel(self.low_level)
 
-        if not kwargs.get('multilog'):
-            log_filter = LogFilter(self.prim_level)
-            self.secondary_hdlr.addFilter(log_filter)
+        if kwargs.get('monolog'):
+            log_filter = LogFilter(self.high_level)
+            self.low_pass_hdlr.addFilter(log_filter)
 
     @property
     def logger(self):
@@ -137,29 +148,30 @@ class Logger(object):
             <logging.Logger object at 0x...>
             >>> logger.debug('stdout')
             stdout
-            >>> kwargs = {'sec_level': 'info'}
-            >>> logger = Logger('ignore_if_less_than_info', **kwargs).logger
+            >>> kwargs = {'low_level': 'info', 'monolog': True}
+            >>> logger = Logger('ignore_if_lt_info', **kwargs).logger
             >>> logger.debug('ignored')
             >>> logger.info('stdout')
             stdout
             >>> with LogCapture() as l:
             ...     logger.warning('sdterr')
             ...     print(l)
-            ignore_if_less_than_info WARNING
+            ignore_if_lt_info WARNING
               sdterr
-            >>> logger = Logger('stdout_if_less_than_error', 'error').logger
+            >>> logger = Logger('stderr_if_gt_error', 'error').logger
             >>> logger.warning('stdout')
             stdout
             >>> with LogCapture() as l:
             ...     logger.error('sdterr')
             ...     print(l)
-            stdout_if_less_than_error ERROR
+            sdterr
+            stderr_if_gt_error ERROR
               sdterr
         """
         logger = logging.getLogger(self.name)
-        logger.setLevel(self.sec_level)
-        logger.addHandler(self.secondary_hdlr)
-        logger.addHandler(self.primary_hdlr)
+        logger.setLevel(self.low_level)
+        logger.addHandler(self.low_pass_hdlr)
+        logger.addHandler(self.high_pass_hdlr)
         return logger
 
     def hash(self, content):
@@ -176,12 +188,12 @@ class Logger(object):
         values = frozenset(kwargs.iteritems())
         name = name or self.hash(values)
         logger = logging.getLogger('%s.structured.%s' % (self.name, name))
-        logger.setLevel(self.sec_level)
+        logger.setLevel(self.low_level)
 
-        self.secondary_hdlr.setFormatter(formatters.basic_formatter)
-        self.primary_hdlr.setFormatter(formatters.basic_formatter)
-        logger.addHandler(self.secondary_hdlr)
-        logger.addHandler(self.primary_hdlr)
+        self.low_pass_hdlr.setFormatter(formatters.basic_formatter)
+        self.high_pass_hdlr.setFormatter(formatters.basic_formatter)
+        logger.addHandler(self.low_pass_hdlr)
+        logger.addHandler(self.high_pass_hdlr)
         structured_logger = formatters.StructuredAdapter(logger, kwargs)
         return structured_logger
 
@@ -208,10 +220,10 @@ class Logger(object):
         values = frozenset(formatter.__dict__.iteritems())
         name = name or self.hash(values)
         logger = logging.getLogger('%s.formatted.%s' % (self.name, name))
-        logger.setLevel(self.sec_level)
+        logger.setLevel(self.low_level)
 
-        self.secondary_hdlr.setFormatter(formatter)
-        self.primary_hdlr.setFormatter(formatter)
-        logger.addHandler(self.secondary_hdlr)
-        logger.addHandler(self.primary_hdlr)
+        self.low_pass_hdlr.setFormatter(formatter)
+        self.high_pass_hdlr.setFormatter(formatter)
+        logger.addHandler(self.low_pass_hdlr)
+        logger.addHandler(self.high_pass_hdlr)
         return logger

@@ -31,7 +31,7 @@ def main(script, tests, verbose=False, stop=True):
     """
     failures = 0
     level = 'DEBUG' if verbose else 'INFO'
-    logger = Logger(__name__, sec_level=level).logger
+    logger = Logger(__name__, low_level=level).logger
     short_script = p.basename(script)
     env = TestFileEnvironment('.scripttest')
 
