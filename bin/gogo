@@ -7,5 +7,5 @@ from os import path as p
 import sys
 
 if __name__ == '__main__':
-    from gogo import manager
-    manager.main()
+    from gogo import main
+    main.run()

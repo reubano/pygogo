@@ -37,20 +37,24 @@ def stderr_hdlr(**kwargs):
     return logging.StreamHandler(sys.stderr)
 
 
+def fileobj_hdlr(f, **kwargs):
+    return logging.StreamHandler(f)
+
+
 def file_hdlr(filename, mode='a', encoding=ENCODING, delay=False, **kwargs):
     kwargs = {'mode': mode, 'encoding': encoding, 'delay': delay}
     return logging.FileHandler(filename, **kwargs)
 
 
-def socket_hdlr(host='localhost', port=None, udp=True, **kwargs):
+def socket_hdlr(host='localhost', port=None, tcp=False, **kwargs):
     address = (host, environ.get('SOCKET_PORT', 520))
-    handler = hdlrs.DatagramHandler if udp else hdlrs.SocketHandler
+    handler = hdlrs.SocketHandler if tcp else hdlrs.DatagramHandler
     return handler(*address)
 
 
-def syslog_hdlr(host='localhost', port=None, udp=True, **kwargs):
+def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
     address = (host, environ.get('SYSLOG_UDP_PORT', 514))
-    socktype = socket.SOCK_DGRAM if udp else socket.SOCK_STREAM
+    socktype = socket.SOCK_STREAM if tcp else socket.SOCK_DGRAM
     return hdlrs.SysLogHandler(address, socktype=socktype)
 
 
@@ -59,8 +63,8 @@ def buffered_hdlr(target, capacity=2 ** 12, level='ERROR', **kwargs):
     return hdlrs.MemoryHandler(*args)
 
 
-def webhook_hdlr(url, host='localhost', port=None, post=True, **kwargs):
-    method = 'POST' if post else 'GET'
+def webhook_hdlr(url, host='localhost', port=None, get=False, **kwargs):
+    method = 'GET' if get else 'POST'
     host = '%s:%s' % (host, port) if port else host
     return hdlrs.HTTPHandler(host, url, method=method)
 
@@ -78,8 +82,8 @@ def email_hdlr(subject=None, **kwargs):
 
     Examples:
         >>> to = 'reubano@gmail.com'
-        >>> email('hello world')  # doctest: +ELLIPSIS
-        <smtplib.SMTP instance at 0x...>
+        >>> email_hdlr('hello world')  # doctest: +ELLIPSIS
+        <logging.handlers.SMTPHandler object at 0x...>
     """
     host = kwargs.get('host', 'localhost')
     port = kwargs.get('port')

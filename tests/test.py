@@ -22,66 +22,72 @@ from scripttest import TestFileEnvironment
 from timeit import default_timer as timer
 
 from gogo import __version__ as version
-
-parent_dir = p.abspath(p.dirname(p.dirname(__file__)))
-data_dir = p.join(parent_dir, 'data')
-script = p.join(parent_dir, 'bin', 'gogo')
-short_script = 'gogo'
+from gogo.logger import Logger
 
 
-def main(verbose=False, stop=True):
+def main(script, tests, verbose=False, stop=True):
     """ Main method
     Returns 0 on success, 1 on failure
     """
-    ok = True
-    start = timer()
+    failures = 0
+    level = 'DEBUG' if verbose else 'INFO'
+    logger = Logger(__name__, low_level=level).logger
+    short_script = p.basename(script)
     env = TestFileEnvironment('.scripttest')
-    usage = 'usage: gogo <command> [<args>]'
 
-    tests = [
-        (2, ['--help'], usage),
-        (3, ['--version'], 'gogo v%s' % version),
-        (4, ['gogo', p.join(data_dir, 'input')], p.join(data_dir, 'output')),
-    ]
+    start = timer()
 
-    for test_num, args, expected in tests:
-        command = '%s %s' % (script, ' '.join(args))
-        short_command = '%s %s' % (short_script, ' '.join(args))
-        result = env.run(command, cwd=parent_dir)
+    for pos, test in enumerate(tests):
+        num = pos + 1
+        opts, arguments, expected = test
+        joined_opts = ' '.join(opts)
+        joined_args = '"%s"' % '" "'.join(arguments)
+        command = "%s %s%s" % (script, joined_opts, joined_args)
+        short_command = "%s %s%s" % (short_script, joined_opts, joined_args)
+        result = env.run(command, cwd=p.abspath(p.dirname(p.dirname(__file__))))
         output = result.stdout
 
         try:
             check = open(expected)
         except IOError:
-            diffs = False
-            passed = output == expected
-        else:
-            args = [check.readlines(), StringIO(output).readlines()]
-            kwargs = {'fromfile': 'expected', 'tofile': 'got'}
-            diffs = list(unified_diff(*args, **kwargs))
-            passed = not diffs
+            check = StringIO(expected)
+        except TypeError:
+            check = StringIO(expected)
+            output = bool(output)
+
+        args = [check.readlines(), StringIO(output).readlines()]
+        kwargs = {'fromfile': 'expected', 'tofile': 'got'}
+        diffs = ''.join(unified_diff(*args, **kwargs))
+        passed = not diffs
 
         if not passed:
-            ok = False
-            msg = "ERROR from test #%i! Output from:\n\t%s\n" % (
-                test_num, short_command)
-            msg += "doesn't match \n\t%s\n" % result
+            failures += 1
+            msg = "ERROR! Output from test #%i:\n  %s\n" % (num, short_command)
+            msg += "doesn't match:\n  %s\n" % expected
             msg += diffs if diffs else ''
-            pfunc = sys.exit if stop else sys.stderr.write
         else:
-            if verbose:
-                print(output)
+            logger.debug(output)
+            msg = 'Scripttest #%i: %s ... ok' % (num, short_command)
 
-            msg = 'Scripttest #%i: %s ... ok' % (test_num, short_command)
-            pfunc = sys.stdout.write
+        logger.info(msg)
 
-        pfunc(msg)
+        if stop and failures:
+            break
 
     time = timer() - start
-    print('%s' % '-' * 70)
-    end = 'OK' if ok else 'ERRORS'
-    print('Ran %i scripttests in %0.3fs\n\n%s' % (test_num, time, end))
-    sys.exit(0)
+    logger.info('%s' % '-' * 70)
+    end = 'FAILED (failures=%i)' % failures if failures else 'OK'
+    logger.info('Ran %i scripttests in %0.3fs\n\n%s' % (num, time, end))
+    sys.exit(failures)
 
 if __name__ == '__main__':
-    main()
+    parent_dir = p.abspath(p.dirname(p.dirname(__file__)))
+    script = p.join(parent_dir, 'bin', 'gogo')
+
+    tests = [
+        (['--help'], [''], True),
+        (['--version'], [''], 'gogo v%s\n' % version),
+        ([], ['hello world'], 'hello world\n'),
+    ]
+
+    main(script, tests)

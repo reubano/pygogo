@@ -14,7 +14,7 @@ gogo |travis| |version| |pypi|
 Introduction
 ------------
 
-`gogo <https://github.com/reubano/gogo>`_ is a  that A Python logger with super powers.
+`gogo <https://github.com/reubano/gogo>`_ is a Python logging library with super powers.
 
 Using gogo
 -----------

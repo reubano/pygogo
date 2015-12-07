@@ -12,6 +12,9 @@ from __future__ import (
     absolute_import, division, print_function, with_statement,
     unicode_literals)
 
+from gogo.logger import Logger
+
+logger = Logger(__name__).logger
 initialized = False
 
 
@@ -19,11 +22,11 @@ def setup_package():
     """database context creation"""
     global initialized
     initialized = True
-    print('Test Package Setup\n')
+    logger.debug('Package Setup\n')
 
 
 def teardown_package():
     """database context removal"""
     global initialized
     initialized = False
-    print('Test Package Teardown\n')
+    logger.debug('Package Teardown\n')
