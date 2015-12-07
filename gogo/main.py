@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # vim: sw=4:ts=4:expandtab
 
-""" A Python logging framework with super powers """
+""" A Python logging library with super powers """
 
 from __future__ import (
     absolute_import, division, print_function, with_statement,
