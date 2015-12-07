@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use gogo in a project::
+To use pygogo in a project::
 
-	import gogo
+	import pygogo

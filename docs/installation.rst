@@ -4,13 +4,13 @@ Installation
 
 At the command line either via easy_install::
 
-    $ easy_install gogo
+    $ easy_install pygogo
 
 or pip::
 
-    $ pip install gogo
+    $ pip install pygogo
 
 Or, if you have virtualenvwrapper installed::
 
-    $ mkvirtualenv gogo
-    $ pip install gogo
+    $ mkvirtualenv pygogo
+    $ pip install pygogo

@@ -16,8 +16,8 @@ import nose.tools as nt
 import sys
 
 from StringIO import StringIO
-from gogo import handlers
-from gogo.logger import Logger
+from pygogo import handlers
+from pygogo.logger import Logger
 
 logger = Logger(__name__).logger
 

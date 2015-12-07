@@ -4,7 +4,7 @@
 API
 ===
 
-.. automodule:: gogo
+.. automodule:: pygogo
     :members:
 
     .. autoclass:: Kijit

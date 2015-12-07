@@ -2,7 +2,7 @@
 # vim: sw=4:ts=4:expandtab
 
 """
-gogo.handlers
+pygogo.handlers
 ~~~~~~~~~~~~~
 
 Log handlers
@@ -26,7 +26,7 @@ import socket
 
 from os import environ
 from logging import handlers as hdlrs
-from gogo import ENCODING
+from pygogo import ENCODING
 
 
 def stdout_hdlr(**kwargs):

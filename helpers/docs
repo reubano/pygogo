@@ -3,9 +3,9 @@
 
 # generate Sphinx HTML documentation, including API docs
 
-rm -f docs/gogo.rst
+rm -f docs/pygogo.rst
 rm -f docs/modules.rst
-sphinx-apidoc -o docs/ gogo
+sphinx-apidoc -o docs/ pygogo
 $(MAKE) -C docs clean
 $(MAKE) -C docs html
 open docs/_build/html/index.html
