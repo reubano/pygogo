@@ -37,6 +37,10 @@ def stderr_hdlr(**kwargs):
     return logging.StreamHandler(sys.stderr)
 
 
+def fileobj_hdlr(f, **kwargs):
+    return logging.StreamHandler(f)
+
+
 def file_hdlr(filename, mode='a', encoding=ENCODING, delay=False, **kwargs):
     kwargs = {'mode': mode, 'encoding': encoding, 'delay': delay}
     return logging.FileHandler(filename, **kwargs)
