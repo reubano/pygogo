@@ -8,9 +8,16 @@ pygogo.logger
 Main Logger
 
 Examples:
-    literal blocks::
-
-        python example_google.py
+    basic usage::
+        >>> kwargs = {
+        ...     'monolog': True,
+        ...     'high_hdlr': handlers.stdout_hdlr(),
+        ...     'high_formatter': formatters.console_formatter}
+        >>> logger = Logger('default', **kwargs).logger
+        >>> logger.debug('hello world')
+        hello world
+        >>> logger.error('hello world')
+        default     : ERROR    hello world
 """
 
 from __future__ import (
@@ -180,17 +187,17 @@ class Logger(object):
             >>> formatter = formatters.json_formatter
             >>> json_logger = Logger('json', low_formatter=formatter).logger
             >>> json_logger.debug('hello')  # doctest: +ELLIPSIS
-            {"time": "2015...", "name": "json", "level": "DEBUG", "message": \
+            {"time": "20...", "name": "json", "level": "DEBUG", "message": \
 "hello"}
             >>>
             >>> formatter = formatters.csv_formatter
             >>> csv_logger = Logger('csv', low_formatter=formatter).logger
             >>> csv_logger.debug('hello')  # doctest: +ELLIPSIS
-            2015...,csv,DEBUG,"hello"
+            20...,csv,DEBUG,"hello"
             >>>
             >>> formatter = formatters.console_formatter
-            >>> console_logger = Logger('console', low_formatter=formatter).logger
-            >>> console_logger.debug('hello')
+            >>> console_lggr = Logger('console', low_formatter=formatter).logger
+            >>> console_lggr.debug('hello')
             console     : DEBUG    hello
        """
         logger = logging.getLogger(self.name)
@@ -200,14 +207,14 @@ class Logger(object):
         return logger
 
     def structured_logger(self, name=None, **kwargs):
-        """
+        """Creates a structured data logger
 
         Examples
-            >>> logger = Logger('structured').structured_logger(key2='value2')
+            >>> logger = Logger('structured').structured_logger(all='true')
             >>> logger.debug('hello')
-            {"key2": "value2", "message": "hello"}
+            {"all": "true", "message": "hello"}
             >>> logger.debug('hello', extra={'key': 'value'})
-            {"key2": "value2", "message": "hello", "key": "value"}
+            {"all": "true", "message": "hello", "key": "value"}
         """
         values = frozenset(kwargs.iteritems())
         name = name or hashlib.md5(str(values)).hexdigest()

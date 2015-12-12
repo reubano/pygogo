@@ -10,23 +10,27 @@ Log formatters
 Examples:
     Add a console formatter::
 
-        logger = logging.getLogger()
-        hdlr = stdout_hdlr()
-        hdlr.setFormatter(console_formatter)
-        logger.addHandler(hdlr)
+        >>> import sys
+
+        >>> logger = logging.getLogger('console_logger')
+        >>> hdlr = logging.StreamHandler(sys.stdout)
+        >>> hdlr.setFormatter(console_formatter)
+        >>> logger.addHandler(hdlr)
+        >>> logger.info('hello world')
+        console_logger: INFO     hello world
 
     Add a structured formatter::
 
-        from pygogo.handlers import stdout_hdlr
+        >>> import sys
 
-        logger = logging.getLogger('structured_logger')
-        hdlr = stdout_hdlr()
-        hdlr.setFormatter(structured_formatter)
-        extra = {'key': 'value'}
-        logger.addHandler(hdlr)
-        logger.info('hello world', extra=extra)
+        >>> logger = logging.getLogger('structured_logger')
+        >>> hdlr = logging.StreamHandler(sys.stdout)
+        >>> hdlr.setFormatter(structured_formatter)
+        >>> extra = {'key': 'value'}
+        >>> logger.addHandler(hdlr)
+        >>> logger.info('hello world', extra=extra)  # doctest: +ELLIPSIS
         {"message": "hello world", "level": "INFO", "name": \
-"structured_logger", "key": "value", "time": "..."}
+"structured_logger", "key": "value", "time": "20..."}
 
 Attributes:
     BASIC_FORMAT (str): A basic format
@@ -81,17 +85,16 @@ class CustomEncoder(JSONEncoder):
 
 
 class StructuredMessage(object):
-    """
+    """Converts a message and kwargs to a json string
 
-    Examples
-        >>> from pygogo.handlers import stdout_hdlr
+    Examples:
+        >>> import sys
         >>>
-        >>> logger = logging.getLogger('structured_message')
-        >>> hdlr = stdout_hdlr()
+        >>> logger = logging.getLogger()
+        >>> hdlr = logging.StreamHandler(sys.stdout)
         >>> hdlr.setFormatter(basic_formatter)
-        >>> extra = {'key': 'value'}
         >>> logger.addHandler(hdlr)
-        >>> logger.info(StructuredMessage('hello world', **extra))
+        >>> logger.info(StructuredMessage('hello world', key='value'))
         {"message": "hello world", "key": "value"}
     """
     def __init__(self, message=None, **kwargs):
@@ -111,7 +114,7 @@ class StructuredAdapter(logging.LoggerAdapter):
 
 
 class StructuredFormatter(logging.Formatter):
-    """testing
+    """A logging formatter that converts log details to a json string
 
     """
     def __init__(self, *args, **kwargs):

@@ -10,8 +10,10 @@ Log handlers
 Examples:
     Add a stdout handler::
 
-        logger = logging.getLogger()
-        logger.addHandler(stdout_hdlr())
+        >>> logger = logging.getLogger()
+        >>> logger.addHandler(stdout_hdlr())
+        >>> logger.info('hello world')
+        hello world
 """
 
 from __future__ import (
@@ -68,18 +70,22 @@ def webhook_hdlr(url, host='localhost', port=None, get=False, **kwargs):
 
 
 def email_hdlr(subject=None, **kwargs):
-    """Sends an email
+    """An email log handler
 
     Args:
         subject (str): The email subject (default: You've got mail.).
 
     Kwargs:
-        recipients (List[str]): The email recipients.
-        host (str): The email host server (default: localhost).
-        sender (str): The email sender.
+        host (str): The email server host (default: localhost).
+        port (str): The email sever port (default: None).
+        sender (str): The email sender (default: the system username at gmail).
+        recipients (List[str]): The email recipients (default: the system
+            username at gmail).
+
+        username (str): The email sever username (default: None).
+        password (str): The email sever password (default: None).
 
     Examples:
-        >>> to = 'reubano@gmail.com'
         >>> email_hdlr('hello world')  # doctest: +ELLIPSIS
         <logging.handlers.SMTPHandler object at 0x...>
     """
