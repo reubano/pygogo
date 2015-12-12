@@ -47,13 +47,13 @@ def file_hdlr(filename, mode='a', encoding=ENCODING, delay=False, **kwargs):
 
 
 def socket_hdlr(host='localhost', port=None, tcp=False, **kwargs):
-    address = (host, environ.get('SOCKET_PORT', 520))
+    address = (host, port or environ.get('SOCKET_PORT', 520))
     handler = hdlrs.SocketHandler if tcp else hdlrs.DatagramHandler
     return handler(*address)
 
 
 def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
-    address = (host, environ.get('SYSLOG_UDP_PORT', 514))
+    address = (host, port or environ.get('SYSLOG_UDP_PORT', 514))
     socktype = socket.SOCK_STREAM if tcp else socket.SOCK_DGRAM
     return hdlrs.SysLogHandler(address, socktype=socktype)
 
