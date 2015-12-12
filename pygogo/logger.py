@@ -170,6 +170,8 @@ class Logger(object):
             >>> logger.debug('ignored')
             >>> logger.info('stdout')
             stdout
+            >>> logger.info('stdout', extra={'key': 'value'})
+            stdout
             >>> with LogCapture() as l:
             ...     logger.warning('sdterr')
             ...     print(l)

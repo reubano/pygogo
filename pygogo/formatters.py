@@ -67,7 +67,30 @@ json_formatter = logging.Formatter(JSON_FORMAT, datefmt=DATEFMT)
 
 
 class CustomEncoder(JSONEncoder):
+    """A unicode aware JSON encoder that can handle iterators, dates, and times
+
+    http://stackoverflow.com/a/28743317/408556
+
+    Examples:
+        >>> CustomEncoder().encode(xrange(5))
+        '[0, 1, 2, 3, 4]'
+        >>> from json import dumps
+        >>> dumps(xrange(5), cls=CustomEncoder)
+        '[0, 1, 2, 3, 4]'
+    """
     def default(self, obj):
+        """ Encodes a given object
+
+        Args:
+            obj (scalar): The object to encode.
+
+        Returns:
+            The encoded object
+
+        Examples:
+            >>> CustomEncoder().default(xrange(5))
+            [0, 1, 2, 3, 4]
+        """
         if hasattr(obj, 'real'):
             encoded = float(obj)
         elif set(['quantize', 'year', 'hour']).intersection(dir(obj)):
@@ -108,15 +131,83 @@ class StructuredMessage(object):
         {"message": "hello world", "key": "value"}
     """
     def __init__(self, message=None, **kwargs):
+        """Initialization method.
+
+        Args:
+            message (string): The message to log.
+            kwargs (dict): Keyword arguments passed to the encoder.
+
+        Returns:
+            New instance of :class:`StructuredMessage`
+
+        Examples:
+            >>> StructuredMessage('message') # doctest: +ELLIPSIS
+            <pygogo.formatters.StructuredMessage object at 0x...>
+        """
         kwargs['message'] = message
         self.kwargs = kwargs
 
     def __str__(self):
+        """ String method
+
+        Returns:
+            str: The encoded object
+
+        Examples
+            >>> str(StructuredMessage('hello world', key='value'))
+            '{"message": "hello world", "key": "value"}'
+        """
         return CustomEncoder().encode(self.kwargs)
 
 
 class StructuredAdapter(logging.LoggerAdapter):
+    """A logging adapter that converts a log message and extra to a json string
+
+    http://stackoverflow.com/a/28743317/408556
+
+    Attributes:
+        name (string): The logger name.
+        high_level (string): The min level to log to high_hdlr.
+        low_level (string): The min level to log to low_hdlr.
+            messages < low_level               -> ignore
+            low_level <= messages < high_level -> low_hdlr
+            high_level <= messages             -> high_hdlr
+
+    Examples:
+        >>> import sys
+        >>>
+        >>> logger = logging.getLogger()
+        >>> hdlr = logging.StreamHandler(sys.stdout)
+        >>> logger.addHandler(hdlr)
+        >>> structured_logger = StructuredAdapter(logger, {'all': 'true'})
+        >>> structured_logger.debug('hello', extra={'key': 'value'})
+        {"all": "true", "message": "hello", "key": "value"}
+    """
     def process(self, msg, kwargs):
+        """ Modifies the message and/or keyword arguments passed to a logging
+        call in order to insert contextual information.
+
+        Args:
+            msg (str): The message to log.
+            kwargs (dict):
+
+        Returns:
+            Tuple of (:class:`StructuredMessage`, modified kwargs)
+
+        Examples:
+            >>> import sys
+            >>>
+            >>> logger = logging.getLogger()
+            >>> hdlr = logging.StreamHandler(sys.stdout)
+            >>> logger.addHandler(hdlr)
+            >>> structured_logger = StructuredAdapter(logger, {'all': 'true'})
+            >>> extra = {'key': 'value'}
+            >>> m, k = structured_logger.process('message', {'extra': extra})
+            >>> m  # doctest: +ELLIPSIS
+            <pygogo.formatters.StructuredMessage object at 0x...>
+            >>> k
+            {u'extra': {u'all': u'true', u'key': u'value'}}
+        """
         extra = kwargs.get('extra', {})
         extra.update(self.extra)
         kwargs['extra'] = extra
@@ -126,13 +217,60 @@ class StructuredAdapter(logging.LoggerAdapter):
 class StructuredFormatter(logging.Formatter):
     """A logging formatter that converts log details to a json string
 
+    TODO: Add log exception handling
+
+    Examples:
+        >>> import sys
+        >>>
+        >>> logger = logging.getLogger()
+        >>> formatter = StructuredFormatter(BASIC_FORMAT, datefmt=DATEFMT)
+        >>> hdlr = logging.StreamHandler(sys.stdout)
+        >>> hdlr.setFormatter(formatter)
+        >>> logger.addHandler(hdlr)
+        >>> logger.info('hello world')  # doctest: +ELLIPSIS
+        {"message": "hello world", "level": "INFO", "name": \
+"root", "time": "..."}
     """
     def __init__(self, *args, **kwargs):
+        """Initialization method.
+
+        Args:
+            args (string): The min level to log to low_hdlr.
+            kwargs (dict): Keyword arguments.
+
+        Kwargs:
+            high_hdlr (obj): The high pass log handler (a
+
+        Returns:
+            New instance of :class:`StructuredFormatter`
+
+        Examples:
+            >>> StructuredFormatter('name') # doctest: +ELLIPSIS
+            <pygogo.formatters.StructuredFormatter object at 0x...>
+        """
         empty_record = logging.makeLogRecord({})
         self.filterer = lambda k: k not in empty_record.__dict__
         super(StructuredFormatter, self).__init__(*args, **kwargs)
 
     def format(self, record):
+        """ Formats a given record
+
+        Args:
+            record (object): The event to format.
+
+        Returns:
+            str: The formatted content
+
+        Examples:
+            >>> formatter = StructuredFormatter(BASIC_FORMAT, datefmt='%Y')
+            >>> logger = logging.getLogger()
+            >>> msg = 'hello world'
+            >>> args = (logging.INFO, '.', 0, msg, [], None)
+            >>> record = logger.makeRecord('root', *args)
+            >>> formatter.format(record)  # doctest +ELLIPSIS
+            '{"message": "hello world", "level": "INFO", "name": \
+"root", "time": "2015"}'
+        """
         extra = {
             'message': record.getMessage(),
             'time': self.formatTime(record, self.datefmt),
