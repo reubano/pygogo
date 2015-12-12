@@ -11,14 +11,18 @@ from __future__ import (
 import sys
 import itertools as it
 
-from os import curdir
+from os import getcwd, path as p
 from argparse import RawTextHelpFormatter, ArgumentParser
 
-from pygogo import __version__ as version, handlers
+from pygogo import __version__ as version, handlers, formatters
 from pygogo.logger import Logger
 
-hdlrs = filter(lambda h: h.endswith('hdlr'), dir(handlers))
-choices = [h[:-5] for h in hdlrs]
+hdlrs_full = filter(lambda h: h.endswith('hdlr'), dir(handlers))
+hdlrs = [h[:-5] for h in hdlrs_full]
+levels = ['critical', 'error', 'warning', 'info', 'debug']
+frmtrs_full = filter(lambda h: h.endswith('formatter'), dir(formatters))
+formats = [f[:-10] for f in frmtrs_full]
+curdir = p.basename(getcwd())
 
 parser = ArgumentParser(
     description='description: Command description', prog='pygogo',
@@ -26,71 +30,104 @@ parser = ArgumentParser(
 
 parser.add_argument(
     dest='message', nargs='?', default=sys.stdin,
-    help='the message to log (defaults to reading from stdin)')
+    help='The message to log (defaults to reading from stdin).')
 
 parser.add_argument(
-    '-l', '--msg-level', metavar='LEVEL', default='info',
-    help="The level to log the message")
-
-parser.add_argument('-n', '--name', help="The logger name", default=curdir)
-parser.add_argument(
-    '--high-hdlr', help="the high pass log handler (default: stdout)",
-    choices=choices, default='stdout')
+    '-l', '--msg-level', metavar='LEVEL', choices=levels, default='info',
+    help=(
+        "The level to log the message (default: info).\n"
+        "Must be one of: %s.\n\n" % ', '.join(levels)))
 
 parser.add_argument(
-    '--low-hdlr', help="the low pass log handler (default: stdout)",
-    choices=choices, default='stdout')
+    '-n', '--name', default=curdir,
+    help="The logger name (default: %s)" % curdir)
 
 parser.add_argument(
-    '-L', '--high-level', metavar='LEVEL', default='warning',
-    help="The min level to log to the high pass handler")
+    '-D', '--high-hdlr', metavar='HANDLER', choices=hdlrs, default='stderr',
+    help=(
+        "The high pass log handler (default: stderr).\n"
+        "Must be one of: %s,\n%s.\n\n" % (
+            ', '.join(hdlrs[:4]), ', '.join(hdlrs[4:]))))
 
 parser.add_argument(
-    '-e', '--low-level', metavar='LEVEL', default='debug',
-    help="The min level to log to the low pass handler")
+    '-d', '--low-hdlr', metavar='HANDLER', choices=hdlrs, default='stdout',
+    help=(
+        "The low pass log handler (default: stdout).\n"
+        "Must be one of: %s,\n%s.\n\n" % (
+            ', '.join(hdlrs[:4]), ', '.join(hdlrs[4:]))))
 
 parser.add_argument(
-    '-d', '--monolog', action='store_true', default=False,
-    help="log high level events only to high pass handler")
+    '-L', '--high-level', metavar='LEVEL', choices=levels, default='warning',
+    help=(
+        "Min level to log to the high pass handler\n(default: warning)."
+        "\nMust be one of: %s,\n%s.\n\n" % (
+            ', '.join(hdlrs[:4]), ', '.join(hdlrs[4:]))))
 
 parser.add_argument(
-    '-f', '--filename', action='append', default=[''],
-    help="the filename (required for the follow handlers: file)")
+    '-e', '--low-level', metavar='LEVEL', choices=levels, default='debug',
+    help=(
+        "Min level to log to the low pass handler\n(default: debug)."
+        "\nMust be one of: %s,\n%s.\n\n" % (
+            ', '.join(hdlrs[:4]), ', '.join(hdlrs[4:]))))
 
 parser.add_argument(
-    '-s', '--subject', default=["You've got mail."], action='append',
-    help="the subject (used in the follow handlers: email)")
+    '-F', '--high-format', metavar='FORMAT', choices=formats, default='json',
+    help=(
+        "High pass handler log format (default: json)."
+        "\nMust be one of: %s,\n%s.\n\n" % (
+            ', '.join(formats[:4]), ', '.join(formats[4:]))))
+
+parser.add_argument(
+    '-o', '--low-format', metavar='FORMAT', choices=formats, default='basic',
+    help=(
+        "Low pass handler log format (default: basic)."
+        "\nMust be one of: %s,\n%s.\n\n" % (
+            ', '.join(formats[:4]), ', '.join(formats[4:]))))
+
+parser.add_argument(
+    '-m', '--monolog', action='store_true', default=False,
+    help="Log high level events only to high pass handler.")
+
+parser.add_argument(
+    '-f', '--filename', action='append', default=['gogo.log'],
+    help="The filename to log to.\nRequired for the follow handlers: file.\n\n")
+
+parser.add_argument(
+    '-s', '--subject', default=["You've got mail"], action='append',
+    help=(
+        "The log subject (default: You've got mail)."
+        "\nUsed in the follow handlers: email.\n\n"))
 
 parser.add_argument(
     '-u', '--url', action='append', default=[''],
-    help="the url (required for the follow handlers: webhook)")
+    help="The log url. Required for the follow handlers: webhook.")
 
 parser.add_argument(
     '-H', '--host', default=['localhost'], action='append',
-    help="the host (used in the follow handlers: socket, syslog)")
+    help="The host.\nUsed in the follow handlers: socket and syslog.\n\n")
 
 parser.add_argument(
     '-p', '--port', metavar='NUM', type=int, action='append', default=[''],
     help=(
-        "the port number (used in the follow handlers: socket, "
-        "syslog)"))
+        "The port number.\nUsed in the follow handlers: socket and "
+        "syslog.\n\n"))
 
 parser.add_argument(
     '-t', '--tcp', action='count', default=0, help=(
-        "use TCP instead of UDP (used in the follow handlers: socket, "
-        "syslog)"))
+        "Use TCP instead of UDP.\nUsed in the follow handlers: socket, "
+        "syslog.\n\n"))
 
 parser.add_argument(
     '-g', '--get', action='count', default=0, help=(
-        "use a GET request instead of POST (used in the follow handlers: "
-        "webhook)"))
+        "Use a GET request instead of POST.\nUsed in the follow handlers: "
+        "webhook.\n\n"))
 
 parser.add_argument(
-    '-v', '--version', help="show version and exit", action='store_true',
+    '-v', '--version', help="Show version and exit.", action='store_true',
     default=False)
 
 parser.add_argument(
-    '-V', '--verbose', help='increase output verbosity', action='store_true',
+    '-V', '--verbose', help='Increase output verbosity.', action='store_true',
     default=False)
 
 args = parser.parse_args()
@@ -101,7 +138,7 @@ def run():
     pygogo_logger = Logger(__name__, low_level=level).logger
 
     if args.version:
-        pygogo_logger.info('pygogo v%s' % version)
+        pygogo_logger.info('gogo v%s' % version)
         exit(0)
 
     counted = set(['get', 'tcp'])
@@ -118,14 +155,19 @@ def run():
     low_counted_args = [(k, v > 1) for k, v in counted_args]
     low_kwargs = dict(it.chain(low_appended_args, low_counted_args))
 
-    high_pass_hdlr = getattr(handlers, '%s_hdlr' % args.high_hdlr)
-    low_pass_hdlr = getattr(handlers, '%s_hdlr' % args.low_hdlr)
+    high_hdlr = getattr(handlers, '%s_hdlr' % args.high_hdlr)
+    low_hdlr = getattr(handlers, '%s_hdlr' % args.low_hdlr)
+    high_format = getattr(formatters, '%s_formatter' % args.high_format)
+    low_format = getattr(formatters, '%s_formatter' % args.low_format)
+
     nkwargs = {
-        'high_level': args.high_level,
-        'low_level': args.low_level,
+        'high_level': args.high_level.upper(),
+        'low_level': args.low_level.upper(),
+        'high_formatter': high_format,
+        'low_formatter': low_format,
         'monolog': args.monolog,
-        'high_pass_hdlr': high_pass_hdlr(**high_kwargs),
-        'low_pass_hdlr': low_pass_hdlr(**low_kwargs)}
+        'high_hdlr': high_hdlr(**high_kwargs),
+        'low_hdlr': low_hdlr(**low_kwargs)}
 
     logger = Logger(args.name, **nkwargs).logger
 

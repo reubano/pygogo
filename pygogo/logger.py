@@ -80,26 +80,32 @@ class Logger(object):
 
     Attributes:
         name (string): The logger name.
-        high_level (string): The min level to log to high_pass_hdlr.
-        low_level (string): The min level to log to low_pass_hdlr.
+        high_level (string): The min level to log to high_hdlr.
+        low_level (string): The min level to log to low_hdlr.
             messages < low_level               -> ignore
-            low_level <= messages < high_level -> low_pass_hdlr
-            high_level <= messages             -> high_pass_hdlr
+            low_level <= messages < high_level -> low_hdlr
+            high_level <= messages             -> high_hdlr
     """
     def __init__(self, name, high_level='warning', low_level='debug', **kwargs):
         """Initialization method.
 
         Args:
             name (string): The logger name.
-            high_level (string): The min level to log to high_pass_hdlr.
-            low_level (string): The min level to log to low_pass_hdlr.
+            high_level (string): The min level to log to high_hdlr.
+            low_level (string): The min level to log to low_hdlr.
             kwargs (dict): Keyword arguments.
 
         Kwargs:
-            high_pass_hdlr (obj): The high pass log handler (a
+            high_hdlr (obj): The high pass log handler (a
                 `logging.handlers` instance, default: stderr StreamHandler)
 
-            low_pass_hdlr (obj): The low pass log handler (a
+            low_hdlr (obj): The low pass log handler (a
+                `logging.handlers` instance, default: stdout StreamHandler).
+
+            high_formatter (obj): The high pass log handler (a
+                `logging.handlers` instance, default: stderr StreamHandler)
+
+            low_formatter (obj): The low pass log handler (a
                 `logging.handlers` instance, default: stdout StreamHandler).
 
             monolog (bool): Log high level events only to high pass handler (
@@ -122,17 +128,24 @@ class Logger(object):
         elif not self.high_level >= self.low_level:
             raise ValueError('high_level must be >= low_level')
 
-        high_pass_hdlr = handlers.stderr_hdlr()
-        low_pass_hdlr = handlers.stdout_hdlr()
+        high_hdlr = handlers.stderr_hdlr()
+        low_hdlr = handlers.stdout_hdlr()
+        formatter = formatters.basic_formatter
+
         self.name = name
-        self.high_pass_hdlr = kwargs.get('high_pass_hdlr', high_pass_hdlr)
-        self.low_pass_hdlr = kwargs.get('low_pass_hdlr', low_pass_hdlr)
-        self.high_pass_hdlr.setLevel(self.high_level)
-        self.low_pass_hdlr.setLevel(self.low_level)
+        self.high_hdlr = kwargs.get('high_hdlr', high_hdlr)
+        self.low_hdlr = kwargs.get('low_hdlr', low_hdlr)
+        self.high_hdlr.setLevel(self.high_level)
+        self.low_hdlr.setLevel(self.low_level)
+        self.high_formatter = kwargs.get('high_formatter', formatter)
+        self.low_formatter = kwargs.get('low_formatter', formatter)
 
         if kwargs.get('monolog'):
             log_filter = LogFilter(self.high_level)
-            self.low_pass_hdlr.addFilter(log_filter)
+            self.low_hdlr.addFilter(log_filter)
+
+        self.high_hdlr.setFormatter(self.high_formatter)
+        self.low_hdlr.setFormatter(self.low_formatter)
 
     @property
     def logger(self):
@@ -167,63 +180,46 @@ class Logger(object):
             sdterr
             stderr_if_gt_error ERROR
               sdterr
-        """
+            >>> formatter = formatters.json_formatter
+            >>> json_logger = Logger('json', low_formatter=formatter).logger
+            >>> json_logger.debug('hello')  # doctest: +ELLIPSIS
+            {"time": "2015...", "name": "json", "level": "DEBUG", "message": \
+"hello"}
+            >>>
+            >>> formatter = formatters.csv_formatter
+            >>> csv_logger = Logger('csv', low_formatter=formatter).logger
+            >>> csv_logger.debug('hello')  # doctest: +ELLIPSIS
+            2015...,csv,DEBUG,"hello"
+            >>>
+            >>> formatter = formatters.console_formatter
+            >>> console_logger = Logger('console', low_formatter=formatter).logger
+            >>> console_logger.debug('hello')
+            console     : DEBUG    hello
+       """
         logger = logging.getLogger(self.name)
         logger.setLevel(self.low_level)
-        logger.addHandler(self.low_pass_hdlr)
-        logger.addHandler(self.high_pass_hdlr)
+        logger.addHandler(self.low_hdlr)
+        logger.addHandler(self.high_hdlr)
         return logger
-
-    def hash(self, content):
-        return hashlib.md5(str(content)).hexdigest()
 
     def structured_logger(self, name=None, **kwargs):
         """
 
         Examples
-            >>> logger = Logger('default').structured_logger(key2='value2')
+            >>> logger = Logger('structured').structured_logger(key2='value2')
+            >>> logger.debug('hello')
+            {"key2": "value2", "message": "hello"}
             >>> logger.debug('hello', extra={'key': 'value'})
             {"key2": "value2", "message": "hello", "key": "value"}
         """
         values = frozenset(kwargs.iteritems())
-        name = name or self.hash(values)
+        name = name or hashlib.md5(str(values)).hexdigest()
         logger = logging.getLogger('%s.structured.%s' % (self.name, name))
         logger.setLevel(self.low_level)
 
-        self.low_pass_hdlr.setFormatter(formatters.basic_formatter)
-        self.high_pass_hdlr.setFormatter(formatters.basic_formatter)
-        logger.addHandler(self.low_pass_hdlr)
-        logger.addHandler(self.high_pass_hdlr)
+        self.low_hdlr.setFormatter(formatters.basic_formatter)
+        self.high_hdlr.setFormatter(formatters.basic_formatter)
+        logger.addHandler(self.low_hdlr)
+        logger.addHandler(self.high_hdlr)
         structured_logger = formatters.StructuredAdapter(logger, kwargs)
         return structured_logger
-
-    def formatted_logger(self, formatter, name=None):
-        """
-
-        Examples
-            >>> formatter = formatters.json_formatter
-            >>> json_logger = Logger('default').formatted_logger(formatter)
-            >>> json_logger.debug('hello')  # doctest: +ELLIPSIS
-            {"time": "2015...", "name": "default.formatted.22db55...", \
-"level": "DEBUG", "message": "hello"}
-            >>>
-            >>> formatter = formatters.csv_formatter
-            >>> csv_logger = Logger('default').formatted_logger(formatter)
-            >>> csv_logger.debug('hello')  # doctest: +ELLIPSIS
-            2015...,default.formatted.bde4c...,DEBUG,"hello"
-            >>>
-            >>> args = (formatters.console_formatter, 'console')
-            >>> console_logger = Logger('default').formatted_logger(*args)
-            >>> console_logger.debug('hello')
-            default.formatted.console: DEBUG    hello
-        """
-        values = frozenset(formatter.__dict__.iteritems())
-        name = name or self.hash(values)
-        logger = logging.getLogger('%s.formatted.%s' % (self.name, name))
-        logger.setLevel(self.low_level)
-
-        self.low_pass_hdlr.setFormatter(formatter)
-        self.high_pass_hdlr.setFormatter(formatter)
-        logger.addHandler(self.low_pass_hdlr)
-        logger.addHandler(self.high_pass_hdlr)
-        return logger

@@ -46,7 +46,7 @@ class TestMain:
     def test_handlers(self):
         f = StringIO()
         hdlr = handlers.fileobj_hdlr(f)
-        lggr = Logger('test_handlers', high_pass_hdlr=hdlr).logger
+        lggr = Logger('test_handlers', high_hdlr=hdlr).logger
 
         msg1 = 'stdout hdlr only'
         lggr.debug(msg1)
