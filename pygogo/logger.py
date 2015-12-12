@@ -5,15 +5,12 @@
 pygogo.logger
 ~~~~~~~~~~~~~
 
-Loggers
+Main Logger
 
 Examples:
     literal blocks::
 
         python example_google.py
-
-Attributes:
-    ENCODING (str): The module encoding
 """
 
 from __future__ import (

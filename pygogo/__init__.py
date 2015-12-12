@@ -8,9 +8,11 @@ pygogo
 A Python logging library with super powers
 
 Examples:
-    literal blocks::
+    basic usage::
 
-        python example_google.py
+        from pygogo.logger import Logger
+        logger = Logger('log').logger
+        logger.info('info')
 
 Attributes:
     ENCODING (str): The module encoding

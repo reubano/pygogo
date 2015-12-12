@@ -8,12 +8,10 @@ pygogo.handlers
 Log handlers
 
 Examples:
-    literal blocks::
+    Add a stdout handler::
 
-        python example_google.py
-
-Attributes:
-    ENCODING (str): The module encoding
+        logger = logging.getLogger()
+        logger.addHandler(stdout_hdlr())
 """
 
 from __future__ import (

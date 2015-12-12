@@ -8,12 +8,33 @@ pygogo.formatters
 Log formatters
 
 Examples:
-    literal blocks::
+    Add a console formatter::
 
-        python example_google.py
+        logger = logging.getLogger()
+        hdlr = stdout_hdlr()
+        hdlr.setFormatter(console_formatter)
+        logger.addHandler(hdlr)
+
+    Add a structured formatter::
+
+        from pygogo.handlers import stdout_hdlr
+
+        logger = logging.getLogger('structured_logger')
+        hdlr = stdout_hdlr()
+        hdlr.setFormatter(structured_formatter)
+        extra = {'key': 'value'}
+        logger.addHandler(hdlr)
+        logger.info('hello world', extra=extra)
+        {"message": "hello world", "level": "INFO", "name": \
+"structured_logger", "key": "value", "time": "..."}
 
 Attributes:
-    ENCODING (str): The module encoding
+    BASIC_FORMAT (str): A basic format
+    CONSOLE_FORMAT (str): A format for displaying in a console
+    FIXED_FORMAT (str): A fixed width format
+    CSV_FORMAT (str): A csv format
+    JSON_FORMAT (str): A json format
+    DATEFMT (str): Standard date format
 """
 
 from __future__ import (
@@ -92,17 +113,6 @@ class StructuredAdapter(logging.LoggerAdapter):
 class StructuredFormatter(logging.Formatter):
     """testing
 
-    Examples
-        >>> from pygogo.handlers import stdout_hdlr
-        >>>
-        >>> logger = logging.getLogger('structured_logger')
-        >>> hdlr = stdout_hdlr()
-        >>> hdlr.setFormatter(structured_formatter)
-        >>> extra = {'key': 'value'}
-        >>> logger.addHandler(hdlr)
-        >>> logger.info('hello world', extra=extra)  # doctest: +ELLIPSIS
-        {"message": "hello world", "level": "INFO", "name": \
-"structured_logger", "key": "value", "time": "..."}
     """
     def __init__(self, *args, **kwargs):
         empty_record = logging.makeLogRecord({})
