@@ -74,7 +74,7 @@ class CustomEncoder(JSONEncoder):
             encoded = str(obj)
         elif hasattr(obj, 'union'):
             encoded = tuple(obj)
-        elif set(['next', 'union']).intersection(dir(obj)):
+        elif set(['next', 'union', '__iter__']).intersection(dir(obj)):
             encoded = list(obj)
         elif isinstance(obj, unicode):
             return obj.encode('unicode_escape').decode('ascii')

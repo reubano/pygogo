@@ -42,25 +42,36 @@ def fileobj_hdlr(f, **kwargs):
 
 
 def file_hdlr(filename, mode='a', encoding=ENCODING, delay=False, **kwargs):
-    kwargs = {'mode': mode, 'encoding': encoding, 'delay': delay}
-    return logging.FileHandler(filename, **kwargs)
+    fkwargs = {'mode': mode, 'encoding': encoding, 'delay': delay}
+    return logging.FileHandler(filename, **fkwargs)
 
 
 def socket_hdlr(host='localhost', port=None, tcp=False, **kwargs):
-    address = (host, port or environ.get('SOCKET_PORT', 520))
-    handler = hdlrs.SocketHandler if tcp else hdlrs.DatagramHandler
+    if tcp:
+        def_port = logging.handlers.DEFAULT_TCP_LOGGING_PORT
+        handler = hdlrs.SocketHandler
+    else:
+        def_port = logging.handlers.DEFAULT_UDP_LOGGING_PORT
+        handler = hdlrs.DatagramHandler
+
+    address = (host, port or def_port)
     return handler(*address)
 
 
 def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
-    address = (host, port or environ.get('SYSLOG_UDP_PORT', 514))
-    socktype = socket.SOCK_STREAM if tcp else socket.SOCK_DGRAM
+    if tcp:
+        def_port = logging.handlers.SYSLOG_TCP_PORT
+        socktype = socket.SOCK_STREAM
+    else:
+        def_port = logging.handlers.SYSLOG_UDP_PORT
+        socktype = socket.SOCK_DGRAM
+
+    address = (host, port or def_port)
     return hdlrs.SysLogHandler(address, socktype=socktype)
 
 
-def buffered_hdlr(target, capacity=2 ** 12, level='ERROR', **kwargs):
-    args = (capacity, getattr(logging, level), target)
-    return hdlrs.MemoryHandler(*args)
+def buffered_hdlr(target, capacity=4096, level='error', **kwargs):
+    return hdlrs.MemoryHandler(capacity, level.upper(), target)
 
 
 def webhook_hdlr(url, host='localhost', port=None, get=False, **kwargs):
