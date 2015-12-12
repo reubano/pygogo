@@ -3,7 +3,7 @@
 
 """
 pygogo.handlers
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
 Log handlers
 

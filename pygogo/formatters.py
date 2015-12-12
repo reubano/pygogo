@@ -3,7 +3,7 @@
 
 """
 pygogo.formatters
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 Log formatters
 

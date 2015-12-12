@@ -3,7 +3,7 @@
 
 """
 pygogo.logger
-~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 Loggers
 

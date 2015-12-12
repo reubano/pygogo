@@ -3,7 +3,7 @@
 
 """
 pygogo
-~~~~
+~~~~~~
 
 A Python logging library with super powers
 
