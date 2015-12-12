@@ -209,6 +209,13 @@ class Logger(object):
     def structured_logger(self, name=None, **kwargs):
         """Creates a structured data logger
 
+        Args:
+            name (string): The logger name.
+            kwargs (dict): Keyword arguments to include in every log message.
+
+        Returns:
+            New instance of :class:`Logger.formatters.StructuredAdapter`
+
         Examples
             >>> logger = Logger('structured').structured_logger(all='true')
             >>> logger.debug('hello')

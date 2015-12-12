@@ -96,6 +96,9 @@ def email_hdlr(subject=None, **kwargs):
         username (str): The email sever username (default: None).
         password (str): The email sever password (default: None).
 
+    Returns:
+        New instance of :class:`logging.handlers.SMTPHandler`
+
     Examples:
         >>> email_hdlr('hello world')  # doctest: +ELLIPSIS
         <logging.handlers.SMTPHandler object at 0x...>

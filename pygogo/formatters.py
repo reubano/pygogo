@@ -87,6 +87,16 @@ class CustomEncoder(JSONEncoder):
 class StructuredMessage(object):
     """Converts a message and kwargs to a json string
 
+    http://stackoverflow.com/a/28743317/408556
+
+    Attributes:
+        name (string): The logger name.
+        high_level (string): The min level to log to high_hdlr.
+        low_level (string): The min level to log to low_hdlr.
+            messages < low_level               -> ignore
+            low_level <= messages < high_level -> low_hdlr
+            high_level <= messages             -> high_hdlr
+
     Examples:
         >>> import sys
         >>>
