@@ -161,7 +161,8 @@ class StructuredMessage(object):
 
 
 class StructuredAdapter(logging.LoggerAdapter):
-    """A logging adapter that converts a log message and extra to a json string
+    """A logging adapter that creates a json string from a log message and the
+    `extra` kwarg
 
     http://stackoverflow.com/a/28743317/408556
 
@@ -215,7 +216,7 @@ class StructuredAdapter(logging.LoggerAdapter):
 
 
 class StructuredFormatter(logging.Formatter):
-    """A logging formatter that converts log details to a json string
+    """A logging formatter that creates a json string from log details
 
     TODO: Add log exception handling
 
@@ -253,7 +254,7 @@ class StructuredFormatter(logging.Formatter):
         super(StructuredFormatter, self).__init__(*args, **kwargs)
 
     def format(self, record):
-        """ Formats a given record
+        """ Formats a record as a dict string
 
         Args:
             record (object): The event to format.
