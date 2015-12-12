@@ -34,11 +34,11 @@ JSON_FORMAT = (
 
 DATEFMT = '%Y-%m-%d %H:%M:%S'
 
+basic_formatter = logging.Formatter(BASIC_FORMAT)
 console_formatter = logging.Formatter(CONSOLE_FORMAT)
 fixed_formatter = logging.Formatter(FIXED_FORMAT, datefmt=DATEFMT)
 csv_formatter = logging.Formatter(CSV_FORMAT, datefmt=DATEFMT)
 json_formatter = logging.Formatter(JSON_FORMAT, datefmt=DATEFMT)
-basic_formatter = logging.Formatter(BASIC_FORMAT)
 
 
 class CustomEncoder(JSONEncoder):
