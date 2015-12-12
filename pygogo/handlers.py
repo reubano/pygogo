@@ -91,7 +91,7 @@ def email_hdlr(subject=None, **kwargs):
     sender = kwargs.get('sender', '%s@gmail.com' % environ.get('USER'))
     def_recipient = '%s@gmail.com' % environ.get('USER')
     recipients = kwargs.get('recipients', [def_recipient])
-    subject = kwargs.get('subject', "You've got mail.")
+    subject = kwargs.get('subject', "You've got mail")
     username = kwargs.get('username')
     password = kwargs.get('password')
 
