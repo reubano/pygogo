@@ -82,11 +82,11 @@ def main(script, tests, verbose=False, stop=True):
 
 if __name__ == '__main__':
     parent_dir = p.abspath(p.dirname(p.dirname(__file__)))
-    script = p.join(parent_dir, 'bin', 'pygogo')
+    script = p.join(parent_dir, 'bin', 'gogo')
 
     tests = [
         (['--help'], [''], True),
-        (['--version'], [''], 'pygogo v%s\n' % version),
+        (['--version'], [''], 'gogo v%s\n' % version),
         ([], ['hello world'], 'hello world\n'),
     ]
 

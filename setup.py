@@ -56,5 +56,5 @@ setup(
         'Operating System :: POSIX :: Linux',
     ],
     platforms=['MacOS X', 'Windows', 'Linux'],
-    scripts=[p.join('bin', 'pygogo')],
+    scripts=[p.join('bin', 'gogo')],
 )
