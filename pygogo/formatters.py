@@ -46,10 +46,13 @@ from __future__ import (
     unicode_literals)
 
 import logging
+import traceback
+import itertools as it
 
 from json import JSONEncoder
 
 BASIC_FORMAT = '%(message)s'
+BOM_FORMAT = u'\ufeff%(message)s'
 CONSOLE_FORMAT = '%(name)-12s: %(levelname)-8s %(message)s'
 FIXED_FORMAT = '%(asctime)s.%(msecs)d %(name)-12s %(levelname)-8s %(message)s'
 CSV_FORMAT = '%(asctime)s.%(msecs)d,%(name)s,%(levelname)s,"%(message)s"'
@@ -60,6 +63,7 @@ JSON_FORMAT = (
 DATEFMT = '%Y-%m-%d %H:%M:%S'
 
 basic_formatter = logging.Formatter(BASIC_FORMAT)
+bom_formatter = logging.Formatter(BOM_FORMAT)
 console_formatter = logging.Formatter(CONSOLE_FORMAT)
 fixed_formatter = logging.Formatter(FIXED_FORMAT, datefmt=DATEFMT)
 csv_formatter = logging.Formatter(CSV_FORMAT, datefmt=DATEFMT)
@@ -102,7 +106,10 @@ class CustomEncoder(JSONEncoder):
         elif isinstance(obj, unicode):
             encoded = obj.encode('unicode_escape').decode('ascii')
         else:
-            encoded = super(CustomEncoder, self).default(obj)
+            try:
+                encoded = super(CustomEncoder, self).default(obj)
+            except TypeError:
+                encoded = str(obj)
 
         return encoded
 
@@ -281,5 +288,34 @@ class StructuredFormatter(logging.Formatter):
         keys = filter(self.filterer, record.__dict__)
         extra.update({k: record.__dict__[k] for k in keys})
         return CustomEncoder().encode(extra)
+
+    def formatException(self, exc_info):
+        """Formats an exception as a dict string
+
+        Args:
+            exc_info (tuple[type, value, traceback]): Exception tuple as
+                returned by sys.exc_info()
+
+        Returns:
+            dict: The formatted exception
+
+        Examples:
+            >>> import sys
+            >>>
+            >>> formatter = StructuredFormatter(BASIC_FORMAT)
+            >>> try:
+            ...     1 / 0
+            ... except:
+            ...     formatter.formatException(sys.exc_info())
+            '{"function": "<module>", "text": "1 / 0", "value": \
+"division by zero", "filename": \
+"<doctest pygogo.formatters.StructuredFormatter.formatException[2]>", \
+"lineno": 2, "type": "exceptions.ZeroDivisionError"}'
+        """
+        keys = ['type', 'value', 'filename', 'lineno', 'function', 'text']
+        type_, value, tb = exc_info
+        stype = str(type_).replace('type', '').strip(" '<>")
+        values = it.chain([stype, value], *traceback.extract_tb(tb))
+        return CustomEncoder().encode(dict(zip(keys, values)))
 
 structured_formatter = StructuredFormatter(BASIC_FORMAT, datefmt=DATEFMT)
