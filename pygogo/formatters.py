@@ -100,7 +100,7 @@ class CustomEncoder(JSONEncoder):
         elif set(['next', 'union', '__iter__']).intersection(dir(obj)):
             encoded = list(obj)
         elif isinstance(obj, unicode):
-            return obj.encode('unicode_escape').decode('ascii')
+            encoded = obj.encode('unicode_escape').decode('ascii')
         else:
             encoded = super(CustomEncoder, self).default(obj)
 
