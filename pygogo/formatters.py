@@ -54,21 +54,13 @@ from .utils import CustomEncoder
 BASIC_FORMAT = '%(message)s'
 BOM_FORMAT = u'\ufeff%(message)s'
 CONSOLE_FORMAT = '%(name)-12s: %(levelname)-8s %(message)s'
-FIXED_FORMAT = '%(asctime)s.%(msecs)d %(name)-12s %(levelname)-8s %(message)s'
+FIXED_FORMAT = '%(asctime)s.%(msecs)-3d %(name)-12s %(levelname)-8s %(message)s'
 CSV_FORMAT = '%(asctime)s.%(msecs)d,%(name)s,%(levelname)s,"%(message)s"'
 JSON_FORMAT = (
     '{"time": "%(asctime)s.%(msecs)d", "name": "%(name)s", "level":'
     ' "%(levelname)s", "message": "%(message)s"}')
 
 DATEFMT = '%Y-%m-%d %H:%M:%S'
-
-basic_formatter = logging.Formatter(BASIC_FORMAT)
-bom_formatter = logging.Formatter(BOM_FORMAT)
-console_formatter = logging.Formatter(CONSOLE_FORMAT)
-fixed_formatter = logging.Formatter(FIXED_FORMAT, datefmt=DATEFMT)
-csv_formatter = logging.Formatter(CSV_FORMAT, datefmt=DATEFMT)
-json_formatter = logging.Formatter(JSON_FORMAT, datefmt=DATEFMT)
-
 
 class StructuredFormatter(logging.Formatter):
     """A logging formatter that creates a json string from log details
@@ -124,7 +116,7 @@ class StructuredFormatter(logging.Formatter):
             >>> msg = 'hello world'
             >>> args = (logging.INFO, '.', 0, msg, [], None)
             >>> record = logger.makeRecord('root', *args)
-            >>> formatter.format(record)  # doctest +ELLIPSIS
+            >>> formatter.format(record)
             '{"message": "hello world", "level": "INFO", "name": \
 "root", "time": "2015"}'
         """
@@ -168,4 +160,10 @@ class StructuredFormatter(logging.Formatter):
         values = it.chain([stype, value], *traceback.extract_tb(tb))
         return CustomEncoder().encode(dict(zip(keys, values)))
 
+basic_formatter = logging.Formatter(BASIC_FORMAT)
+bom_formatter = logging.Formatter(BOM_FORMAT)
+console_formatter = logging.Formatter(CONSOLE_FORMAT)
+fixed_formatter = logging.Formatter(FIXED_FORMAT, datefmt=DATEFMT)
+csv_formatter = logging.Formatter(CSV_FORMAT, datefmt=DATEFMT)
+json_formatter = logging.Formatter(JSON_FORMAT, datefmt=DATEFMT)
 structured_formatter = StructuredFormatter(BASIC_FORMAT, datefmt=DATEFMT)
