@@ -105,7 +105,8 @@ class StructuredFormatter(logging.Formatter):
             <pygogo.formatters.StructuredFormatter object at 0x...>
         """
         empty_record = logging.makeLogRecord({})
-        self.filterer = lambda k: k not in empty_record.__dict__
+        filterer = lambda k: k not in empty_record.__dict__ and k != 'asctime'
+        self.filterer = filterer
         super(StructuredFormatter, self).__init__(*args, **kwargs)
 
     def format(self, record):
@@ -135,6 +136,7 @@ class StructuredFormatter(logging.Formatter):
 
         keys = filter(self.filterer, record.__dict__)
         extra.update({k: record.__dict__[k] for k in keys})
+        extra.pop('asctime', None)
         return CustomEncoder().encode(extra)
 
     def formatException(self, exc_info):
