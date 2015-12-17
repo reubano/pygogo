@@ -12,9 +12,9 @@ from __future__ import (
     absolute_import, division, print_function, with_statement,
     unicode_literals)
 
-from pygogo.logger import Logger
+import pygogo as gogo
 
-logger = Logger(__name__).logger
+module_logger = gogo.Gogo(__name__).logger
 initialized = False
 
 
@@ -22,11 +22,11 @@ def setup_package():
     """database context creation"""
     global initialized
     initialized = True
-    logger.debug('Package Setup\n')
+    module_logger.debug('Package Setup\n')
 
 
 def teardown_package():
     """database context removal"""
     global initialized
     initialized = False
-    logger.debug('Package Teardown\n')
+    module_logger.debug('Package Teardown\n')

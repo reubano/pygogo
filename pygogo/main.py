@@ -10,17 +10,15 @@ from __future__ import (
 
 import sys
 import itertools as it
+import pygogo as gogo
 
 from os import getcwd, path as p
 from argparse import RawTextHelpFormatter, ArgumentParser
 
-from pygogo import __version__ as version, handlers, formatters
-from pygogo.logger import Logger
-
-hdlrs_full = filter(lambda h: h.endswith('hdlr'), dir(handlers))
+hdlrs_full = filter(lambda h: h.endswith('hdlr'), dir(gogo.handlers))
 hdlrs = [h[:-5] for h in hdlrs_full]
 levels = ['critical', 'error', 'warning', 'info', 'debug']
-frmtrs_full = filter(lambda h: h.endswith('formatter'), dir(formatters))
+frmtrs_full = filter(lambda h: h.endswith('formatter'), dir(gogo.formatters))
 formats = [f[:-10] for f in frmtrs_full]
 curdir = p.basename(getcwd())
 
@@ -135,10 +133,10 @@ args = parser.parse_args()
 
 def run():
     level = 'DEBUG' if args.verbose else 'INFO'
-    pygogo_logger = Logger(__name__, low_level=level).logger
+    gogo_logger = gogo.Gogo(__name__, low_level=level).logger
 
     if args.version:
-        pygogo_logger.info('gogo v%s' % version)
+        gogo_logger.info('gogo v%s' % gogo.__version__)
         exit(0)
 
     counted = set(['get', 'tcp'])
@@ -155,10 +153,10 @@ def run():
     low_counted_args = [(k, v > 1) for k, v in counted_args]
     low_kwargs = dict(it.chain(low_appended_args, low_counted_args))
 
-    high_hdlr = getattr(handlers, '%s_hdlr' % args.high_hdlr)
-    low_hdlr = getattr(handlers, '%s_hdlr' % args.low_hdlr)
-    high_format = getattr(formatters, '%s_formatter' % args.high_format)
-    low_format = getattr(formatters, '%s_formatter' % args.low_format)
+    high_hdlr = getattr(gogo.handlers, '%s_hdlr' % args.high_hdlr)
+    low_hdlr = getattr(gogo.handlers, '%s_hdlr' % args.low_hdlr)
+    high_format = getattr(gogo.formatters, '%s_formatter' % args.high_format)
+    low_format = getattr(gogo.formatters, '%s_formatter' % args.low_format)
 
     nkwargs = {
         'high_level': args.high_level.upper(),
@@ -169,7 +167,7 @@ def run():
         'high_hdlr': high_hdlr(**high_kwargs),
         'low_hdlr': low_hdlr(**low_kwargs)}
 
-    logger = Logger(args.name, **nkwargs).logger
+    logger = gogo.Gogo(args.name, **nkwargs).logger
 
     try:
         message = args.message.read()

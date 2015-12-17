@@ -14,6 +14,9 @@ Examples:
         >>> logger.addHandler(stdout_hdlr())
         >>> logger.info('hello world')
         hello world
+
+Attributes:
+    ENCODING (str): The module encoding
 """
 
 from __future__ import (
@@ -26,7 +29,8 @@ import socket
 
 from os import environ
 from logging import handlers as hdlrs
-from pygogo import ENCODING
+
+ENCODING = 'utf-8'
 
 
 def stdout_hdlr(**kwargs):

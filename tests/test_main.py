@@ -13,20 +13,20 @@ from __future__ import (
     unicode_literals)
 
 import nose.tools as nt
+import logging
 import sys
+import pygogo as gogo
 
 from StringIO import StringIO
-from pygogo import handlers
-from pygogo.logger import Logger
 
-logger = Logger(__name__).logger
+module_logger = gogo.Gogo(__name__).logger
 
 
 def setup_module():
     """site initialization"""
     global initialized
     initialized = True
-    logger.debug('Main module setup\n')
+    module_logger.debug('Main module setup\n')
 
 
 class TestMain:
@@ -37,16 +37,16 @@ class TestMain:
     def setUp(self):
         nt.assert_false(self.cls_initialized)
         self.cls_initialized = True
-        logger.debug('TestMain class setup\n')
+        module_logger.debug('TestMain class setup\n')
 
     def tearDown(self):
         nt.ok_(self.cls_initialized)
-        logger.debug('TestMain class teardown\n')
+        module_logger.debug('TestMain class teardown\n')
 
     def test_handlers(self):
         f = StringIO()
-        hdlr = handlers.fileobj_hdlr(f)
-        lggr = Logger('test_handlers', high_hdlr=hdlr).logger
+        hdlr = gogo.handlers.fileobj_hdlr(f)
+        lggr = gogo.Gogo('test_handlers', high_hdlr=hdlr).logger
 
         msg1 = 'stdout hdlr only'
         lggr.debug(msg1)
