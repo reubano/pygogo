@@ -38,6 +38,7 @@ from __future__ import (
 import logging
 import hashlib
 
+from copy import copy
 from . import formatters, handlers, utils
 
 __version__ = '0.3.0'
@@ -57,6 +58,7 @@ class Gogo(object):
     http://stackoverflow.com/a/28743317/408556
 
     Attributes:
+        loggers (set[str]): Set of existing loggers
         name (string): The logger name.
         high_level (string): The min level to log to high_hdlr.
         low_level (string): The min level to log to low_hdlr.
@@ -64,6 +66,8 @@ class Gogo(object):
             low_level <= messages < high_level -> low_hdlr
             high_level <= messages             -> high_hdlr
     """
+    loggers = set([])
+
     def __init__(self, name='root', high_level=None, low_level=None, **kwargs):
         """Initialization method.
 
@@ -112,24 +116,26 @@ class Gogo(object):
         elif not self.high_level >= self.low_level:
             raise ValueError('high_level must be >= low_level')
 
-        high_hdlr = handlers.stderr_hdlr()
-        low_hdlr = handlers.stdout_hdlr()
-        formatter = formatters.basic_formatter
-
         self.name = name
-        self.high_hdlr = kwargs.get('high_hdlr', high_hdlr)
-        self.low_hdlr = kwargs.get('low_hdlr', low_hdlr)
-        self.high_hdlr.setLevel(self.high_level)
-        self.low_hdlr.setLevel(self.low_level)
-        self.high_formatter = kwargs.get('high_formatter', formatter)
-        self.low_formatter = kwargs.get('low_formatter', formatter)
+        self.high_hdlr = kwargs.get('high_hdlr')
+        self.low_hdlr = kwargs.get('low_hdlr')
+        self.high_formatter = kwargs.get('high_formatter')
+        self.low_formatter = kwargs.get('low_formatter')
+        self.monolog = kwargs.get('monolog')
 
-        if kwargs.get('monolog'):
+    def update_hdlr(self, hdlr, level, formatter=None, monolog=False):
+        formatter = formatter or formatters.basic_formatter
+        hdlr.setLevel(level)
+
+        if monolog:
             log_filter = utils.LogFilter(self.high_level)
-            self.low_hdlr.addFilter(log_filter)
+            hdlr.addFilter(log_filter)
 
-        self.high_hdlr.setFormatter(self.high_formatter)
-        self.low_hdlr.setFormatter(self.low_formatter)
+        hdlr.setFormatter(formatter)
+
+    def update_logger(self, logger, level, *hdlrs):
+        logger.setLevel(level)
+        map(logger.addHandler, hdlrs)
 
     @property
     def logger(self):
@@ -204,16 +210,27 @@ class Gogo(object):
             >>> going.get_logger('new').info('from new')
             from new
         """
-        logger = logging.getLogger('%s.%s' % (self.name, name))
+        lggr_name = '%s.%s' % (self.name, name)
+        logger = logging.getLogger(lggr_name)
 
-        if kwargs:
-            structured_filter = utils.get_structured_filter(**kwargs)
-            self.low_hdlr.addFilter(structured_filter)
-            self.high_hdlr.addFilter(structured_filter)
+        if not lggr_name in self.loggers:
+            self.loggers.add(lggr_name)
 
-        logger.setLevel(self.low_level)
-        logger.addHandler(self.low_hdlr)
-        logger.addHandler(self.high_hdlr)
+            # TODO: copy doesn't really work as expected, i.e., the reference
+            # still changes. Find a better alternative
+            high_hdlr = copy(self.high_hdlr) if self.high_hdlr else handlers.stderr_hdlr()
+            low_hdlr = copy(self.low_hdlr) if self.low_hdlr else handlers.stdout_hdlr()
+
+            self.update_hdlr(high_hdlr, self.high_level, formatter=self.high_formatter)
+            self.update_hdlr(low_hdlr, self.low_level, formatter=self.low_formatter, monolog=self.monolog)
+
+            if kwargs:
+                structured_filter = utils.get_structured_filter(**kwargs)
+                low_hdlr.addFilter(structured_filter)
+                high_hdlr.addFilter(structured_filter)
+
+            self.update_logger(logger, self.low_level, low_hdlr, high_hdlr)
+
         return logger
 
     def get_structured_logger(self, name=None, **kwargs):
@@ -235,12 +252,19 @@ class Gogo(object):
         """
         values = frozenset(kwargs.iteritems())
         name = name or hashlib.md5(str(values)).hexdigest()
-        logger = logging.getLogger('%s.structured.%s' % (self.name, name))
-        logger.setLevel(self.low_level)
+        lggr_name = '%s.structured.%s' % (self.name, name)
+        logger = logging.getLogger(lggr_name)
 
-        self.low_hdlr.setFormatter(formatters.basic_formatter)
-        self.high_hdlr.setFormatter(formatters.basic_formatter)
-        logger.addHandler(self.low_hdlr)
-        logger.addHandler(self.high_hdlr)
-        structured_logger = utils.StructuredAdapter(logger, kwargs)
-        return structured_logger
+        if not lggr_name in self.loggers:
+            self.loggers.add(lggr_name)
+
+            # TODO: copy doesn't really work as expected, i.e., the reference
+            # still changes. Find a better alternative
+            high_hdlr = copy(self.high_hdlr) if self.high_hdlr else handlers.stderr_hdlr()
+            low_hdlr = copy(self.low_hdlr) if self.low_hdlr else handlers.stdout_hdlr()
+
+            self.update_hdlr(high_hdlr, self.high_level, formatter=formatters.basic_formatter)
+            self.update_hdlr(low_hdlr, self.low_level, formatter=formatters.basic_formatter, monolog=self.monolog)
+            self.update_logger(logger, self.low_level, low_hdlr, high_hdlr)
+
+        return utils.StructuredAdapter(logger, kwargs)

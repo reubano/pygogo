@@ -123,7 +123,7 @@ Examples:
         >>> going = gogo.Gogo('a', low_formatter=formatter)
         >>> a1 = going.get_logger('b.c', ip='123.231.231.123', user='fred')
         >>>
-        # >>> a2 = going.get_logger('e.f', ip='192.168.0.1', user='sheila')
+        >>> a2 = going.get_logger('e.f', ip='192.168.0.1', user='sheila')
 
         >>> a1.debug('A debug message')
         2015 a.b.c DEBUG    IP: 123.231.231.123 User: fred     A debug message
@@ -132,12 +132,12 @@ Examples:
 
         >>> for level in [getattr(logging, l) for l in levels]:
         ...    name = logging.getLevelName(level)
-        ...    a1.log(level, 'A %s msg', name)
-        2015 a.b.c DEBUG    IP: 123.231.231.123 User: fred     A DEBUG msg
-        2015 a.b.c INFO     IP: 123.231.231.123 User: fred     A INFO msg
-        2015 a.b.c WARNING  IP: 123.231.231.123 User: fred     A WARNING msg
-        2015 a.b.c ERROR    IP: 123.231.231.123 User: fred     A ERROR msg
-        2015 a.b.c CRITICAL IP: 123.231.231.123 User: fred     A CRITICAL msg
+        ...    a2.log(level, 'A %s msg', name)
+        2015 a.e.f DEBUG    IP: 192.168.0.1     User: sheila   A DEBUG msg
+        2015 a.e.f INFO     IP: 192.168.0.1     User: sheila   A INFO msg
+        2015 a.e.f WARNING  IP: 192.168.0.1     User: sheila   A WARNING msg
+        2015 a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
+        2015 a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 """
 
 from __future__ import (
