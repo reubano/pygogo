@@ -213,16 +213,27 @@ class Gogo(object):
         lggr_name = '%s.%s' % (self.name, name)
         logger = logging.getLogger(lggr_name)
 
-        if not lggr_name in self.loggers:
+        if lggr_name not in self.loggers:
             self.loggers.add(lggr_name)
 
             # TODO: copy doesn't really work as expected, i.e., the reference
             # still changes. Find a better alternative
-            high_hdlr = copy(self.high_hdlr) if self.high_hdlr else handlers.stderr_hdlr()
-            low_hdlr = copy(self.low_hdlr) if self.low_hdlr else handlers.stdout_hdlr()
+            if self.high_hdlr:
+                high_hdlr = copy(self.high_hdlr)
+            else:
+                high_hdlr = handlers.stderr_hdlr()
 
-            self.update_hdlr(high_hdlr, self.high_level, formatter=self.high_formatter)
-            self.update_hdlr(low_hdlr, self.low_level, formatter=self.low_formatter, monolog=self.monolog)
+            if self.low_hdlr:
+                low_hdlr = copy(self.low_hdlr)
+            else:
+                low_hdlr = handlers.stdout_hdlr()
+
+            self.update_hdlr(
+                high_hdlr, self.high_level, formatter=self.high_formatter)
+
+            self.update_hdlr(
+                low_hdlr, self.low_level, formatter=self.low_formatter,
+                monolog=self.monolog)
 
             if kwargs:
                 structured_filter = utils.get_structured_filter(**kwargs)
@@ -255,16 +266,29 @@ class Gogo(object):
         lggr_name = '%s.structured.%s' % (self.name, name)
         logger = logging.getLogger(lggr_name)
 
-        if not lggr_name in self.loggers:
+        if lggr_name not in self.loggers:
             self.loggers.add(lggr_name)
 
             # TODO: copy doesn't really work as expected, i.e., the reference
             # still changes. Find a better alternative
-            high_hdlr = copy(self.high_hdlr) if self.high_hdlr else handlers.stderr_hdlr()
-            low_hdlr = copy(self.low_hdlr) if self.low_hdlr else handlers.stdout_hdlr()
+            if self.high_hdlr:
+                high_hdlr = copy(self.high_hdlr)
+            else:
+                high_hdlr = handlers.stderr_hdlr()
 
-            self.update_hdlr(high_hdlr, self.high_level, formatter=formatters.basic_formatter)
-            self.update_hdlr(low_hdlr, self.low_level, formatter=formatters.basic_formatter, monolog=self.monolog)
+            if self.low_hdlr:
+                low_hdlr = copy(self.low_hdlr)
+            else:
+                low_hdlr = handlers.stdout_hdlr()
+
+            self.update_hdlr(
+                high_hdlr, self.high_level,
+                formatter=formatters.basic_formatter)
+
+            self.update_hdlr(
+                low_hdlr, self.low_level, formatter=formatters.basic_formatter,
+                monolog=self.monolog)
+
             self.update_logger(logger, self.low_level, low_hdlr, high_hdlr)
 
         return utils.StructuredAdapter(logger, kwargs)
