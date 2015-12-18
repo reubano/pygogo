@@ -13,39 +13,29 @@ Examples:
         >>> import sys
         >>> sys.stderr = sys.stdout
 
-    A reimplementation of `Logging to multiple destinations <https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations>`_.::
+
+    A reimplementation of `Using LoggerAdapters to impart contextual information <https://docs.python.org/2/howto/logging-cookbook.html#using-loggeradapters-to-impart-contextual-information>`_.::
 
         >>> import pygogo as gogo
 
-        >>> going = gogo.Gogo(
-        ...     'examples.one',
-        ...     low_hdlr=gogo.handlers.file_hdlr('example1.log', mode='w'),
-        ...     low_formatter=gogo.formatters.fixed_formatter,
-        ...     high_level='info',
-        ...     high_formatter=gogo.formatters.console_formatter)
+        >>> logger = gogo.Gogo(__name__).get_structured_logger(connid='1234')
+        >>> logger.info('log message')
+        {"message": "log message", "connid": "1234"}
 
-        >>> logger1 = going.get_logger('area1')
-        >>> logger2 = going.get_logger('area2')
-        >>> root = going.logger
 
-        >>> root.info('Jackdaws love my big sphinx.')
-        examples.one.base: INFO     Jackdaws love my big sphinx.
-        >>> logger1.debug('Quick zephyrs blow, daft Jim.')
-        >>> logger1.info('How daft jumping zebras vex.')
-        examples.one.area1: INFO     How daft jumping zebras vex.
-        >>> logger2.warning('Jail zesty vixen who grabbed pay.')
-        examples.one.area2: WARNING  Jail zesty vixen who grabbed pay.
-        >>> logger2.error('The five boxing wizards jump.')
-        examples.one.area2: ERROR    The five boxing wizards jump.
+    A reimplementation of `Implementing structured logging <https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging>`_.::
 
-        >>> with open('example1.log') as f:
-        ...     [line.strip() for line in f]  # doctest: +NORMALIZE_WHITESPACE
-        ...     # doctest: +ELLIPSIS
-        ['2015... examples.one.base INFO     Jackdaws love my big sphinx.',
-        '2015... examples.one.area1 DEBUG    Quick zephyrs blow, daft Jim.',
-        '2015... examples.one.area1 INFO     How daft jumping zebras vex.',
-        '2015... examples.one.area2 WARNING  Jail zesty vixen who grabbed pay.',
-        '2015... examples.one.area2 ERROR    The five boxing wizards jump.']
+        >>> import pygogo as gogo
+
+        >>> formatter = gogo.formatters.structured_formatter
+        >>> kwargs = {'low_level': 'info', 'low_formatter': formatter}
+        >>> logger = gogo.Gogo('examples.three', **kwargs).logger
+        >>> extra = {'set_value': set([1, 2, 3]), 'snowman': '☃'}
+        >>> logger.info('log message', extra=extra)  # doctest: +ELLIPSIS
+        ... # doctest: +NORMALIZE_WHITESPACE
+        {"snowman": "\\u2603", "name": "examples.three.base", "level": "INFO",
+        "message": "log message", "time": "2015...", "msecs": ...,
+        "set_value": [1, 2, 3]}
 
 
     A reimplementation of `Multiple handlers and formatters <https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters>`_.::
@@ -80,28 +70,39 @@ Examples:
         '2015 - examples.two.base - CRITICAL - critical message']
 
 
-    A reimplementation of `Using LoggerAdapters to impart contextual information <https://docs.python.org/2/howto/logging-cookbook.html#using-loggeradapters-to-impart-contextual-information>`_.::
+    A reimplementation of `Logging to multiple destinations <https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations>`_.::
 
         >>> import pygogo as gogo
 
-        >>> logger = gogo.Gogo(__name__).get_structured_logger(connid='1234')
-        >>> logger.info('log message')
-        {"message": "log message", "connid": "1234"}
+        >>> going = gogo.Gogo(
+        ...     'examples.one',
+        ...     low_hdlr=gogo.handlers.file_hdlr('example1.log', mode='w'),
+        ...     low_formatter=gogo.formatters.fixed_formatter,
+        ...     high_level='info',
+        ...     high_formatter=gogo.formatters.console_formatter)
 
+        >>> logger1 = going.get_logger('area1')
+        >>> logger2 = going.get_logger('area2')
+        >>> root = going.logger
 
-    A reimplementation of `Implementing structured logging <https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging>`_.::
+        >>> root.info('Jackdaws love my big sphinx.')
+        examples.one.base: INFO     Jackdaws love my big sphinx.
+        >>> logger1.debug('Quick zephyrs blow, daft Jim.')
+        >>> logger1.info('How daft jumping zebras vex.')
+        examples.one.area1: INFO     How daft jumping zebras vex.
+        >>> logger2.warning('Jail zesty vixen who grabbed pay.')
+        examples.one.area2: WARNING  Jail zesty vixen who grabbed pay.
+        >>> logger2.error('The five boxing wizards jump.')
+        examples.one.area2: ERROR    The five boxing wizards jump.
 
-        >>> import pygogo as gogo
-
-        >>> formatter = gogo.formatters.structured_formatter
-        >>> kwargs = {'low_level': 'info', 'low_formatter': formatter}
-        >>> logger = gogo.Gogo('examples.three', **kwargs).logger
-        >>> extra = {'set_value': set([1, 2, 3]), 'snowman': '☃'}
-        >>> logger.info('log message', extra=extra)  # doctest: +ELLIPSIS
-        ... # doctest: +NORMALIZE_WHITESPACE
-        {"snowman": "\\u2603", "name": "examples.three.base", "level": "INFO",
-        "message": "log message", "time": "2015...", "msecs": ...,
-        "set_value": [1, 2, 3]}
+        >>> with open('example1.log') as f:
+        ...     [line.strip() for line in f]  # doctest: +NORMALIZE_WHITESPACE
+        ...     # doctest: +ELLIPSIS
+        ['2015... examples.one.base INFO     Jackdaws love my big sphinx.',
+        '2015... examples.one.area1 DEBUG    Quick zephyrs blow, daft Jim.',
+        '2015... examples.one.area1 INFO     How daft jumping zebras vex.',
+        '2015... examples.one.area2 WARNING  Jail zesty vixen who grabbed pay.',
+        '2015... examples.one.area2 ERROR    The five boxing wizards jump.']
 
 
     Reset stderr so logs aren't printed twice
