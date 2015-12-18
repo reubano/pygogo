@@ -169,8 +169,9 @@ class Gogo(object):
             >>> formatter = formatters.json_formatter
             >>> json_logger = Gogo('json', low_formatter=formatter).logger
             >>> json_logger.debug('hello')  # doctest: +ELLIPSIS
-            {"time": "20...", "name": "json.base", "level": "DEBUG", "message": \
-"hello"}
+            ... # doctest: +NORMALIZE_WHITESPACE
+            {"time": "20...", "name": "json.base", "level": "DEBUG", "message":
+            "hello"}
             >>>
             >>> formatter = formatters.csv_formatter
             >>> csv_logger = Gogo('csv', low_formatter=formatter).logger

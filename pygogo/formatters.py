@@ -29,8 +29,9 @@ Examples:
         >>> extra = {'key': 'value'}
         >>> logger.addHandler(hdlr)
         >>> logger.info('hello world', extra=extra)  # doctest: +ELLIPSIS
-        {"message": "hello world", "level": "INFO", "name": \
-"structured_logger", "key": "value", "time": "20..."}
+        ... # doctest: +NORMALIZE_WHITESPACE
+        {"name": "structured_logger", "key": "value", "level": "INFO",
+        "message": "hello world", "time": "20...", "msecs": ...}
 
 Attributes:
     BASIC_FORMAT (str): A basic format
@@ -62,6 +63,7 @@ JSON_FORMAT = (
 
 DATEFMT = '%Y-%m-%d %H:%M:%S'
 
+
 class StructuredFormatter(logging.Formatter):
     """A logging formatter that creates a json string from log details
 
@@ -76,8 +78,9 @@ class StructuredFormatter(logging.Formatter):
         >>> hdlr.setFormatter(formatter)
         >>> logger.addHandler(hdlr)
         >>> logger.info('hello world')  # doctest: +ELLIPSIS
-        {"message": "hello world", "level": "INFO", "name": \
-"root", "time": "..."}
+        ... # doctest: +NORMALIZE_WHITESPACE
+        {"name": "root", "level": "INFO", "message": "hello world", "time":
+        "20...", "msecs": ...}
     """
     def __init__(self, *args, **kwargs):
         """Initialization method.
@@ -116,13 +119,15 @@ class StructuredFormatter(logging.Formatter):
             >>> msg = 'hello world'
             >>> args = (logging.INFO, '.', 0, msg, [], None)
             >>> record = logger.makeRecord('root', *args)
-            >>> formatter.format(record)
-            '{"message": "hello world", "level": "INFO", "name": \
-"root", "time": "2015"}'
+            >>> formatter.format(record)  # doctest: +ELLIPSIS
+            ... # doctest: +NORMALIZE_WHITESPACE
+            '{"message": "hello world", "level": "INFO", "name": "root",
+            "msecs": ..., "time": "2015"}'
         """
         extra = {
             'message': record.getMessage(),
             'time': self.formatTime(record, self.datefmt),
+            'msecs': record.msecs,
             'name': record.name,
             'level': record.levelname}
 
