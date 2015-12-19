@@ -94,6 +94,10 @@ class Gogo(object):
             low_formatter (obj): The low pass log handler (a
                 `logging.handlers` instance, default: stdout StreamHandler).
 
+            verbose (bool): If False, set low level to `info`, if True, set low
+                level to `debug`, overrides `low_level` if specified
+                (default: None).
+
             monolog (bool): Log high level events only to high pass handler (
                 default: False)
 
@@ -104,8 +108,16 @@ class Gogo(object):
             >>> Gogo('name') # doctest: +ELLIPSIS
             <pygogo.Gogo object at 0x...>
         """
+        verbose = kwargs.get('verbose')
         high_level = high_level or 'warning'
-        low_level = low_level or 'debug'
+
+        if verbose is None:
+            low_level = low_level or 'debug'
+        elif verbose:
+            low_level = 'debug'
+        else:
+            low_level = 'info'
+
         self.high_level = getattr(logging, high_level.upper(), None)
         self.low_level = getattr(logging, low_level.upper(), None)
 

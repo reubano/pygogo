@@ -133,8 +133,7 @@ args = parser.parse_args()
 
 
 def run():
-    level = 'DEBUG' if args.verbose else 'INFO'
-    gogo_logger = gogo.Gogo(__name__, low_level=level).logger
+    gogo_logger = gogo.Gogo(__name__, verbose=args.verbose).logger
 
     if args.version:
         gogo_logger.info('gogo v%s' % gogo.__version__)
@@ -160,6 +159,7 @@ def run():
     low_format = getattr(gogo.formatters, '%s_formatter' % args.low_format)
 
     nkwargs = {
+        'verbose': args.verbose,
         'high_level': args.high_level.upper(),
         'low_level': args.low_level.upper(),
         'high_formatter': high_format,

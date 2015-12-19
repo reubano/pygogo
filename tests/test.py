@@ -40,8 +40,8 @@ def main(script, tests, verbose=False, stop=True):
         opts, arguments, expected = test
         joined_opts = ' '.join(opts)
         joined_args = '"%s"' % '" "'.join(arguments)
-        command = "%s %s%s" % (script, joined_opts, joined_args)
-        short_command = "%s %s%s" % (short_script, joined_opts, joined_args)
+        command = "%s %s %s" % (script, joined_opts, joined_args)
+        short_command = "%s %s %s" % (short_script, joined_opts, joined_args)
         result = env.run(command, cwd=p.abspath(p.dirname(p.dirname(__file__))))
         output = result.stdout
 
@@ -86,6 +86,8 @@ if __name__ == '__main__':
         (['--help'], [''], True),
         (['--version'], [''], 'gogo v%s\n' % gogo.__version__),
         ([], ['hello world'], 'hello world\n'),
+        (['-l debug'], ['hello world'], ''),
+        (['-Vl debug'], ['hello world'], 'hello world\n'),
     ]
 
     main(script, tests)
