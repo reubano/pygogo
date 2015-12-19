@@ -154,11 +154,11 @@ def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
     return hdlrs.SysLogHandler(address, socktype=socktype)
 
 
-def buffered_hdlr(target, capacity=4096, level='error', **kwargs):
+def buffered_hdlr(target=None, capacity=4096, level='error', **kwargs):
     """A memory buffered log handler
 
     Args:
-        target (obj): The target logger handler.
+        target (obj): The target logger handler (default stdout).
         capacity (int): The buffer size (default 4096).
         level (string): The min event level required to flush buffer
             (default: error).
@@ -167,10 +167,10 @@ def buffered_hdlr(target, capacity=4096, level='error', **kwargs):
         New instance of :class:`logging.handlers.MemoryHandler`
 
     Examples:
-        >>> hdlr = logging.StreamHandler(sys.stdout)
-        >>> buffered_hdlr(hdlr)  # doctest: +ELLIPSIS
+        >>> buffered_hdlr()  # doctest: +ELLIPSIS
         <logging.handlers.MemoryHandler object at 0x...>
     """
+    target = target or logging.StreamHandler(sys.stdout)
     return hdlrs.MemoryHandler(capacity, level.upper(), target)
 
 
