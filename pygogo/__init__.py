@@ -83,16 +83,16 @@ class Gogo(object):
 
         Kwargs:
             high_hdlr (obj): The high pass log handler (a
-                `logging.handlers` instance, default: stderr StreamHandler)
+                `logging.handlers` instance, default: `stderr` StreamHandler)
 
             low_hdlr (obj): The low pass log handler (a
-                `logging.handlers` instance, default: stdout StreamHandler).
+                `logging.handlers` instance, default: `stdout` StreamHandler).
 
             high_formatter (obj): The high pass log handler (a
-                `logging.handlers` instance, default: stderr StreamHandler)
+                `logging.handlers` instance, default: `stderr` StreamHandler)
 
             low_formatter (obj): The low pass log handler (a
-                `logging.handlers` instance, default: stdout StreamHandler).
+                `logging.handlers` instance, default: `stdout` StreamHandler).
 
             verbose (bool): If False, set low level to `info`, if True, set low
                 level to `debug`, overrides `low_level` if specified
