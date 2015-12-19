@@ -21,14 +21,15 @@ levels = ['critical', 'error', 'warning', 'info', 'debug']
 frmtrs_full = filter(lambda h: h.endswith('formatter'), dir(gogo.formatters))
 formats = [f[:-10] for f in frmtrs_full]
 curdir = p.basename(getcwd())
+logfile = '%s.log' % curdir
 
 parser = ArgumentParser(
-    description='description: Command description', prog='pygogo',
+    description='description: Logs a given message', prog='gogo',
     usage='%(prog)s [options] <message>', formatter_class=RawTextHelpFormatter)
 
 parser.add_argument(
     dest='message', nargs='?', default=sys.stdin,
-    help='The message to log (defaults to reading from stdin).')
+    help='The message to log (default: reads from stdin).')
 
 parser.add_argument(
     '-l', '--level', metavar='LEVEL', choices=levels, default='info',
@@ -70,9 +71,9 @@ parser.add_argument(
             ', '.join(hdlrs[:4]), ', '.join(hdlrs[4:]))))
 
 parser.add_argument(
-    '-F', '--high-format', metavar='FORMAT', choices=formats, default='json',
+    '-F', '--high-format', metavar='FORMAT', choices=formats, default='basic',
     help=(
-        "High pass handler log format (default: json)."
+        "High pass handler log format (default: basic)."
         "\nMust be one of: %s,\n%s.\n\n" % (
             ', '.join(formats[:4]), ', '.join(formats[4:]))))
 
@@ -85,11 +86,13 @@ parser.add_argument(
 
 parser.add_argument(
     '-m', '--monolog', action='store_true', default=False,
-    help="Log high level events only to high pass handler.")
+    help="Log high level events only to high pass handler.\n\n")
 
 parser.add_argument(
-    '-f', '--filename', action='append', default=['gogo.log'],
-    help="The filename to log to.\nRequired for the follow handlers: file.\n\n")
+    '-f', '--filename', action='append', default=[logfile],
+    help=(
+        "The filename to log to  (default: %s).\nUsed in the following "
+        "handlers: file.\n\n") % logfile)
 
 parser.add_argument(
     '-s', '--subject', default=["You've got mail"], action='append',
@@ -99,11 +102,13 @@ parser.add_argument(
 
 parser.add_argument(
     '-u', '--url', action='append', default=[''],
-    help="The log url. Required for the follow handlers: webhook.")
+    help="The log url. Required for the following handlers:\nwebhook.\n\n")
 
 parser.add_argument(
     '-H', '--host', default=['localhost'], action='append',
-    help="The host.\nUsed in the follow handlers: socket and syslog.\n\n")
+    help=(
+        "The host (default: localhost).\nUsed in the following handlers: "
+        "socket and syslog.\n\n"))
 
 parser.add_argument(
     '-p', '--port', metavar='NUM', type=int, action='append', default=[''],
@@ -168,7 +173,7 @@ def run():
         'high_hdlr': high_hdlr(**high_kwargs),
         'low_hdlr': low_hdlr(**low_kwargs)}
 
-    logger = gogo.Gogo(args.name, **nkwargs).logger
+    logger = gogo.Gogo(args.name, **nkwargs).get_logger('runner')
 
     try:
         message = args.message.read()

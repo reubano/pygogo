@@ -15,6 +15,7 @@ Examples:
         hello world
 
     intermediate usage::
+
         >>> formatter = logging.Formatter('IP: %(ip)s - %(message)s')
         >>> kwargs = {'low_formatter': formatter}
         >>> logger = Gogo('intermediate', **kwargs).get_logger(ip='1.1.1.1')
