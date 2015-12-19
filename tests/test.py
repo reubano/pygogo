@@ -14,15 +14,13 @@ from __future__ import (
     unicode_literals)
 
 import sys
+import pygogo as gogo
 
 from difflib import unified_diff
 from os import path as p
 from StringIO import StringIO
 from scripttest import TestFileEnvironment
 from timeit import default_timer as timer
-
-from pygogo import __version__ as version
-from pygogo.logger import Logger
 
 
 def main(script, tests, verbose=False, stop=True):
@@ -31,7 +29,7 @@ def main(script, tests, verbose=False, stop=True):
     """
     failures = 0
     level = 'DEBUG' if verbose else 'INFO'
-    logger = Logger(__name__, low_level=level).logger
+    logger = gogo.Gogo(__name__, low_level=level).logger
     short_script = p.basename(script)
     env = TestFileEnvironment('.scripttest')
 
@@ -42,8 +40,8 @@ def main(script, tests, verbose=False, stop=True):
         opts, arguments, expected = test
         joined_opts = ' '.join(opts)
         joined_args = '"%s"' % '" "'.join(arguments)
-        command = "%s %s%s" % (script, joined_opts, joined_args)
-        short_command = "%s %s%s" % (short_script, joined_opts, joined_args)
+        command = "%s %s %s" % (script, joined_opts, joined_args)
+        short_command = "%s %s %s" % (short_script, joined_opts, joined_args)
         result = env.run(command, cwd=p.abspath(p.dirname(p.dirname(__file__))))
         output = result.stdout
 
@@ -82,12 +80,14 @@ def main(script, tests, verbose=False, stop=True):
 
 if __name__ == '__main__':
     parent_dir = p.abspath(p.dirname(p.dirname(__file__)))
-    script = p.join(parent_dir, 'bin', 'pygogo')
+    script = p.join(parent_dir, 'bin', 'gogo')
 
     tests = [
         (['--help'], [''], True),
-        (['--version'], [''], 'pygogo v%s\n' % version),
+        (['--version'], [''], 'gogo v%s\n' % gogo.__version__),
         ([], ['hello world'], 'hello world\n'),
+        (['-l debug'], ['hello world'], ''),
+        (['-Vl debug'], ['hello world'], 'hello world\n'),
     ]
 
     main(script, tests)
