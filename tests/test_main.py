@@ -124,6 +124,32 @@ class TestMain(BaseTest):
 
         nt.assert_equal(sys.stdout.getvalue().strip(), logger2_msg.strip())
 
+    def test_debugging(self):
+        console_msg = (
+            'This should log\nSo should this\nAnd this too\nThis should log '
+            'also\nSo should this\nAnd this too\nBut this one should\nAnd this'
+            ' one too')
+
+        logger = gogo.Gogo('debug.none').logger
+        logger.debug('This should log')
+        logger.info('So should this')
+        logger.warning('And this too')
+
+        logger = gogo.Gogo('debug.on', verbose=True).logger
+        logger.debug('This should log also')
+        logger.info('So should this')
+        logger.warning('And this too')
+
+        logger = gogo.Gogo('debug.off', verbose=False).logger
+        logger.debug("This shouldn't log")
+        logger.info('But this one should')
+        logger.warning('And this one too')
+
+        results = sys.stdout.getvalue().strip()
+        nt.assert_in("This should log", results)
+        nt.assert_not_in("This shouldn't log", results)
+        nt.assert_equal(console_msg, results)
+
     def test_structured_formatter(self):
         console_msg = (
             '{"snowman": "\\u2603", "name": "structured_formatter.base", '
