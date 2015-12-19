@@ -7,5 +7,5 @@ API
 .. automodule:: pygogo
     :members:
 
-    .. autoclass:: Kijit
+    .. autoclass:: Gogo
         :members:

@@ -2,15 +2,22 @@
 Installation
 ============
 
-At the command line either via easy_install::
+If you have ``virtualenvwrapper`` installed, at the command line type:
 
-    $ easy_install pygogo
+.. code-block:: bash
 
-or pip::
+    mkvirtualenv pygogo
+    pip install pygogo
 
-    $ pip install pygogo
+Or, if you have ``virtualenv`` installed:
 
-Or, if you have virtualenvwrapper installed::
+.. code-block:: bash
 
-    $ mkvirtualenv pygogo
-    $ pip install pygogo
+	virtualenv venv
+	source venv/bin/activate
+	pip install pygogo
+
+Otherwise, you can install globally::
+
+    pip install pygogo
+
