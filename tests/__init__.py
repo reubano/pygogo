@@ -58,7 +58,7 @@ class BaseTest(unittest.TestCase):
     def assertIsSubset(self, expected, actual):
         """Checks whether actual is a superset of expected.
 
-        Example :
+        Example:
             >>> BaseTest().assertIsSubset([1,2], range(5))
         """
         self.assertTrue(set(expected).issubset(actual))
@@ -66,7 +66,7 @@ class BaseTest(unittest.TestCase):
     def assertIsNotSubset(self, expected, actual):
         """Checks whether actual is a superset of expected.
 
-        Example :
+        Example:
             >>> BaseTest().assertIsNotSubset([11,12], range(5))
         """
         self.assertFalse(set(expected).issubset(actual))

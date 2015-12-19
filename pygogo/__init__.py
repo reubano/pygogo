@@ -159,19 +159,19 @@ class Gogo(object):
             >>> logger.info('stdout', extra={'key': 'value'})
             stdout
             >>> with LogCapture() as l:
-            ...     logger.warning('sdterr')
+            ...     logger.warning('stderr')
             ...     print(l)
             ignore_if_lt_info.base WARNING
-              sdterr
+              stderr
             >>> logger = Gogo('stderr_if_gt_error', 'error').logger
             >>> logger.warning('stdout')
             stdout
             >>> with LogCapture() as l:
-            ...     logger.error('sdterr')
+            ...     logger.error('stderr')
             ...     print(l)
-            sdterr
+            stderr
             stderr_if_gt_error.base ERROR
-              sdterr
+              stderr
             >>> formatter = formatters.json_formatter
             >>> json_logger = Gogo('json', low_formatter=formatter).logger
             >>> json_logger.debug('hello')  # doctest: +ELLIPSIS

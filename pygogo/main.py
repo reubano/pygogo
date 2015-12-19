@@ -34,11 +34,12 @@ parser.add_argument(
     '-l', '--msg-level', metavar='LEVEL', choices=levels, default='info',
     help=(
         "The level to log the message (default: info).\n"
-        "Must be one of: %s.\n\n" % ', '.join(levels)))
+        "Must be one of: %s,\n%s.\n\n" % (
+            ', '.join(levels[:4]), ', '.join(levels[4:]))))
 
 parser.add_argument(
     '-n', '--name', default=curdir,
-    help="The logger name (default: %s)" % curdir)
+    help="The logger name (default: %s).\n\n" % curdir)
 
 parser.add_argument(
     '-D', '--high-hdlr', metavar='HANDLER', choices=hdlrs, default='stderr',
@@ -94,7 +95,7 @@ parser.add_argument(
     '-s', '--subject', default=["You've got mail"], action='append',
     help=(
         "The log subject (default: You've got mail)."
-        "\nUsed in the follow handlers: email.\n\n"))
+        "\nUsed in the following handlers: email.\n\n"))
 
 parser.add_argument(
     '-u', '--url', action='append', default=[''],
@@ -107,17 +108,17 @@ parser.add_argument(
 parser.add_argument(
     '-p', '--port', metavar='NUM', type=int, action='append', default=[''],
     help=(
-        "The port number.\nUsed in the follow handlers: socket and "
-        "syslog.\n\n"))
+        "The port number (default: Python logging default).\nUsed in the "
+        "following handlers: socket and syslog.\n\n"))
 
 parser.add_argument(
     '-t', '--tcp', action='count', default=0, help=(
-        "Use TCP instead of UDP.\nUsed in the follow handlers: socket, "
+        "Use TCP instead of UDP.\nUsed in the following handlers: socket and "
         "syslog.\n\n"))
 
 parser.add_argument(
     '-g', '--get', action='count', default=0, help=(
-        "Use a GET request instead of POST.\nUsed in the follow handlers: "
+        "Use a GET request instead of POST.\nUsed in the following handlers: "
         "webhook.\n\n"))
 
 parser.add_argument(
