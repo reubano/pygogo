@@ -42,7 +42,7 @@ import hashlib
 from copy import copy
 from . import formatters, handlers, utils
 
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 
 __title__ = 'pygogo'
 __author__ = 'Reuben Cummings'
