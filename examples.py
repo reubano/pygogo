@@ -14,7 +14,7 @@ Examples:
         >>> sys.stderr = sys.stdout
 
 
-    A reimplementation of `Using LoggerAdapters to impart contextual information <https://docs.python.org/2/howto/logging-cookbook.html#using-loggeradapters-to-impart-contextual-information>`_.::
+    Using LoggerAdapters to impart contextual information
 
         >>> import pygogo as gogo
 
@@ -23,7 +23,7 @@ Examples:
         {"message": "log message", "connid": "1234"}
 
 
-    A reimplementation of `Implementing structured logging <https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging>`_.::
+    Implementing structured logging
 
         >>> import pygogo as gogo
 
@@ -38,7 +38,7 @@ Examples:
         "set_value": [1, 2, 3]}
 
 
-    A reimplementation of `Multiple handlers and formatters <https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters>`_.::
+    Multiple handlers and formatters
 
         >>> import logging
         >>> import pygogo as gogo
@@ -70,7 +70,7 @@ Examples:
         '2015 - examples.two.base - CRITICAL - critical message']
 
 
-    A reimplementation of `Logging to multiple destinations <https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations>`_.::
+    Logging to multiple destinations
 
         >>> import pygogo as gogo
 
@@ -110,7 +110,7 @@ Examples:
         >>> sys.stderr = sys.__stderr__
 
 
-    A reimplementation of `Using Filters to impart contextual information <https://docs.python.org/2/howto/logging-cookbook.html#using-filters-to-impart-contextual-information>`_.::
+    Using Filters to impart contextual information
 
         >>> import logging
         >>> import pygogo as gogo
@@ -123,7 +123,6 @@ Examples:
         >>> formatter = logging.Formatter(log_frmt, datefmt='%Y')
         >>> going = gogo.Gogo('a', low_formatter=formatter)
         >>> a1 = going.get_logger('b.c', ip='123.231.231.123', user='fred')
-        >>>
         >>> a2 = going.get_logger('e.f', ip='192.168.0.1', user='sheila')
 
         >>> a1.debug('A debug message')
