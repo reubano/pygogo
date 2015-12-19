@@ -31,7 +31,7 @@ parser.add_argument(
     help='The message to log (defaults to reading from stdin).')
 
 parser.add_argument(
-    '-l', '--msg-level', metavar='LEVEL', choices=levels, default='info',
+    '-l', '--level', metavar='LEVEL', choices=levels, default='info',
     help=(
         "The level to log the message (default: info).\n"
         "Must be one of: %s,\n%s.\n\n" % (
@@ -175,7 +175,7 @@ def run():
     except AttributeError:
         message = args.message
 
-    getattr(logger, args.msg_level)(message)
+    getattr(logger, args.level)(message)
     exit(0)
 
 if __name__ == '__main__':

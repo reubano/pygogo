@@ -126,15 +126,16 @@ class TestMain(BaseTest):
 
     def test_structured_formatter(self):
         console_msg = (
-            '{"snowman": "\\u2603", "name": "root.base", "level": "INFO",'
-            ' "message": "log message", "time": "2015", "msecs": ..., '
-            '"set_value": [1, 2, 3]}')
+            '{"snowman": "\\u2603", "name": "structured_formatter.base", '
+            '"level": "INFO", "message": "log message", "time": "2015", '
+            '"msecs": ..., "set_value": [1, 2, 3]}')
 
         log_format = gogo.formatters.BASIC_FORMAT
-        kwargs = {'datefmt': '%Y'}
-        formatter = gogo.formatters.StructuredFormatter(log_format, **kwargs)
+        skwargs = {'datefmt': '%Y'}
+        formatter = gogo.formatters.StructuredFormatter(log_format, **skwargs)
+
         kwargs = {'low_level': 'info', 'low_formatter': formatter}
-        logger = gogo.Gogo(**kwargs).logger
+        logger = gogo.Gogo('structured_formatter', **kwargs).logger
         extra = {'set_value': set([1, 2, 3]), 'snowman': '\u2603'}
         logger.info('log message', extra=extra)
         nt.assert_equal_ellipsis(console_msg, sys.stdout.getvalue().strip())
@@ -142,27 +143,27 @@ class TestMain(BaseTest):
     def test_structured_logging(self):
         kwargs = {'persist': True}
         extra = {'additional': True}
-        details = set(['level', 'name', 'time'])
+        meta = set(['level', 'name', 'time'])
 
         # Basic structured logger
         logger0 = gogo.Gogo('logger0').get_structured_logger('base', **kwargs)
 
-        # Structured logger
+        # Structured formatter
         formatter = gogo.formatters.structured_formatter
         logger1 = gogo.Gogo('logger1', low_formatter=formatter).logger
 
-        # Structured logger
+        # JSON formatter
         formatter = gogo.formatters.json_formatter
         logger2 = gogo.Gogo('logger2', low_formatter=formatter).logger
 
-        # Structured logger that allows for custom format
-        log_frmt = (
+        # Custom logger
+        logfmt = (
             '{"time": "%(asctime)s.%(msecs)d", "name": "%(name)s", "level":'
             ' "%(levelname)s", "message": "%(message)s", '
             '"persist": "%(persist)s", "additional": "%(additional)s"}')
 
-        going = gogo.Gogo('logger3', low_formatter=logging.Formatter(log_frmt))
-        logger3 = going.get_logger(**kwargs)
+        fmtr = logging.Formatter(logfmt, datefmt=gogo.formatters.DATEFMT)
+        logger3 = gogo.Gogo('logger3', low_formatter=fmtr).get_logger(**kwargs)
 
         # Now log some messages
         for logger in [logger0, logger1, logger2, logger3]:
@@ -171,11 +172,11 @@ class TestMain(BaseTest):
         lines = sys.stdout.getvalue().strip().split('\n')
         results = map(loads, lines)
 
-        # Assert the following loggers provide the log event details
-        nt.assert_is_not_subset(details, results[0])
-        nt.assert_is_subset(details, results[1])
-        nt.assert_is_subset(details, results[2])
-        nt.assert_is_subset(details, results[3])
+        # Assert the following loggers provide the log event meta data
+        nt.assert_is_not_subset(meta, results[0])
+        nt.assert_is_subset(meta, results[1])
+        nt.assert_is_subset(meta, results[2])
+        nt.assert_is_subset(meta, results[3])
 
         # Assert the following loggers provide the `extra` information
         nt.assert_in('additional', results[0])
