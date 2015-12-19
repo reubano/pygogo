@@ -201,9 +201,9 @@ class Gogo(object):
             >>> console_lggr.debug('hello')
             console.base: DEBUG    hello
         """
-        return self.get_logger('base')
+        return self.get_logger()
 
-    def get_logger(self, name='logger', **kwargs):
+    def get_logger(self, name='base', **kwargs):
         """Retrieve a named logger.
 
         Args:
