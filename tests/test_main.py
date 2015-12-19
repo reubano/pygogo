@@ -99,7 +99,7 @@ class TestMain(BaseTest):
             "myapp.area2  ERROR    The five boxing wizards jump quickly.\n"]
 
         f.seek(0)
-        nt.assert_equal(sys.stdout.getvalue().strip(), console_msg)
+        nt.assert_equal(console_msg, sys.stdout.getvalue().strip())
         nt.assert_equal([line[24:] for line in f], file_msg)
 
     def test_params_and_looping(self):
@@ -137,7 +137,7 @@ class TestMain(BaseTest):
         logger = gogo.Gogo(**kwargs).logger
         extra = {'set_value': set([1, 2, 3]), 'snowman': '\u2603'}
         logger.info('log message', extra=extra)
-        nt.assert_equal_ellipsis(sys.stdout.getvalue().strip(), console_msg)
+        nt.assert_equal_ellipsis(console_msg, sys.stdout.getvalue().strip())
 
     def test_structured_logging(self):
         kwargs = {'persist': True}

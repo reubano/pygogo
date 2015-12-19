@@ -34,22 +34,26 @@ def teardown_package():
     module_logger.debug('Package Teardown\n')
 
 
-# https://gist.github.com/harobed/5845674
 class BaseTest(unittest.TestCase):
     def runTest(self, *args, **kwargs):
         pass
 
-    def assertEqualEllipsis(self, first, second, marker='...', msg=None):
-        """
-        Example :
-            >>> BaseTest().assertEqualEllipsis('foo123bar', 'foo...bar')
-        """
-        if marker not in second:
-            self.assertEqual(first, second, msg)
+    def assertEqualEllipsis(self, expected, actual, marker='...', msg=None):
+        """Checks whether actual is equal to expected while ignoring ellipsis
+        content.
 
-        replaced = re.escape(second).replace(re.escape(marker), '(.*?)')
-        if re.match(replaced, first, re.M | re.S) is None:
-            self.assertMultiLineEqual(first, second, msg)
+        # https://gist.github.com/harobed/5845674
+
+        Example:
+            >>> BaseTest().assertEqualEllipsis('foo...bar', 'foo123bar')
+        """
+        if marker not in expected:
+            self.assertEqual(expected, actual, msg)
+
+        replaced = re.escape(expected).replace(re.escape(marker), '(.*?)')
+
+        if re.match(replaced, actual, re.M | re.S) is None:
+            self.assertMultiLineEqual(expected, actual, msg)
 
     def assertIsSubset(self, expected, actual):
         """Checks whether actual is a superset of expected.
