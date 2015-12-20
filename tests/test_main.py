@@ -47,6 +47,37 @@ class TestMain(BaseTest):
         nt.ok_(self.cls_initialized)
         module_logger.debug('TestMain class teardown\n')
 
+    def test_formatters(self):
+        # basic
+        sys.stderr = StringIO()
+        logger = gogo.Gogo('stderr_if_gt_error', 'error').logger
+        logger.warning('stdout')
+        logger.error('stderr')
+
+        # json_formatter
+        formatter = gogo.formatters.json_formatter
+        json_logger = gogo.Gogo('json', low_formatter=formatter).logger
+        json_logger.debug('hello')
+
+        # csv_formatter
+        formatter = gogo.formatters.csv_formatter
+        csv_logger = gogo.Gogo('csv', low_formatter=formatter).logger
+        csv_logger.debug('hello')
+
+        # console_formatter
+        formatter = gogo.formatters.console_formatter
+        console_lggr = gogo.Gogo('console', low_formatter=formatter).logger
+        console_lggr.debug('hello')
+
+        console_msg = (
+            'stdout\nstderr\n{"time": "20...", "name": "json.base", "level": '
+            '"DEBUG", "message": "hello"}\n20...,csv.base,DEBUG,"hello"\n'
+            'console.base: DEBUG    hello')
+
+        results = sys.stdout.getvalue().strip()
+        nt.assert_equal_ellipsis(console_msg, results)
+        nt.assert_equal('stderr', sys.stderr.getvalue().strip())
+
     def test_handlers(self):
         f = StringIO()
         hdlr = gogo.handlers.fileobj_hdlr(f)
@@ -55,13 +86,13 @@ class TestMain(BaseTest):
         msg1 = 'stdout hdlr only'
         lggr.debug(msg1)
         f.seek(0)
-        nt.assert_equal(sys.stdout.getvalue().strip(), msg1)
+        nt.assert_equal(msg1, sys.stdout.getvalue().strip())
         nt.assert_false(f.read())
 
         msg2 = 'both hdlrs'
         lggr.error(msg2)
         f.seek(0)
-        nt.assert_equal(sys.stdout.getvalue().strip(), '%s\n%s' % (msg1, msg2))
+        nt.assert_equal('%s\n%s' % (msg1, msg2), sys.stdout.getvalue().strip())
         nt.assert_equal(f.read().strip(), msg2)
 
     def test_multiple_loggers(self):
@@ -122,7 +153,7 @@ class TestMain(BaseTest):
             logger2.log(level, '%s %s', name, 'message')
             # TODO: lookup yielding from a nose test
 
-        nt.assert_equal(sys.stdout.getvalue().strip(), logger2_msg.strip())
+        nt.assert_equal(logger2_msg.strip(), sys.stdout.getvalue().strip())
 
     def test_debugging(self):
         console_msg = (
@@ -221,3 +252,41 @@ class TestMain(BaseTest):
         nt.assert_false(len(results[1]['time'][20:]))
         nt.ok_(len(results[2]['time'][20:]))
         nt.ok_(len(results[3]['time'][20:]))
+
+    def test_named_loggers(self):
+        sys.stderr = sys.stdout
+        logger1 = gogo.Gogo('named').logger
+        logger2 = gogo.Gogo('named').logger
+        nt.assert_equal(logger1, logger2)
+
+        formatter = gogo.formatters.structured_formatter
+
+        going = gogo.Gogo('named2', low_formatter=formatter)
+        logger1 = going.get_logger('foo', test='foo')
+        logger2 = going.get_logger('bar', test='bar')
+        logger1.debug('message')
+        logger2.debug('message')
+
+        for h1, h2 in zip(logger1.handlers, logger2.handlers):
+            nt.assert_not_equal(h1, h2)
+
+            for f1, f2 in zip(h1.filters, h2.filters):
+                nt.assert_not_equal(f1, f2)
+
+        hdlr = gogo.handlers.stdout_hdlr()
+        going = gogo.Gogo('named3', low_hdlr=hdlr, low_formatter=formatter)
+        logger1 = going.get_logger('baz', test='baz')
+        logger2 = going.get_logger('buzz', test='buzz')
+
+        logger1.debug('message')
+        logger2.debug('message')
+
+        for h1, h2 in zip(logger1.handlers, logger2.handlers):
+            nt.assert_not_equal(h1, h2)
+
+            for f1, f2 in zip(h1.filters, h2.filters):
+                nt.assert_not_equal(f1, f2)
+
+        lines = sys.stdout.getvalue().strip().split('\n')
+        nt.assert_not_equal(*(loads(l)['test'] for l in lines[0:2]))
+        nt.assert_not_equal(*(loads(l)['test'] for l in lines[2:4]))

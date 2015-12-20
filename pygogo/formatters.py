@@ -47,6 +47,7 @@ from __future__ import (
     unicode_literals)
 
 import logging
+import sys
 import traceback
 import itertools as it
 
@@ -63,6 +64,10 @@ JSON_FORMAT = (
 
 DATEFMT = '%Y-%m-%d %H:%M:%S'
 
+hdlr = logging.StreamHandler(sys.stdout)
+module_logger = logging.getLogger(__name__)
+module_logger.addHandler(hdlr)
+
 
 class StructuredFormatter(logging.Formatter):
     """A logging formatter that creates a json string from log details
@@ -70,8 +75,6 @@ class StructuredFormatter(logging.Formatter):
     TODO: Add log exception handling
 
     Examples:
-        >>> import sys
-        >>>
         >>> logger = logging.getLogger()
         >>> formatter = StructuredFormatter(BASIC_FORMAT, datefmt=DATEFMT)
         >>> hdlr = logging.StreamHandler(sys.stdout)
@@ -147,8 +150,6 @@ class StructuredFormatter(logging.Formatter):
             dict: The formatted exception
 
         Examples:
-            >>> import sys
-            >>>
             >>> formatter = StructuredFormatter(BASIC_FORMAT)
             >>> try:
             ...     1 / 0
@@ -156,7 +157,7 @@ class StructuredFormatter(logging.Formatter):
             ...     formatter.formatException(sys.exc_info())
             '{"function": "<module>", "text": "1 / 0", "value": \
 "division by zero", "filename": \
-"<doctest pygogo.formatters.StructuredFormatter.formatException[2]>", \
+"<doctest pygogo.formatters.StructuredFormatter.formatException[1]>", \
 "lineno": 2, "type": "exceptions.ZeroDivisionError"}'
         """
         keys = ['type', 'value', 'filename', 'lineno', 'function', 'text']

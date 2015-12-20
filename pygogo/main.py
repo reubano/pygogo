@@ -138,7 +138,7 @@ args = parser.parse_args()
 
 
 def run():
-    gogo_logger = gogo.Gogo(__name__, verbose=args.verbose).logger
+    gogo_logger = gogo.Gogo(__name__, verbose=args.verbose).get_logger('run')
 
     if args.version:
         gogo_logger.info('gogo v%s' % gogo.__version__)

@@ -38,11 +38,12 @@ from __future__ import (
 
 import logging
 import hashlib
+import sys
 
 from copy import copy
 from . import formatters, handlers, utils
 
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 
 __title__ = 'pygogo'
 __author__ = 'Reuben Cummings'
@@ -50,6 +51,12 @@ __description__ = 'A Python logging library with super powers'
 __email__ = 'reubano@gmail.com'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2015 Reuben Cummings'
+
+hdlr = logging.StreamHandler(sys.stdout)
+fltr = logging.Filter(name='%s.init' % __name__)
+hdlr.addFilter(fltr)  # prevent handler from logging `pygogo.main` events
+module_logger = logging.getLogger(__name__)
+module_logger.addHandler(hdlr)
 
 
 class Gogo(object):
@@ -136,26 +143,12 @@ class Gogo(object):
         self.low_formatter = kwargs.get('low_formatter')
         self.monolog = kwargs.get('monolog')
 
-    def update_hdlr(self, hdlr, level, formatter=None, monolog=False):
-        formatter = formatter or formatters.basic_formatter
-        hdlr.setLevel(level)
-
-        if monolog:
-            log_filter = utils.LogFilter(self.high_level)
-            hdlr.addFilter(log_filter)
-
-        hdlr.setFormatter(formatter)
-
-    def update_logger(self, logger, level, *hdlrs):
-        logger.setLevel(level)
-        map(logger.addHandler, hdlrs)
-
     @property
     def logger(self):
         """The logger property.
 
         Returns:
-            New instance of :class:`Gogo.logger`
+            New instance of :class:`logging.Logger`
 
         Examples:
             >>> from testfixtures import LogCapture
@@ -169,40 +162,42 @@ class Gogo(object):
             >>> logger.debug('ignored')
             >>> logger.info('stdout')
             stdout
-            >>> logger.info('stdout', extra={'key': 'value'})
-            stdout
             >>> with LogCapture() as l:
             ...     logger.warning('stderr')
             ...     print(l)
             ignore_if_lt_info.base WARNING
               stderr
-            >>> logger = Gogo('stderr_if_gt_error', 'error').logger
-            >>> logger.warning('stdout')
-            stdout
-            >>> with LogCapture() as l:
-            ...     logger.error('stderr')
-            ...     print(l)
-            stderr
-            stderr_if_gt_error.base ERROR
-              stderr
-            >>> formatter = formatters.json_formatter
-            >>> json_logger = Gogo('json', low_formatter=formatter).logger
-            >>> json_logger.debug('hello')  # doctest: +ELLIPSIS
-            ... # doctest: +NORMALIZE_WHITESPACE
-            {"time": "20...", "name": "json.base", "level": "DEBUG", "message":
-            "hello"}
-            >>>
-            >>> formatter = formatters.csv_formatter
-            >>> csv_logger = Gogo('csv', low_formatter=formatter).logger
-            >>> csv_logger.debug('hello')  # doctest: +ELLIPSIS
-            20...,csv.base,DEBUG,"hello"
-            >>>
-            >>> formatter = formatters.console_formatter
-            >>> console_lggr = Gogo('console', low_formatter=formatter).logger
-            >>> console_lggr.debug('hello')
-            console.base: DEBUG    hello
         """
         return self.get_logger()
+
+    def copy_hdlr(self, hdlr):
+        copied_hdlr = copy(hdlr)
+        copied_hdlr.filters = map(copy, hdlr.filters)
+        return copied_hdlr
+
+    def update_hdlr(self, hdlr, level, formatter=None, monolog=False, **kwargs):
+        formatter = formatter or formatters.basic_formatter
+        hdlr.setLevel(level)
+
+        if monolog:
+            log_filter = utils.LogFilter(self.high_level)
+            hdlr.addFilter(log_filter)
+
+        if kwargs:
+            structured_filter = utils.get_structured_filter(**kwargs)
+            hdlr.addFilter(structured_filter)
+
+        hdlr.setFormatter(formatter)
+
+    def zip(self, *fmtrs):
+        self_hdlrs = [self.high_hdlr, self.low_hdlr]
+        def_hdlrs = [handlers.stderr_hdlr(), handlers.stdout_hdlr()]
+
+        hdlrs = [s or d for s, d in zip(self_hdlrs, def_hdlrs)]
+        levels = [self.high_level, self.low_level]
+        fmtrs = [self.high_formatter, self.low_formatter]
+        monologs = [False, self.monolog]
+        return zip(hdlrs, levels, fmtrs, monologs)
 
     def get_logger(self, name='base', **kwargs):
         """Retrieve a named logger.
@@ -211,7 +206,7 @@ class Gogo(object):
             name (string): The logger name.
 
         Returns:
-            New instance of :class:`Gogo.logger`
+            New instance of :class:`logging.Logger`
 
         Examples:
             >>> going = Gogo()
@@ -229,31 +224,16 @@ class Gogo(object):
         if lggr_name not in self.loggers:
             self.loggers.add(lggr_name)
 
-            # TODO: copy doesn't really work as expected, i.e., the reference
-            # still changes. Find a better alternative
-            if self.high_hdlr:
-                high_hdlr = copy(self.high_hdlr)
-            else:
-                high_hdlr = handlers.stderr_hdlr()
-
-            if self.low_hdlr:
-                low_hdlr = copy(self.low_hdlr)
-            else:
-                low_hdlr = handlers.stdout_hdlr()
-
-            self.update_hdlr(
-                high_hdlr, self.high_level, formatter=self.high_formatter)
-
-            self.update_hdlr(
-                low_hdlr, self.low_level, formatter=self.low_formatter,
-                monolog=self.monolog)
-
             if kwargs:
-                structured_filter = utils.get_structured_filter(**kwargs)
-                low_hdlr.addFilter(structured_filter)
-                high_hdlr.addFilter(structured_filter)
+                kwargs['name'] = lggr_name
 
-            self.update_logger(logger, self.low_level, low_hdlr, high_hdlr)
+            for zipped in self.zip(self.high_formatter, self.low_formatter):
+                hdlr, level, fmtr, monolog = zipped
+                copied_hdlr = self.copy_hdlr(hdlr)
+                self.update_hdlr(copied_hdlr, level, fmtr, monolog, **kwargs)
+                logger.addHandler(copied_hdlr)
+
+            logger.setLevel(self.low_level)
 
         return logger
 
@@ -265,10 +245,12 @@ class Gogo(object):
             kwargs (dict): Keyword arguments to include in every log message.
 
         Returns:
-            New instance of :class:`Gogo.formatters.StructuredAdapter`
+            New instance of :class:`pygogo.utils.StructuredAdapter`
 
         Examples
             >>> logger = Gogo('structured').get_structured_logger(all='true')
+            >>> logger  # doctest: +ELLIPSIS
+            <pygogo.utils.StructuredAdapter object at 0x...>
             >>> logger.debug('hello')
             {"all": "true", "message": "hello"}
             >>> logger.debug('hello', extra={'key': 'value'})
@@ -281,27 +263,14 @@ class Gogo(object):
 
         if lggr_name not in self.loggers:
             self.loggers.add(lggr_name)
+            formatter = formatters.basic_formatter
 
-            # TODO: copy doesn't really work as expected, i.e., the reference
-            # still changes. Find a better alternative
-            if self.high_hdlr:
-                high_hdlr = copy(self.high_hdlr)
-            else:
-                high_hdlr = handlers.stderr_hdlr()
+            for zipped in self.zip(formatter, formatter):
+                hdlr, level, fmtr, monolog = zipped
+                copied_hdlr = self.copy_hdlr(hdlr)
+                self.update_hdlr(copied_hdlr, level, fmtr, monolog)
+                logger.addHandler(copied_hdlr)
 
-            if self.low_hdlr:
-                low_hdlr = copy(self.low_hdlr)
-            else:
-                low_hdlr = handlers.stdout_hdlr()
-
-            self.update_hdlr(
-                high_hdlr, self.high_level,
-                formatter=formatters.basic_formatter)
-
-            self.update_hdlr(
-                low_hdlr, self.low_level, formatter=formatters.basic_formatter,
-                monolog=self.monolog)
-
-            self.update_logger(logger, self.low_level, low_hdlr, high_hdlr)
+            logger.setLevel(self.low_level)
 
         return utils.StructuredAdapter(logger, kwargs)
