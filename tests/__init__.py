@@ -44,6 +44,10 @@ class BaseTest(unittest.TestCase):
 
         # https://gist.github.com/harobed/5845674
 
+        Args:
+            expected (scalar): The expected value
+            actual (scalar): The actual value
+
         Example:
             >>> BaseTest().assertEqualEllipsis('foo...bar', 'foo123bar')
         """
@@ -58,6 +62,10 @@ class BaseTest(unittest.TestCase):
     def assertIsSubset(self, expected, actual):
         """Checks whether actual is a superset of expected.
 
+        Args:
+            expected (scalar): The expected value
+            actual (scalar): The actual value
+
         Example:
             >>> BaseTest().assertIsSubset([1,2], range(5))
         """
@@ -65,6 +73,10 @@ class BaseTest(unittest.TestCase):
 
     def assertIsNotSubset(self, expected, actual):
         """Checks whether actual is a superset of expected.
+
+        Args:
+            expected (scalar): The expected value
+            actual (scalar): The actual value
 
         Example:
             >>> BaseTest().assertIsNotSubset([11,12], range(5))

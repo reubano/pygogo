@@ -162,7 +162,7 @@ class Gogo(object):
         """The logger property.
 
         Returns:
-            New instance of :class:`Gogo.logger`
+            New instance of :class:`logging.Logger`
 
         Examples:
             >>> from testfixtures import LogCapture
@@ -191,7 +191,7 @@ class Gogo(object):
             name (string): The logger name.
 
         Returns:
-            New instance of :class:`Gogo.logger`
+            New instance of :class:`logging.Logger`
 
         Examples:
             >>> going = Gogo()
@@ -245,7 +245,7 @@ class Gogo(object):
             kwargs (dict): Keyword arguments to include in every log message.
 
         Returns:
-            New instance of :class:`Gogo.formatters.StructuredAdapter`
+            New instance of :class:`pygogo.utils.StructuredAdapter`
 
         Examples
             >>> logger = Gogo('structured').get_structured_logger(all='true')
