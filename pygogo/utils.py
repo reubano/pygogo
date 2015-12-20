@@ -10,7 +10,7 @@ Misc classes and functions that don't warrant their own module
 Examples:
     basic usage::
 
-        >>> CustomEncoder().encode(xrange(5))
+        >>> CustomEncoder().encode(range(5))
         '[0, 1, 2, 3, 4]'
 
 """
@@ -23,6 +23,7 @@ import logging
 import sys
 
 from json import JSONEncoder
+from builtins import *
 
 module_hdlr = logging.StreamHandler(sys.stdout)
 module_logger = logging.getLogger(__name__)
@@ -33,10 +34,10 @@ class CustomEncoder(JSONEncoder):
     """A unicode aware JSON encoder that can handle iterators, dates, and times
 
     Examples:
-        >>> CustomEncoder().encode(xrange(5))
+        >>> CustomEncoder().encode(range(5))
         '[0, 1, 2, 3, 4]'
         >>> from json import dumps
-        >>> dumps(xrange(5), cls=CustomEncoder)
+        >>> dumps(range(5), cls=CustomEncoder)
         '[0, 1, 2, 3, 4]'
     """
     def default(self, obj):
@@ -49,7 +50,7 @@ class CustomEncoder(JSONEncoder):
             The encoded object
 
         Examples:
-            >>> CustomEncoder().default(xrange(5))
+            >>> CustomEncoder().default(range(5))
             [0, 1, 2, 3, 4]
         """
         if hasattr(obj, 'real'):
@@ -60,7 +61,7 @@ class CustomEncoder(JSONEncoder):
             encoded = tuple(obj)
         elif set(['next', 'union', '__iter__']).intersection(dir(obj)):
             encoded = list(obj)
-        elif isinstance(obj, unicode):
+        elif isinstance(obj, str):
             encoded = obj.encode('unicode_escape').decode('ascii')
         else:
             try:

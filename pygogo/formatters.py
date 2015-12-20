@@ -56,6 +56,8 @@ import sys
 import traceback
 import itertools as it
 
+from builtins import *
+
 from .utils import CustomEncoder
 
 BASIC_FORMAT = '%(message)s'

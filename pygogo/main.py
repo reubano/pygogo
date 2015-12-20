@@ -13,6 +13,7 @@ import itertools as it
 
 from os import getcwd, path as p
 from argparse import RawTextHelpFormatter, ArgumentParser
+from builtins import *
 
 import pygogo as gogo
 

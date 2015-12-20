@@ -17,8 +17,9 @@ import logging
 import sys
 import pygogo as gogo
 
-from StringIO import StringIO
+from io import StringIO
 from json import loads
+from builtins import *
 from . import BaseTest
 
 module_logger = gogo.Gogo(__name__).logger
@@ -227,7 +228,7 @@ class TestMain(BaseTest):
             logger.debug('message', extra=extra)
 
         lines = sys.stdout.getvalue().strip().split('\n')
-        results = map(loads, lines)
+        results = [loads(l) for l in lines]
 
         # Assert the following loggers provide the log event meta data
         nt.assert_is_not_subset(meta, results[0])

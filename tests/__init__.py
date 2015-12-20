@@ -14,6 +14,9 @@ from __future__ import (
 
 import unittest
 import re
+
+from builtins import *
+
 import pygogo as gogo
 
 module_logger = gogo.Gogo(__name__).logger

@@ -61,7 +61,7 @@ Examples:
         >>> logger.critical('critical message')
         2015 - examples.two.base - CRITICAL - critical message
 
-        >>> with open('example2.log') as f:
+        >>> with open('example2.log', encoding='utf-8') as f:
         ...     [line.strip() for line in f]  # doctest: +NORMALIZE_WHITESPACE
         ['2015 - examples.two.base - DEBUG - debug message',
         '2015 - examples.two.base - INFO - info message',
@@ -95,7 +95,7 @@ Examples:
         >>> logger2.error('The five boxing wizards jump.')
         examples.one.area2: ERROR    The five boxing wizards jump.
 
-        >>> with open('example1.log') as f:
+        >>> with open('example1.log', encoding='utf-8') as f:
         ...     [line.strip() for line in f]  # doctest: +NORMALIZE_WHITESPACE
         ...     # doctest: +ELLIPSIS
         ['2015... examples.one.base INFO     Jackdaws love my big sphinx.',
@@ -143,3 +143,5 @@ Examples:
 from __future__ import (
     absolute_import, division, print_function, with_statement,
     unicode_literals)
+
+from builtins import *

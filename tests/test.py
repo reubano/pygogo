@@ -18,13 +18,16 @@ import pygogo as gogo
 
 from difflib import unified_diff
 from os import path as p
-from StringIO import StringIO
-from scripttest import TestFileEnvironment
+from io import StringIO
 from timeit import default_timer as timer
+
+from builtins import *
+from scripttest import TestFileEnvironment
 
 
 def main(script, tests, verbose=False, stop=True):
     """ Main method
+
     Returns 0 on success, 1 on failure
     """
     failures = 0
@@ -45,15 +48,20 @@ def main(script, tests, verbose=False, stop=True):
         result = env.run(command, cwd=p.abspath(p.dirname(p.dirname(__file__))))
         output = result.stdout
 
-        try:
-            check = open(expected)
-        except IOError:
-            check = StringIO(expected)
-        except TypeError:
-            check = StringIO(expected)
-            output = bool(output)
+        if isinstance(expected, bool):
+            text = StringIO(output).read()
+            outlines = [str(bool(text))]
+            checklines = StringIO(str(expected)).readlines()
+        elif p.isfile(expected):
+            outlines = StringIO(output).readlines()
 
-        args = [check.readlines(), StringIO(output).readlines()]
+            with open(expected, encoding='utf-8') as f:
+                checklines = f.readlines()
+        else:
+            outlines = StringIO(output).readlines()
+            checklines = StringIO(expected).readlines()
+
+        args = [checklines, outlines]
         kwargs = {'fromfile': 'expected', 'tofile': 'got'}
         diffs = ''.join(unified_diff(*args, **kwargs))
         passed = not diffs

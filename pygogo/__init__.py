@@ -41,6 +41,7 @@ import hashlib
 import sys
 
 from copy import copy
+from builtins import *
 from . import formatters, handlers, utils
 
 __version__ = '0.7.0'
@@ -357,7 +358,7 @@ class Gogo(object):
             >>> logger.debug('hello', extra={'key': 'value'})
             {"all": "true", "message": "hello", "key": "value"}
         """
-        values = frozenset(kwargs.iteritems())
+        values = frozenset(kwargs.items())
         name = name or hashlib.md5(str(values)).hexdigest()
         lggr_name = '%s.structured.%s' % (self.name, name)
         logger = logging.getLogger(lggr_name)
@@ -397,5 +398,5 @@ def copy_hdlr(hdlr):
         <logging.StreamHandler object at 0x...>
     """
     copied_hdlr = copy(hdlr)
-    copied_hdlr.filters = map(copy, hdlr.filters)
+    copied_hdlr.filters = [copy(f) for f in hdlr.filters]
     return copied_hdlr

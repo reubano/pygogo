@@ -9,8 +9,10 @@ from __future__ import (
     unicode_literals)
 
 from os import path as p
-from manager import Manager
 from subprocess import call
+
+from builtins import *
+from manager import Manager
 
 manager = Manager()
 _basedir = p.dirname(__file__)
@@ -34,9 +36,10 @@ def check():
 def lint(where=None, strict=False):
     """Check style with linters"""
     call(['flake8', where] if where else 'flake8')
+    args = 'pylint --rcfile=tests/standard.rc -rn -fparseable pygogo'
+    call(args.split(' ') + ['--py3k'])
 
     if strict:
-        args = 'pylint --rcfile=tests/standard.rc -rn -fparseable pygogo'
         call(args.split(' '))
 
 
