@@ -218,7 +218,7 @@ class LogFilter(logging.Filter):
         return record.levelno < self.high_level
 
 
-def get_structured_filter(**kwargs):
+def get_structured_filter(name='', **kwargs):
     """Returns a structured filter that injects contextual information into
     log records.
 
@@ -261,4 +261,4 @@ def get_structured_filter(**kwargs):
 
             return True
 
-    return StructuredFilter()
+    return StructuredFilter(name)

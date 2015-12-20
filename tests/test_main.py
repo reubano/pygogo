@@ -252,3 +252,41 @@ class TestMain(BaseTest):
         nt.assert_false(len(results[1]['time'][20:]))
         nt.ok_(len(results[2]['time'][20:]))
         nt.ok_(len(results[3]['time'][20:]))
+
+    def test_named_loggers(self):
+        sys.stderr = sys.stdout
+        logger1 = gogo.Gogo('named').logger
+        logger2 = gogo.Gogo('named').logger
+        nt.assert_equal(logger1, logger2)
+
+        formatter = gogo.formatters.structured_formatter
+
+        going = gogo.Gogo('named2', low_formatter=formatter)
+        logger1 = going.get_logger('foo', test='foo')
+        logger2 = going.get_logger('bar', test='bar')
+        logger1.debug('message')
+        logger2.debug('message')
+
+        for h1, h2 in zip(logger1.handlers, logger2.handlers):
+            nt.assert_not_equal(h1, h2)
+
+            for f1, f2 in zip(h1.filters, h2.filters):
+                nt.assert_not_equal(f1, f2)
+
+        hdlr = gogo.handlers.stdout_hdlr()
+        going = gogo.Gogo('named3', low_hdlr=hdlr, low_formatter=formatter)
+        logger1 = going.get_logger('baz', test='baz')
+        logger2 = going.get_logger('buzz', test='buzz')
+
+        logger1.debug('message')
+        logger2.debug('message')
+
+        for h1, h2 in zip(logger1.handlers, logger2.handlers):
+            nt.assert_not_equal(h1, h2)
+
+            for f1, f2 in zip(h1.filters, h2.filters):
+                nt.assert_not_equal(f1, f2)
+
+        lines = sys.stdout.getvalue().strip().split('\n')
+        nt.assert_not_equal(*(loads(l)['test'] for l in lines[0:2]))
+        nt.assert_not_equal(*(loads(l)['test'] for l in lines[2:4]))
