@@ -86,13 +86,13 @@ class TestMain(BaseTest):
         msg1 = 'stdout hdlr only'
         lggr.debug(msg1)
         f.seek(0)
-        nt.assert_equal(sys.stdout.getvalue().strip(), msg1)
+        nt.assert_equal(msg1, sys.stdout.getvalue().strip())
         nt.assert_false(f.read())
 
         msg2 = 'both hdlrs'
         lggr.error(msg2)
         f.seek(0)
-        nt.assert_equal(sys.stdout.getvalue().strip(), '%s\n%s' % (msg1, msg2))
+        nt.assert_equal('%s\n%s' % (msg1, msg2), sys.stdout.getvalue().strip())
         nt.assert_equal(f.read().strip(), msg2)
 
     def test_multiple_loggers(self):
@@ -153,7 +153,7 @@ class TestMain(BaseTest):
             logger2.log(level, '%s %s', name, 'message')
             # TODO: lookup yielding from a nose test
 
-        nt.assert_equal(sys.stdout.getvalue().strip(), logger2_msg.strip())
+        nt.assert_equal(logger2_msg.strip(), sys.stdout.getvalue().strip())
 
     def test_debugging(self):
         console_msg = (
