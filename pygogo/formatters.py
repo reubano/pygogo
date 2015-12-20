@@ -157,7 +157,7 @@ class StructuredFormatter(logging.Formatter):
             ...     formatter.formatException(sys.exc_info())
             '{"function": "<module>", "text": "1 / 0", "value": \
 "division by zero", "filename": \
-"<doctest pygogo.formatters.StructuredFormatter.formatException[2]>", \
+"<doctest pygogo.formatters.StructuredFormatter.formatException[1]>", \
 "lineno": 2, "type": "exceptions.ZeroDivisionError"}'
         """
         keys = ['type', 'value', 'filename', 'lineno', 'function', 'text']

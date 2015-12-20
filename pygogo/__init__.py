@@ -249,6 +249,8 @@ class Gogo(object):
 
         Examples
             >>> logger = Gogo('structured').get_structured_logger(all='true')
+            >>> logger  # doctest: +ELLIPSIS
+            <pygogo.utils.StructuredAdapter object at 0x...>
             >>> logger.debug('hello')
             {"all": "true", "message": "hello"}
             >>> logger.debug('hello', extra={'key': 'value'})
