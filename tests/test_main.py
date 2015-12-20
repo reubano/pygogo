@@ -47,6 +47,37 @@ class TestMain(BaseTest):
         nt.ok_(self.cls_initialized)
         module_logger.debug('TestMain class teardown\n')
 
+    def test_formatters(self):
+        # basic
+        sys.stderr = StringIO()
+        logger = gogo.Gogo('stderr_if_gt_error', 'error').logger
+        logger.warning('stdout')
+        logger.error('stderr')
+
+        # json_formatter
+        formatter = gogo.formatters.json_formatter
+        json_logger = gogo.Gogo('json', low_formatter=formatter).logger
+        json_logger.debug('hello')
+
+        # csv_formatter
+        formatter = gogo.formatters.csv_formatter
+        csv_logger = gogo.Gogo('csv', low_formatter=formatter).logger
+        csv_logger.debug('hello')
+
+        # console_formatter
+        formatter = gogo.formatters.console_formatter
+        console_lggr = gogo.Gogo('console', low_formatter=formatter).logger
+        console_lggr.debug('hello')
+
+        console_msg = (
+            'stdout\nstderr\n{"time": "20...", "name": "json.base", "level": '
+            '"DEBUG", "message": "hello"}\n20...,csv.base,DEBUG,"hello"\n'
+            'console.base: DEBUG    hello')
+
+        results = sys.stdout.getvalue().strip()
+        nt.assert_equal_ellipsis(console_msg, results)
+        nt.assert_equal('stderr', sys.stderr.getvalue().strip())
+
     def test_handlers(self):
         f = StringIO()
         hdlr = gogo.handlers.fileobj_hdlr(f)

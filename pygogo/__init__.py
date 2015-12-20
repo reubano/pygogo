@@ -176,38 +176,11 @@ class Gogo(object):
             >>> logger.debug('ignored')
             >>> logger.info('stdout')
             stdout
-            >>> logger.info('stdout', extra={'key': 'value'})
-            stdout
             >>> with LogCapture() as l:
             ...     logger.warning('stderr')
             ...     print(l)
             ignore_if_lt_info.base WARNING
               stderr
-            >>> logger = Gogo('stderr_if_gt_error', 'error').logger
-            >>> logger.warning('stdout')
-            stdout
-            >>> with LogCapture() as l:
-            ...     logger.error('stderr')
-            ...     print(l)
-            stderr
-            stderr_if_gt_error.base ERROR
-              stderr
-            >>> formatter = formatters.json_formatter
-            >>> json_logger = Gogo('json', low_formatter=formatter).logger
-            >>> json_logger.debug('hello')  # doctest: +ELLIPSIS
-            ... # doctest: +NORMALIZE_WHITESPACE
-            {"time": "20...", "name": "json.base", "level": "DEBUG", "message":
-            "hello"}
-            >>>
-            >>> formatter = formatters.csv_formatter
-            >>> csv_logger = Gogo('csv', low_formatter=formatter).logger
-            >>> csv_logger.debug('hello')  # doctest: +ELLIPSIS
-            20...,csv.base,DEBUG,"hello"
-            >>>
-            >>> formatter = formatters.console_formatter
-            >>> console_lggr = Gogo('console', low_formatter=formatter).logger
-            >>> console_lggr.debug('hello')
-            console.base: DEBUG    hello
         """
         return self.get_logger()
 
