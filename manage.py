@@ -31,8 +31,9 @@ def check():
 @manager.arg('where', 'w', help='Modules to check')
 @manager.command
 def lint(where=None):
-    """Check style with flake8"""
-    call('flake8 %s' % (where if where else ''), shell=True)
+    """Check style with linters"""
+    opts = where if where else ''
+    call([p.join(_basedir, 'helpers', 'lint'), opts])
 
 
 @manager.command
