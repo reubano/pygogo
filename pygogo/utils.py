@@ -17,8 +17,13 @@ from __future__ import (
     unicode_literals)
 
 import logging
+import sys
 
 from json import JSONEncoder
+
+hdlr = logging.StreamHandler(sys.stdout)
+module_logger = logging.getLogger(__name__)
+module_logger.addHandler(hdlr)
 
 
 class CustomEncoder(JSONEncoder):
@@ -79,8 +84,6 @@ class StructuredMessage(object):
             high_level <= messages             -> high_hdlr
 
     Examples:
-        >>> import sys
-        >>>
         >>> logger = logging.getLogger()
         >>> hdlr = logging.StreamHandler(sys.stdout)
         >>> hdlr.setFormatter(logging.Formatter('%(message)s'))
@@ -133,8 +136,6 @@ class StructuredAdapter(logging.LoggerAdapter):
             high_level <= messages             -> high_hdlr
 
     Examples:
-        >>> import sys
-        >>>
         >>> logger = logging.getLogger()
         >>> hdlr = logging.StreamHandler(sys.stdout)
         >>> logger.addHandler(hdlr)
@@ -154,8 +155,6 @@ class StructuredAdapter(logging.LoggerAdapter):
             Tuple of (:class:`StructuredMessage`, modified kwargs)
 
         Examples:
-            >>> import sys
-            >>>
             >>> logger = logging.getLogger()
             >>> hdlr = logging.StreamHandler(sys.stdout)
             >>> logger.addHandler(hdlr)
@@ -230,8 +229,6 @@ def get_structured_filter(**kwargs):
         New instance of :class:`StructuredFilter`
 
     Examples:
-        >>> import sys
-        >>>
         >>> structured_filter = get_structured_filter(user='fred')
         >>> structured_filter  # doctest: +ELLIPSIS
         <pygogo.utils.StructuredFilter object at 0x...>

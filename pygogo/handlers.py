@@ -32,6 +32,10 @@ from logging import handlers as hdlrs
 
 ENCODING = 'utf-8'
 
+hdlr = logging.StreamHandler(sys.stdout)
+module_logger = logging.getLogger(__name__)
+module_logger.addHandler(hdlr)
+
 
 def stdout_hdlr(**kwargs):
     """A standard output log handler

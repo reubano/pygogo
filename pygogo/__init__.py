@@ -38,6 +38,7 @@ from __future__ import (
 
 import logging
 import hashlib
+import sys
 
 from copy import copy
 from . import formatters, handlers, utils
@@ -50,6 +51,12 @@ __description__ = 'A Python logging library with super powers'
 __email__ = 'reubano@gmail.com'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2015 Reuben Cummings'
+
+hdlr = logging.StreamHandler(sys.stdout)
+fltr = logging.Filter(name='%s.init' % __name__)
+hdlr.addFilter(fltr)  # prevent handler from logging `pygogo.main` events
+module_logger = logging.getLogger(__name__)
+module_logger.addHandler(hdlr)
 
 
 class Gogo(object):
