@@ -58,6 +58,7 @@ Library Examples
 .. code-block:: bash
 
     import pygogo as gogo
+
     gogo.Gogo().logger.debug('hello world')
     gogo.Gogo().logger.error('hello error')
 
@@ -432,6 +433,7 @@ Project structure
     ├── LICENSE
     ├── MANIFEST.in
     ├── Makefile
+    ├── pygogo.png
     ├── README.rst
     ├── TODO.rst
     ├── bin
@@ -464,7 +466,6 @@ Project structure
     ├── pygogo
     │   ├── __init__.py
     │   ├── formatters.py
-    │   ├── gogo-boot.png
     │   ├── handlers.py
     │   ├── main.py
     │   └── utils.py

@@ -14,7 +14,6 @@ except ImportError:
 
 sys.dont_write_bytecode = True
 requirements = list(pkutils.parse_requirements('requirements.txt'))
-dependencies = list(pkutils.parse_requirements('requirements.txt', dep=True))
 dev_requirements = list(pkutils.parse_requirements('dev-requirements.txt'))
 readme = pkutils.read('README.rst')
 changes = pkutils.read('CHANGES.rst').replace('.. :changelog:', '')
@@ -35,7 +34,6 @@ setup(
     packages=find_packages(exclude=['docs', 'tests']),
     include_package_data=True,
     install_requires=requirements,
-    dependency_links=dependencies,
     tests_require=dev_requirements,
     license=license,
     zip_safe=False,
