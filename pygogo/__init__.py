@@ -43,7 +43,7 @@ import sys
 from copy import copy
 from . import formatters, handlers, utils
 
-__version__ = '0.6.0'
+__version__ = '0.6.1'
 
 __title__ = 'pygogo'
 __author__ = 'Reuben Cummings'
