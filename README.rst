@@ -1,5 +1,7 @@
-pygogo: a Python logger with super powers |travis| |versions| |pypi|
-====================================================================
+pygogo: a Python logger with super powers
+=========================================
+
+|versions| |pypi|
 
 .. image:: https://raw.githubusercontent.com/reubano/pygogo/master/pygogo.png
     :alt: sample pygogo usage
@@ -9,7 +11,7 @@ pygogo: a Python logger with super powers |travis| |versions| |pypi|
 Introduction
 ------------
 
-pygogo is a Python logging `library`_ and `command-line interface`_ with super powers.
+pygogo is a Python logging library_ and command-line interface_ with super powers.
 pygogo leverages the standard Python `logging module`_ under the hood, so there's
 no need to learn yet-another logging library. The default implementation sends
 all messages to ``stdout``, and any messages at level ``WARNING`` or above to ``stderr``.
@@ -46,10 +48,12 @@ Usage
 
 pygogo is intended to be used either directly as a Python library or from the command line.
 
+.. _library:
+
 Library Examples
 ~~~~~~~~~~~~~~~~
 
-Hello World:
+*Hello World*
 
 .. code-block:: bash
 
@@ -66,7 +70,7 @@ Hello World:
 
     hello error
 
-Log based debugging:
+*Log based debugging*
 
 .. code-block:: bash
 
@@ -78,7 +82,7 @@ Log based debugging:
         logger.info('I will log to `stdout` always')
         logger.warning('I will log to both `stdout` and `stderr` always')
 
-Disable dual logging:
+*Disabled dual logging*
 
 .. code-block:: bash
 
@@ -102,7 +106,7 @@ Disable dual logging:
     error message
     critical message
 
-`Custom formatter`_:
+*Custom formatter* [#]_
 
 .. code-block:: python
 
@@ -140,7 +144,7 @@ Disable dual logging:
     2015-12-18 18:51:30,416 - examples.fmt.base - ERROR - error message
     2015-12-18 18:51:30,416 - examples.fmt.base - CRITICAL - critical message
 
-`Structured logging`_
+*Structured logging* [#]_
 
 .. code-block:: python
 
@@ -156,8 +160,7 @@ Disable dual logging:
 
     {"snowman": "\u2603", "name": "examples.structured.base", "level": "INFO", "message": "log message", "time": "2015-12-18 18:52:39", "msecs": 58.973073959350586, "set_value": [1, 2, 3]}
 
-
-`Using Filters to impart contextual information`_.
+*Using Filters to impart contextual information* [#]_
 
 .. code-block:: python
 
@@ -199,7 +202,7 @@ Disable dual logging:
     2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
     2015-12-19 10:12:24,479 a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 
-`Multiple loggers`_.
+*Multiple loggers* [#]_
 
 .. code-block:: python
 
@@ -238,6 +241,8 @@ Disable dual logging:
     examples.lggrs.area1: INFO     How daft jumping zebras vex.
     examples.lggrs.area2: WARNING  Jail zesty vixen who grabbed pay.
     examples.lggrs.area2: ERROR    The five boxing wizards jump.
+
+.. _interface:
 
 CLI Examples
 ~~~~~~~~~~~~
@@ -337,7 +342,7 @@ Examples
 
     gogo 'hello world'
 
-Log based debugging:
+*Log based debugging*
 
 .. code-block:: bash
 
@@ -358,7 +363,7 @@ Log based debugging:
 
     warning will log to both `stdout` and `stderr`
 
-Disable dual logging:
+*Disable dual logging*
 
 .. code-block:: bash
 
@@ -379,7 +384,7 @@ Disable dual logging:
     error message
     critical message
 
-Structured logging
+*Structured logging*
 
 .. code-block:: bash
 
@@ -389,7 +394,7 @@ Structured logging
 
     {"time": "2015-12-19 11:26:53.776", "name": "pygogo.runner", "level": "INFO", "message": "log message"}
 
-Alternate handler
+*Alternate handler*
 
 .. code-block:: bash
 
@@ -476,12 +481,16 @@ Project structure
 Design Principles
 -----------------
 
+- the built-in ``logging`` module isn't broken so don't reinvent the wheel
+- prefer functions over objects
+- keep the API as simple as possible
+
 Structured Logging
 ------------------
 
-There are severals ways to get structured (machine readable) log messages and
-they. Each method makes a different customization/complexity
-trade-off which is outlined below:
+There are severals ways to get structured (machine readable) log messages using pygogo.
+Each method makes a different customization/complexity trade-off which is
+outlined below:
 
 Setup
 ~~~~~
@@ -578,25 +587,23 @@ The following table can help make sense of the different methods:
 +----------------------------+-------------------+----------------------+----------------+---------------+
 |                            | structured logger | structured formatter | json formatter | custom logger |
 +============================+===================+======================+================+===============+
-| complexity                 | 1                 | 2                    | 2              | 3             |
+| contextual information     | ✔                 | ✔                    |                | ✔             |
 +----------------------------+-------------------+----------------------+----------------+---------------+
-| contextual information     | TRUE              | TRUE                 | FALSE          | TRUE          |
+| ``extra`` param support    | ✔                 | ✔                    |                | ✔             |
 +----------------------------+-------------------+----------------------+----------------+---------------+
-| ``extra`` param support    | TRUE              | TRUE                 | FALSE          | TRUE          |
+| dynamic ``extra`` support  | ✔                 | ✔                    |                |               |
 +----------------------------+-------------------+----------------------+----------------+---------------+
-| dynamic ``extra`` support  | TRUE              | TRUE                 | FALSE          | FALSE         |
+| message metadata           |                   | ✔                    | ✔              | ✔             |
 +----------------------------+-------------------+----------------------+----------------+---------------+
-| message metadata           | FALSE             | TRUE                 | TRUE           | TRUE          |
+| available via the cli      |                   | ✔                    | ✔              |               |
 +----------------------------+-------------------+----------------------+----------------+---------------+
-| available via the cli      | FALSE             | TRUE                 | TRUE           | FALSE         |
+| ``msecs`` field            |                   | ✔                    |                |               |
 +----------------------------+-------------------+----------------------+----------------+---------------+
-| ``msecs`` field            | FALSE             | TRUE                 | FALSE          | FALSE         |
+| milliseconds in time field |                   |                      | ✔              | ✔             |
 +----------------------------+-------------------+----------------------+----------------+---------------+
-| milliseconds in time field | FALSE             | FALSE                | TRUE           | TRUE          |
+| custom date format         |                   |                      |                | ✔             |
 +----------------------------+-------------------+----------------------+----------------+---------------+
-| custom date format         | FALSE             | FALSE                | FALSE          | TRUE          |
-+----------------------------+-------------------+----------------------+----------------+---------------+
-| custom log format          | FALSE             | FALSE                | FALSE          | TRUE          |
+| custom log format          |                   |                      |                | ✔             |
 +----------------------------+-------------------+----------------------+----------------+---------------+
 
 Formatters
@@ -655,26 +662,23 @@ Summary
 
 The following table can help make sense of the different builtin formatters:
 
-+------------+---------------------------------------------------------+
-| name       | message                                                 |
-+============+=========================================================+
-| basic      | message                                                 |
-+------------+---------------------------------------------------------+
-| bom        | message                                                 |
-+------------+---------------------------------------------------------+
-| console    | name: INFO     message                                  |
-+------------+---------------------------------------------------------+
-| csv        | 2015-12-19 15:51:32.16,name,INFO,"message"              |
-+------------+---------------------------------------------------------+
-| fixed      | 2015-12-19 15:51:32.16 name INFO     message            |
-+------------+---------------------------------------------------------+
-| json       | {"level": "INFO", "message": "message", "name": "name", |
-|            |  "time": "2015-12-19 15:51:32.16"}                      |
-+------------+---------------------------------------------------------+
-| structured | {"level": "INFO", "message": "message",                 |
-|            |  "msecs": 16.5140209197998, "name": "name",             |
-|            |  "time": "2015-12-19 15:51:32"}                         |
-+------------+---------------------------------------------------------+
++------------+------------------------------------------------------------------------------------------------------------------+
+| name       | message                                                                                                          |
++============+==================================================================================================================+
+| basic      | message                                                                                                          |
++------------+------------------------------------------------------------------------------------------------------------------+
+| bom        | message                                                                                                          |
++------------+------------------------------------------------------------------------------------------------------------------+
+| console    | name: INFO     message                                                                                           |
++------------+------------------------------------------------------------------------------------------------------------------+
+| csv        | 2015-12-19 15:51:32.16,name,INFO,"message"                                                                       |
++------------+------------------------------------------------------------------------------------------------------------------+
+| fixed      | 2015-12-19 15:51:32.16 name INFO     message                                                                     |
++------------+------------------------------------------------------------------------------------------------------------------+
+| json       | {"level": "INFO", "message": "message", "name": "name", "time": "2015-12-19 15:51:32.16"}                        |
++------------+------------------------------------------------------------------------------------------------------------------+
+| structured | {"level": "INFO", "message": "message", "msecs": 16.5140209197998, "name": "name", "time": "2015-12-19 15:51:32"}|
++------------+------------------------------------------------------------------------------------------------------------------+
 
 Handlers
 --------
@@ -787,7 +791,7 @@ Ready to contribute? Here's how:
     git clone git@github.com:<your_username>/pygogo.git
     cd pygogo
 
-2. Setup a new [virtualenv](http://www.virtualenv.org/en/latest/index.html)
+2. Setup a new virtualenv_
 
 .. code-block:: bash
 
@@ -809,22 +813,21 @@ License
 
 pygogo is distributed under the `MIT License`_.
 
-.. |travis| image:: https://img.shields.io/travis/reubano/pygogo.svg
-    :target: https://travis-ci.org/reubano/pygogo
-
 .. |versions| image:: https://img.shields.io/pypi/pyversions/pygogo.svg
     :target: https://pypi.python.org/pypi/pygogo
 
 .. |pypi| image:: https://img.shields.io/pypi/v/pygogo.svg
     :target: https://pypi.python.org/pypi/pygogo
 
-.. _library: library-examples
-.. _command-line interface: cli-examples
 .. _logging module: https://docs.python.org/2/library/logging.html
 .. _Using LoggerAdapters to impart contextual information: https://docs.python.org/2/howto/logging-cookbook.html#using-loggeradapters-to-impart-contextual-information
-.. _Custom formatter: https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters
-.. _Structured logging: https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging
-.. _Using Filters to impart contextual information: https://docs.python.org/2/howto/logging-cookbook.html#using-filters-to-impart-contextual-information
-.. _Multiple loggers: https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations
 .. _virtualenv: http://www.virtualenv.org/en/latest/index.html
 .. _MIT License: http://opensource.org/licenses/MIT
+
+Footnotes
+---------
+
+.. [#] https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters
+.. [#] https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging
+.. [#] https://docs.python.org/2/howto/logging-cookbook.html#using-filters-to-impart-contextual-information
+.. [#] https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations
