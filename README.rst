@@ -58,6 +58,7 @@ Library Examples
 .. code-block:: bash
 
     import pygogo as gogo
+
     gogo.Gogo().logger.debug('hello world')
     gogo.Gogo().logger.error('hello error')
 
