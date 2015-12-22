@@ -67,12 +67,6 @@ def tox():
 
 
 @manager.command
-def coverage():
-    """Check code coverage quickly with the default Python"""
-    call(p.join(_basedir, 'helpers', 'coverage'), shell=True)
-
-
-@manager.command
 def docs():
     """Generate Sphinx HTML documentation, including API docs"""
     call(p.join(_basedir, 'helpers', 'docs'), shell=True)
