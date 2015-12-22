@@ -5,5 +5,3 @@
 
 coverage run --source pygogo setup.py test
 coverage report -m
-coverage html
-open htmlcov/index.html
