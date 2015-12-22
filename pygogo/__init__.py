@@ -92,7 +92,8 @@ class Gogo(object):
         +------------------------------------+-----------------+
 
         * This is the case when :attr:`monolog` is `False`. If :attr:`monolog`
-          is True, then :attr:`handlers['high']` will be the only message handler
+          is True, then :attr:`handlers['high']` will be the only
+          message handler
 
     Args:
         name (string): The logger name.
