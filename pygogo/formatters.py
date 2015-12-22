@@ -35,10 +35,15 @@ Examples:
 
 Attributes:
     BASIC_FORMAT (str): A basic format
+
     CONSOLE_FORMAT (str): A format for displaying in a console
+
     FIXED_FORMAT (str): A fixed width format
+
     CSV_FORMAT (str): A csv format
+
     JSON_FORMAT (str): A json format
+
     DATEFMT (str): Standard date format
 """
 
@@ -64,15 +69,24 @@ JSON_FORMAT = (
 
 DATEFMT = '%Y-%m-%d %H:%M:%S'
 
-hdlr = logging.StreamHandler(sys.stdout)
+module_hdlr = logging.StreamHandler(sys.stdout)
 module_logger = logging.getLogger(__name__)
-module_logger.addHandler(hdlr)
+module_logger.addHandler(module_hdlr)
 
 
 class StructuredFormatter(logging.Formatter):
     """A logging formatter that creates a json string from log details
 
-    TODO: Add log exception handling
+    Args:
+        args (string): The min level to log to low_hdlr.
+
+        kwargs (dict): Keyword arguments.
+
+    Kwargs:
+        high_hdlr (obj): The high pass log handler (a
+
+    Returns:
+        New instance of :class:`StructuredFormatter`
 
     Examples:
         >>> logger = logging.getLogger()
@@ -90,6 +104,7 @@ class StructuredFormatter(logging.Formatter):
 
         Args:
             args (string): The min level to log to low_hdlr.
+
             kwargs (dict): Keyword arguments.
 
         Kwargs:
@@ -144,7 +159,7 @@ class StructuredFormatter(logging.Formatter):
 
         Args:
             exc_info (tuple[type, value, traceback]): Exception tuple as
-                returned by sys.exc_info()
+                returned by `sys.exc_info()`
 
         Returns:
             dict: The formatted exception
@@ -161,9 +176,9 @@ class StructuredFormatter(logging.Formatter):
 "lineno": 2, "type": "exceptions.ZeroDivisionError"}'
         """
         keys = ['type', 'value', 'filename', 'lineno', 'function', 'text']
-        type_, value, tb = exc_info
+        type_, value, trcbk = exc_info
         stype = str(type_).replace('type', '').strip(" '<>")
-        values = it.chain([stype, value], *traceback.extract_tb(tb))
+        values = it.chain([stype, value], *traceback.extract_tb(trcbk))
         return CustomEncoder().encode(dict(zip(keys, values)))
 
 basic_formatter = logging.Formatter(BASIC_FORMAT)

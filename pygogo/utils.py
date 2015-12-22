@@ -10,6 +10,9 @@ Misc classes and functions that don't warrant their own module
 Examples:
     basic usage::
 
+        >>> CustomEncoder().encode(xrange(5))
+        '[0, 1, 2, 3, 4]'
+
 """
 
 from __future__ import (
@@ -21,15 +24,13 @@ import sys
 
 from json import JSONEncoder
 
-hdlr = logging.StreamHandler(sys.stdout)
+module_hdlr = logging.StreamHandler(sys.stdout)
 module_logger = logging.getLogger(__name__)
-module_logger.addHandler(hdlr)
+module_logger.addHandler(module_hdlr)
 
 
 class CustomEncoder(JSONEncoder):
     """A unicode aware JSON encoder that can handle iterators, dates, and times
-
-    http://stackoverflow.com/a/28743317/408556
 
     Examples:
         >>> CustomEncoder().encode(xrange(5))
@@ -73,15 +74,21 @@ class CustomEncoder(JSONEncoder):
 class StructuredMessage(object):
     """Converts a message and kwargs to a json string
 
-    http://stackoverflow.com/a/28743317/408556
-
     Attributes:
-        name (string): The logger name.
-        high_level (string): The min level to log to high_hdlr.
-        low_level (string): The min level to log to low_hdlr.
-            messages < low_level               -> ignore
-            low_level <= messages < high_level -> low_hdlr
-            high_level <= messages             -> high_hdlr
+        kwargs (dict): Keyword arguments passed to
+            :class:`~pygogo.utils.CustomEncoder`.
+
+    Args:
+        message (string): The message to log.
+
+        kwargs (dict): Keyword arguments passed to
+            :class:`~pygogo.utils.CustomEncoder`.
+
+    Returns:
+        New instance of :class:`StructuredMessage`
+
+    See also:
+        :class:`pygogo.utils.StructuredAdapter`
 
     Examples:
         >>> logger = logging.getLogger()
@@ -96,13 +103,15 @@ class StructuredMessage(object):
 
         Args:
             message (string): The message to log.
-            kwargs (dict): Keyword arguments passed to the encoder.
+
+            kwargs (dict): Keyword arguments passed to
+                :class:`~pygogo.utils.CustomEncoder`.
 
         Returns:
             New instance of :class:`StructuredMessage`
 
         Examples:
-            >>> StructuredMessage('message') # doctest: +ELLIPSIS
+            >>> StructuredMessage('message')  # doctest: +ELLIPSIS
             <pygogo.utils.StructuredMessage object at 0x...>
         """
         kwargs['message'] = message
@@ -125,15 +134,10 @@ class StructuredAdapter(logging.LoggerAdapter):
     """A logging adapter that creates a json string from a log message and the
     `extra` kwarg
 
-    http://stackoverflow.com/a/28743317/408556
+    See also:
+        :class:`pygogo.utils.StructuredMessage`
 
-    Attributes:
-        name (string): The logger name.
-        high_level (string): The min level to log to high_hdlr.
-        low_level (string): The min level to log to low_hdlr.
-            messages < low_level               -> ignore
-            low_level <= messages < high_level -> low_hdlr
-            high_level <= messages             -> high_hdlr
+        :meth:`pygogo.Gogo.get_structured_logger`
 
     Examples:
         >>> logger = logging.getLogger()
@@ -152,7 +156,7 @@ class StructuredAdapter(logging.LoggerAdapter):
             kwargs (dict):
 
         Returns:
-            Tuple of (:class:`StructuredMessage`, modified kwargs)
+            Tuple of (:class:`~pygogo.utils.StructuredMessage`, modified kwargs)
 
         Examples:
             >>> logger = logging.getLogger()
@@ -174,16 +178,34 @@ class StructuredAdapter(logging.LoggerAdapter):
 
 class LogFilter(logging.Filter):
     """Filters log messages depending on level
-    http://stackoverflow.com/a/28743317/408556
 
     Attributes:
         level (int): The logging level.
-            CRITICAL -> 50
-            ERROR    -> 40
-            WARNING  -> 30
-            INFO     -> 20
-            DEBUG    -> 10
-            NOTSET   ->  0
+
+            +-------------------------+-------+
+            | logging level attribute | value |
+            +=========================+=======+
+            | CRITICAL                | 50    |
+            +-------------------------+-------+
+            | ERROR                   | 40    |
+            +-------------------------+-------+
+            | WARNING                 | 30    |
+            +-------------------------+-------+
+            | INFO                    | 20    |
+            +-------------------------+-------+
+            | DEBUG                   | 10    |
+            +-------------------------+-------+
+            | NOTSET                  |  0    |
+            +-------------------------+-------+
+
+    Args:
+        level (int): The logging level.
+
+    Returns:
+        New instance of :class:`LogFilter`
+
+    See also:
+        :meth:`pygogo.Gogo.update_hdlr`
     """
     def __init__(self, level):
         """Initialization method.
@@ -225,8 +247,11 @@ def get_structured_filter(name='', **kwargs):
     Args:
         kwargs (dict): The contextual information you wish to inject
 
+    See also:
+        :meth:`pygogo.Gogo.update_hdlr`
+
     Returns:
-        New instance of :class:`StructuredFilter`
+        New instance of :class:`pygogo.utils.StructuredFilter`
 
     Examples:
         >>> structured_filter = get_structured_filter(user='fred')
