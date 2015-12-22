@@ -19,13 +19,13 @@ _basedir = p.dirname(__file__)
 @manager.command
 def clean():
     """Remove Python file and build artifacts"""
-    call(p.join(_basedir, 'helpers', 'clean'), shell=True)
+    call(p.join(_basedir, 'helpers', 'clean'))
 
 
 @manager.command
 def check():
     """Check staged changes for lint errors"""
-    call(p.join(_basedir, 'helpers', 'check-stage'), shell=True)
+    call(p.join(_basedir, 'helpers', 'check-stage'))
 
 
 @manager.arg('where', 'w', help='Modules to check')
@@ -43,7 +43,7 @@ def lint(where=None, strict=False):
 @manager.command
 def pipme():
     """Install requirements.txt"""
-    call('pip install -r requirements.txt', shell=True)
+    call('pip install -r requirements.txt'.split(' '))
 
 
 @manager.command
@@ -67,13 +67,13 @@ def test(where=None, stop=False):
 @manager.command
 def tox():
     """Run tests on every Python version with tox"""
-    call('tox', shell=True)
+    call('tox')
 
 
 @manager.command
 def docs():
     """Generate Sphinx HTML documentation, including API docs"""
-    call(p.join(_basedir, 'helpers', 'docs'), shell=True)
+    call(p.join(_basedir, 'helpers', 'docs'))
 
 
 @manager.command
@@ -106,13 +106,13 @@ def upload():
 @manager.command
 def sdist():
     """Create a source distribution package"""
-    call(p.join(_basedir, 'helpers', 'srcdist'), shell=True)
+    call(p.join(_basedir, 'helpers', 'srcdist'))
 
 
 @manager.command
 def wheel():
     """Create a wheel package"""
-    call(p.join(_basedir, 'helpers', 'wheel'), shell=True)
+    call(p.join(_basedir, 'helpers', 'wheel'))
 
 
 if __name__ == '__main__':
