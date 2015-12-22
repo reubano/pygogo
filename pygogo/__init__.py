@@ -45,6 +45,7 @@ from . import formatters, handlers, utils
 
 __version__ = '0.6.2'
 
+__all__ = ['formatters', 'handlers', 'utils']
 __title__ = 'pygogo'
 __author__ = 'Reuben Cummings'
 __description__ = 'A Python logging library with super powers'
@@ -67,50 +68,79 @@ class Gogo(object):
 
     Attributes:
         loggers (set[str]): Set of existing loggers
+
+        monolog (bool): Log high level events only to high pass handler.
+
         name (string): The logger name.
+
         high_level (string): The min level to log to high_hdlr.
+
         low_level (string): The min level to log to low_hdlr.
-            messages < low_level               -> ignore
-            low_level <= messages < high_level -> low_hdlr
-            high_level <= messages             -> high_hdlr
+
+        high_hdlr (obj): The high pass log handler.
+
+        low_hdlr (obj): The low pass log handler.
+
+        high_formatter (obj): The high pass log formatter.
+
+        low_formatter (obj): The low pass log formatter.
+
+        +----------------------------+-------------------------+
+        | messages level             | message handler         |
+        +============================+=========================+
+        | < low_level                | none                    |
+        +----------------------------+-------------------------+
+        | >= low_level, < high_level | low_hdlr                |
+        +----------------------------+-------------------------+
+        | >= high_level              | low_hdlr and high_hdlr* |
+        +----------------------------+-------------------------+
+
+        * This is the case when :attr:`monolog` is `False`. If :attr:`monolog`
+          is True, then :attr:`high_hdlr` will be the only message handler
+
+    Args:
+        name (string): The logger name.
+
+        high_level (string): The min level to log to high_hdlr
+            (default: warning).
+
+        low_level (string): The min level to log to low_hdlr
+            (default: debug).
+
+        kwargs (dict): Keyword arguments.
+
+    Kwargs:
+        high_hdlr (obj): The high pass log handler (a :class:`logging.handlers`
+            instance, default: `stderr` StreamHandler).
+
+        low_hdlr (obj): The low pass log handler (a :class:`logging.handlers`
+            instance, default: `stdout` StreamHandler).
+
+        high_formatter (obj): The high pass log formatter (a
+            :class:`logging.Formatter` instance, default:
+            :data:`pygogo.formatters.basic_formatter`).
+
+        low_formatter (obj): The low pass log formatter (a
+            :class:`logging.Formatter` instance, default:
+            :data:`pygogo.formatters.basic_formatter`).
+
+        verbose (bool): If False, set low level to `info`, if True, set low
+            level to `debug`, overrides `low_level` if specified
+            (default: None).
+
+        monolog (bool): Log high level events only to high pass handler (
+            default: False)
+
+    Returns:
+        New instance of :class:`pygogo.Gogo`
+
+    Examples:
+        >>> Gogo('name').logger.debug('message')
+        message
     """
-    loggers = set([])
 
     def __init__(self, name='root', high_level=None, low_level=None, **kwargs):
         """Initialization method.
-
-        Args:
-            name (string): The logger name.
-            high_level (string): The min level to log to high_hdlr
-                (default: warning).
-
-            low_level (string): The min level to log to low_hdlr
-                (default: debug).
-
-            kwargs (dict): Keyword arguments.
-
-        Kwargs:
-            high_hdlr (obj): The high pass log handler (a
-                `logging.handlers` instance, default: `stderr` StreamHandler)
-
-            low_hdlr (obj): The low pass log handler (a
-                `logging.handlers` instance, default: `stdout` StreamHandler).
-
-            high_formatter (obj): The high pass log handler (a
-                `logging.handlers` instance, default: `stderr` StreamHandler)
-
-            low_formatter (obj): The low pass log handler (a
-                `logging.handlers` instance, default: `stdout` StreamHandler).
-
-            verbose (bool): If False, set low level to `info`, if True, set low
-                level to `debug`, overrides `low_level` if specified
-                (default: None).
-
-            monolog (bool): Log high level events only to high pass handler (
-                default: False)
-
-        Returns:
-            New instance of :class:`Gogo`
 
         Examples:
             >>> Gogo('name') # doctest: +ELLIPSIS
@@ -136,6 +166,7 @@ class Gogo(object):
         elif not self.high_level >= self.low_level:
             raise ValueError('high_level must be >= low_level')
 
+        self.loggers = set([])
         self.name = name
         self.high_hdlr = kwargs.get('high_hdlr')
         self.low_hdlr = kwargs.get('low_hdlr')
@@ -171,11 +202,65 @@ class Gogo(object):
         return self.get_logger()
 
     def copy_hdlr(self, hdlr):
+        """Safely copy a handler and its associated filters.
+
+        Args:
+            hdlr (obj): A :class:`logging.handlers` instance.
+
+        See also:
+            :meth:`pygogo.Gogo.get_logger`
+
+            :meth:`pygogo.Gogo.get_structured_logger`
+
+        Returns:
+            New instance of :class:`logging.handlers`
+
+        Examples:
+            >>> hdlr = logging.StreamHandler(sys.stdout)
+            >>> Gogo().copy_hdlr(hdlr) # doctest: +ELLIPSIS
+            <logging.StreamHandler object at 0x...>
+        """
         copied_hdlr = copy(hdlr)
         copied_hdlr.filters = map(copy, hdlr.filters)
         return copied_hdlr
 
     def update_hdlr(self, hdlr, level, formatter=None, monolog=False, **kwargs):
+        """Update a handler with a formatter, level, and filters.
+
+        Args:
+            hdlr (obj): A :class:`logging.handlers` instance.
+
+            level (int): The min level to log to to `hdlr`.
+
+            formatter (obj): The log formatter (a :class:`logging.Formatter`
+                instance, default: :data:`pygogo.formatters.basic_formatter`)
+
+            monolog (bool): Log high level events only to high pass handler (
+                default: False)
+
+            kwargs (dict): Keyword arguemnts passed to
+                `pygogo.utils.get_structured_filter`
+
+        See also:
+            :meth:`pygogo.Gogo.get_logger`
+
+            :meth:`pygogo.Gogo.get_structured_logger`
+
+            :func:`pygogo.utils.LogFilter`
+
+            :func:`pygogo.utils.get_structured_filter`
+
+        Examples:
+            >>> hdlr = logging.StreamHandler(sys.stdout)
+            >>> going = Gogo(low_hdlr=hdlr, monolog=True)
+            >>> hdlr = going.low_hdlr
+            >>> [hdlr.formatter, hdlr.filters, hdlr.level]
+            [None, [], 0]
+            >>> kwargs = {'monolog': going.monolog}
+            >>> going.update_hdlr(hdlr, going.low_level, **kwargs)
+            >>> [hdlr.formatter, hdlr.filters, hdlr.level]  # doctest: +ELLIPSIS
+            [<logging.Formatter obj...>, [<pygogo.utils.LogFilter obj...>], 10]
+        """
         formatter = formatter or formatters.basic_formatter
         hdlr.setLevel(level)
 
@@ -190,6 +275,28 @@ class Gogo(object):
         hdlr.setFormatter(formatter)
 
     def zip(self, *fmtrs):
+        """Format high/low handler properties so that they can be conveniently
+            passed to `update_hdlr`.
+
+        Args:
+            fmtrs (seq[obj]): A sequence of :class:`logging.Formatter`
+                instances.
+
+        See also:
+            :meth:`pygogo.Gogo.update_hdlr`
+
+            :meth:`pygogo.Gogo.get_logger`
+
+            :meth:`pygogo.Gogo.get_structured_logger`
+
+        Returns:
+            New instance of :class:`logging.handlers`
+
+        Examples:
+            >>> hdlr = logging.StreamHandler(sys.stdout)
+            >>> Gogo().copy_hdlr(hdlr) # doctest: +ELLIPSIS
+            <logging.StreamHandler object at 0x...>
+        """
         self_hdlrs = [self.high_hdlr, self.low_hdlr]
         def_hdlrs = [handlers.stderr_hdlr(), handlers.stdout_hdlr()]
 
@@ -204,6 +311,13 @@ class Gogo(object):
 
         Args:
             name (string): The logger name.
+
+        See also:
+            :meth:`pygogo.Gogo.copy_hdlr`
+
+            :meth:`pygogo.Gogo.update_hdlr`
+
+            :meth:`pygogo.Gogo.zip`
 
         Returns:
             New instance of :class:`logging.Logger`
@@ -242,7 +356,17 @@ class Gogo(object):
 
         Args:
             name (string): The logger name.
+
             kwargs (dict): Keyword arguments to include in every log message.
+
+        See also:
+            :meth:`pygogo.Gogo.copy_hdlr`
+
+            :meth:`pygogo.Gogo.update_hdlr`
+
+            :meth:`pygogo.Gogo.zip`
+
+            :class:`pygogo.utils.StructuredAdapter`
 
         Returns:
             New instance of :class:`pygogo.utils.StructuredAdapter`

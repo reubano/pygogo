@@ -85,8 +85,11 @@ def file_hdlr(filename, mode='a', encoding=ENCODING, delay=False, **kwargs):
 
     Args:
         filename (string): The logfile name.
+
         mode (string): The file open mode (default: a, i.e., append).
+
         encoding (string): The file encoding (default: the module ENCODING).
+
         delay (bool): Defer file opening until the first call to emit
             (default: False).
 
@@ -108,7 +111,9 @@ def socket_hdlr(host='localhost', port=None, tcp=False, **kwargs):
 
     Args:
         host (string): The host name (default: localhost).
+
         port (int): The port (default: `logging.handlers` default).
+
         tcp (bool): Create a TCP connection instead of UDP (default: False).
 
     Returns:
@@ -137,7 +142,9 @@ def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
 
     Args:
         host (string): The host name (default: localhost).
+
         port (int): The port (default: `logging.handlers` default).
+
         tcp (bool): Create a TCP connection instead of UDP (default: False).
 
     Returns:
@@ -163,7 +170,9 @@ def buffered_hdlr(target=None, capacity=4096, level='error', **kwargs):
 
     Args:
         target (obj): The target logger handler (default stdout).
+
         capacity (int): The buffer size (default 4096).
+
         level (string): The min event level required to flush buffer
             (default: error).
 
@@ -183,8 +192,11 @@ def webhook_hdlr(url, host='localhost', port=None, get=False, **kwargs):
 
     Args:
         url (string): The logging endpoint.
+
         host (string): The host name (default: localhost).
+
         port (int): The port (default: None).
+
         get (bool): Use a GET request instead of POST (default: False).
 
     Returns:
@@ -207,12 +219,16 @@ def email_hdlr(subject=None, **kwargs):
 
     Kwargs:
         host (str): The email server host (default: localhost).
+
         port (str): The email sever port (default: None).
+
         sender (str): The email sender (default: the system username at gmail).
+
         recipients (List[str]): The email recipients (default: the system
             username at gmail).
 
         username (str): The email sever username (default: None).
+
         password (str): The email sever password (default: None).
 
     Returns:

@@ -35,10 +35,15 @@ Examples:
 
 Attributes:
     BASIC_FORMAT (str): A basic format
+
     CONSOLE_FORMAT (str): A format for displaying in a console
+
     FIXED_FORMAT (str): A fixed width format
+
     CSV_FORMAT (str): A csv format
+
     JSON_FORMAT (str): A json format
+
     DATEFMT (str): Standard date format
 """
 
@@ -72,7 +77,16 @@ module_logger.addHandler(hdlr)
 class StructuredFormatter(logging.Formatter):
     """A logging formatter that creates a json string from log details
 
-    TODO: Add log exception handling
+    Args:
+        args (string): The min level to log to low_hdlr.
+
+        kwargs (dict): Keyword arguments.
+
+    Kwargs:
+        high_hdlr (obj): The high pass log handler (a
+
+    Returns:
+        New instance of :class:`StructuredFormatter`
 
     Examples:
         >>> logger = logging.getLogger()
@@ -90,6 +104,7 @@ class StructuredFormatter(logging.Formatter):
 
         Args:
             args (string): The min level to log to low_hdlr.
+
             kwargs (dict): Keyword arguments.
 
         Kwargs:
