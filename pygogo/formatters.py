@@ -159,7 +159,7 @@ class StructuredFormatter(logging.Formatter):
 
         Args:
             exc_info (tuple[type, value, traceback]): Exception tuple as
-                returned by sys.exc_info()
+                returned by `sys.exc_info()`
 
         Returns:
             dict: The formatted exception
