@@ -302,7 +302,6 @@ class Gogo(object):
 
         hdlrs = [s or d for s, d in zip(self_hdlrs, def_hdlrs)]
         levels = [self.high_level, self.low_level]
-        fmtrs = [self.high_formatter, self.low_formatter]
         monologs = [False, self.monolog]
         return zip(hdlrs, levels, fmtrs, monologs)
 
