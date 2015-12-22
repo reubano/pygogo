@@ -35,6 +35,7 @@ setup(
     include_package_data=True,
     install_requires=requirements,
     tests_require=dev_requirements,
+    test_suite='nose.collector',
     license=license,
     zip_safe=False,
     keywords=[title],
