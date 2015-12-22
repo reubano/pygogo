@@ -10,18 +10,19 @@ from __future__ import (
 
 import sys
 import itertools as it
-import pygogo as gogo
 
 from os import getcwd, path as p
 from argparse import RawTextHelpFormatter, ArgumentParser
 
-hdlrs_full = filter(lambda h: h.endswith('hdlr'), dir(gogo.handlers))
-hdlrs = [h[:-5] for h in hdlrs_full]
-levels = ['critical', 'error', 'warning', 'info', 'debug']
-frmtrs_full = filter(lambda h: h.endswith('formatter'), dir(gogo.formatters))
-formats = [f[:-10] for f in frmtrs_full]
-curdir = p.basename(getcwd())
-logfile = '%s.log' % curdir
+import pygogo as gogo
+
+HDLRS_FULL = tuple(h for h in dir(gogo.handlers) if h.endswith('hdlr'))
+HDLRS = tuple(h[:-5] for h in HDLRS_FULL)
+LEVELS = ('critical', 'error', 'warning', 'info', 'debug')
+FRMTRS_FULL = tuple(f for f in dir(gogo.formatters) if f.endswith('formatter'))
+FORMATS = tuple(f[:-10] for f in FRMTRS_FULL)
+CURDIR = p.basename(getcwd())
+LOGFILE = '%s.log' % CURDIR
 
 parser = ArgumentParser(
     description='description: Logs a given message', prog='gogo',
@@ -32,67 +33,67 @@ parser.add_argument(
     help='The message to log (default: reads from stdin).')
 
 parser.add_argument(
-    '-l', '--level', metavar='LEVEL', choices=levels, default='info',
+    '-l', '--level', metavar='LEVEL', choices=LEVELS, default='info',
     help=(
         "The level to log the message (default: info).\n"
         "Must be one of: %s,\n%s.\n\n" % (
-            ', '.join(levels[:4]), ', '.join(levels[4:]))))
+            ', '.join(LEVELS[:4]), ', '.join(LEVELS[4:]))))
 
 parser.add_argument(
-    '-n', '--name', default=curdir,
-    help="The logger name (default: %s).\n\n" % curdir)
+    '-n', '--name', default=CURDIR,
+    help="The logger name (default: %s).\n\n" % CURDIR)
 
 parser.add_argument(
-    '-D', '--high-hdlr', metavar='HANDLER', choices=hdlrs, default='stderr',
+    '-D', '--high-hdlr', metavar='HANDLER', choices=HDLRS, default='stderr',
     help=(
         "The high pass log handler (default: stderr).\n"
         "Must be one of: %s,\n%s.\n\n" % (
-            ', '.join(hdlrs[:4]), ', '.join(hdlrs[4:]))))
+            ', '.join(HDLRS[:4]), ', '.join(HDLRS[4:]))))
 
 parser.add_argument(
-    '-d', '--low-hdlr', metavar='HANDLER', choices=hdlrs, default='stdout',
+    '-d', '--low-hdlr', metavar='HANDLER', choices=HDLRS, default='stdout',
     help=(
         "The low pass log handler (default: stdout).\n"
         "Must be one of: %s,\n%s.\n\n" % (
-            ', '.join(hdlrs[:4]), ', '.join(hdlrs[4:]))))
+            ', '.join(HDLRS[:4]), ', '.join(HDLRS[4:]))))
 
 parser.add_argument(
-    '-L', '--high-level', metavar='LEVEL', choices=levels, default='warning',
+    '-L', '--high-level', metavar='LEVEL', choices=LEVELS, default='warning',
     help=(
         "Min level to log to the high pass handler\n(default: warning)."
         "\nMust be one of: %s,\n%s.\n\n" % (
-            ', '.join(hdlrs[:4]), ', '.join(hdlrs[4:]))))
+            ', '.join(HDLRS[:4]), ', '.join(HDLRS[4:]))))
 
 parser.add_argument(
-    '-e', '--low-level', metavar='LEVEL', choices=levels, default='debug',
+    '-e', '--low-level', metavar='LEVEL', choices=LEVELS, default='debug',
     help=(
         "Min level to log to the low pass handler\n(default: debug)."
         "\nMust be one of: %s,\n%s.\n\n" % (
-            ', '.join(hdlrs[:4]), ', '.join(hdlrs[4:]))))
+            ', '.join(HDLRS[:4]), ', '.join(HDLRS[4:]))))
 
 parser.add_argument(
-    '-F', '--high-format', metavar='FORMAT', choices=formats, default='basic',
+    '-F', '--high-format', metavar='FORMAT', choices=FORMATS, default='basic',
     help=(
         "High pass handler log format (default: basic)."
         "\nMust be one of: %s,\n%s.\n\n" % (
-            ', '.join(formats[:4]), ', '.join(formats[4:]))))
+            ', '.join(FORMATS[:4]), ', '.join(FORMATS[4:]))))
 
 parser.add_argument(
-    '-o', '--low-format', metavar='FORMAT', choices=formats, default='basic',
+    '-o', '--low-format', metavar='FORMAT', choices=FORMATS, default='basic',
     help=(
         "Low pass handler log format (default: basic)."
         "\nMust be one of: %s,\n%s.\n\n" % (
-            ', '.join(formats[:4]), ', '.join(formats[4:]))))
+            ', '.join(FORMATS[:4]), ', '.join(FORMATS[4:]))))
 
 parser.add_argument(
     '-m', '--monolog', action='store_true', default=False,
     help="Log high level events only to high pass handler.\n\n")
 
 parser.add_argument(
-    '-f', '--filename', action='append', default=[logfile],
+    '-f', '--filename', action='append', default=[LOGFILE],
     help=(
         "The filename to log to  (default: %s).\nUsed in the following "
-        "handlers: file.\n\n") % logfile)
+        "handlers: file.\n\n") % LOGFILE)
 
 parser.add_argument(
     '-s', '--subject', default=["You've got mail"], action='append',
@@ -138,17 +139,19 @@ args = parser.parse_args()
 
 
 def run():
+    """CLI runner
+    """
     gogo_logger = gogo.Gogo(__name__, verbose=args.verbose).get_logger('run')
 
     if args.version:
         gogo_logger.info('gogo v%s' % gogo.__version__)
         exit(0)
 
-    counted = set(['get', 'tcp'])
-    appended = set(['filename', 'subject', 'url', 'host', 'port'])
+    counted = {'get', 'tcp'}
+    appended = {'filename', 'subject', 'url', 'host', 'port'}
     items = args._get_kwargs()
-    counted_args = filter(lambda x: x[0] in counted, items)
-    appended_args = filter(lambda x: x[0] in appended, items)
+    counted_args = [i for i in items if i[0] in counted]
+    appended_args = [i for i in items if i[0] in appended]
 
     high_appended_args = [(k, v[0]) for k, v in appended_args]
     high_counted_args = [(k, v > 0) for k, v in counted_args]

@@ -24,9 +24,9 @@ import sys
 
 from json import JSONEncoder
 
-hdlr = logging.StreamHandler(sys.stdout)
+module_hdlr = logging.StreamHandler(sys.stdout)
 module_logger = logging.getLogger(__name__)
-module_logger.addHandler(hdlr)
+module_logger.addHandler(module_hdlr)
 
 
 class CustomEncoder(JSONEncoder):

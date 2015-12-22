@@ -69,9 +69,9 @@ JSON_FORMAT = (
 
 DATEFMT = '%Y-%m-%d %H:%M:%S'
 
-hdlr = logging.StreamHandler(sys.stdout)
+module_hdlr = logging.StreamHandler(sys.stdout)
 module_logger = logging.getLogger(__name__)
-module_logger.addHandler(hdlr)
+module_logger.addHandler(module_hdlr)
 
 
 class StructuredFormatter(logging.Formatter):
@@ -176,9 +176,9 @@ class StructuredFormatter(logging.Formatter):
 "lineno": 2, "type": "exceptions.ZeroDivisionError"}'
         """
         keys = ['type', 'value', 'filename', 'lineno', 'function', 'text']
-        type_, value, tb = exc_info
+        type_, value, trcbk = exc_info
         stype = str(type_).replace('type', '').strip(" '<>")
-        values = it.chain([stype, value], *traceback.extract_tb(tb))
+        values = it.chain([stype, value], *traceback.extract_tb(trcbk))
         return CustomEncoder().encode(dict(zip(keys, values)))
 
 basic_formatter = logging.Formatter(BASIC_FORMAT)

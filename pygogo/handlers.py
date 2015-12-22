@@ -32,9 +32,9 @@ from logging import handlers as hdlrs
 
 ENCODING = 'utf-8'
 
-hdlr = logging.StreamHandler(sys.stdout)
+module_hdlr = logging.StreamHandler(sys.stdout)
 module_logger = logging.getLogger(__name__)
-module_logger.addHandler(hdlr)
+module_logger.addHandler(module_hdlr)
 
 
 def stdout_hdlr(**kwargs):
@@ -216,6 +216,8 @@ def email_hdlr(subject=None, **kwargs):
 
     Args:
         subject (str): The email subject (default: You've got mail.).
+
+        kwargs(dict): Keyword arguments.
 
     Kwargs:
         host (str): The email server host (default: localhost).
