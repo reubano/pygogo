@@ -119,7 +119,7 @@ Library Examples
 
     logger = gogo.Gogo(
         'examples.fmt',
-        low_hdlr=gogo.handlers.file_hdlr('custom_fmt.log', mode='w'),
+        low_hdlr=gogo.handlers.file_hdlr('custom_fmt.log'),
         low_formatter=formatter,
         high_level='error',
         high_formatter=formatter).logger
