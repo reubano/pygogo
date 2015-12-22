@@ -2,15 +2,8 @@
 TODO
 ====
 
-dev
----
-
-- Write the tests
-- Write the project
-- Release
-- Optimize for clarity
-- Release
-- Optimize for speed
-- Release
+- Upgrade to Python 3
+- Improve buffered handler support
+- Add async option
 
 .. todo:: vim: set filetype=rst:
