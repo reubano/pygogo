@@ -29,11 +29,15 @@ def check():
 
 
 @manager.arg('where', 'w', help='Modules to check')
+@manager.arg('strict', 's', help='Check with pylint')
 @manager.command
-def lint(where=None):
+def lint(where=None, strict=False):
     """Check style with linters"""
-    opts = where if where else ''
-    call([p.join(_basedir, 'helpers', 'lint'), opts])
+    call(['flake8', where] if where else 'flake8')
+
+    if strict:
+        args = 'pylint --rcfile=tests/standard.rc -rn -fparseable pygogo'
+        call(args.split(' '))
 
 
 @manager.command

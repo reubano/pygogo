@@ -168,10 +168,14 @@ class Gogo(object):
 
         self.loggers = set([])
         self.name = name
-        self.high_hdlr = kwargs.get('high_hdlr')
-        self.low_hdlr = kwargs.get('low_hdlr')
-        self.high_formatter = kwargs.get('high_formatter')
-        self.low_formatter = kwargs.get('low_formatter')
+        self.handlers = {
+            'high': kwargs.get('high_hdlr'),
+            'low': kwargs.get('low_hdlr')}
+
+        self.formatters = {
+            'high': kwargs.get('high_formatter'),
+            'low': kwargs.get('low_formatter')}
+
         self.monolog = kwargs.get('monolog')
 
     @property
@@ -257,7 +261,7 @@ class Gogo(object):
             >>> [hdlr.formatter, hdlr.filters, hdlr.level]
             [None, [], 0]
             >>> kwargs = {'monolog': going.monolog}
-            >>> going.update_hdlr(hdlr, going.low_level, **kwargs)
+            >>> going.update_hdlr(hdlr, going.levels['low'], **kwargs)
             >>> [hdlr.formatter, hdlr.filters, hdlr.level]  # doctest: +ELLIPSIS
             [<logging.Formatter obj...>, [<pygogo.utils.LogFilter obj...>], 10]
         """
@@ -265,7 +269,7 @@ class Gogo(object):
         hdlr.setLevel(level)
 
         if monolog:
-            log_filter = utils.LogFilter(self.high_level)
+            log_filter = utils.LogFilter(self.levels['high'])
             hdlr.addFilter(log_filter)
 
         if kwargs:
@@ -301,7 +305,7 @@ class Gogo(object):
         def_hdlrs = [handlers.stderr_hdlr(), handlers.stdout_hdlr()]
 
         hdlrs = [s or d for s, d in zip(self_hdlrs, def_hdlrs)]
-        levels = [self.high_level, self.low_level]
+        levels = [self.levels['high'], self.levels['low']]
         monologs = [False, self.monolog]
         return zip(hdlrs, levels, fmtrs, monologs)
 
@@ -346,7 +350,7 @@ class Gogo(object):
                 self.update_hdlr(copied_hdlr, level, fmtr, monolog, **kwargs)
                 logger.addHandler(copied_hdlr)
 
-            logger.setLevel(self.low_level)
+            logger.setLevel(self.levels['low'])
 
         return logger
 
@@ -394,6 +398,6 @@ class Gogo(object):
                 self.update_hdlr(copied_hdlr, level, fmtr, monolog)
                 logger.addHandler(copied_hdlr)
 
-            logger.setLevel(self.low_level)
+            logger.setLevel(self.levels['low'])
 
         return utils.StructuredAdapter(logger, kwargs)
