@@ -6,6 +6,7 @@
 rm -f docs/pygogo.rst
 rm -f docs/modules.rst
 sphinx-apidoc -o docs/ pygogo
-$(MAKE) -C docs clean
-$(MAKE) -C docs html
-open docs/_build/html/index.html
+cd docs
+make clean
+make html
+open _build/html/index.html

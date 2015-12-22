@@ -2,36 +2,41 @@
    sphinx-quickstart on Tue Jul  9 22:26:36 2013.
 
 Welcome to pygogo's documentation!
-=================================
+==================================
 
-Contents:
-=========
+Contents
+========
 
 .. toctree::
    :maxdepth: 2
 
-   installation
    usage
+   installation
    contributing
    authors
    roadmap
    changes
 
-.. include:: ../README.rst
-    :start-line: 23
+API and Indices
+===============
 
-Indices and tables
-==================
-
-* :ref:`genindex`
+* :ref:`api`
 * :ref:`modindex`
+* :ref:`genindex`
 * :ref:`search`
+
+Overview
+========
+
+.. include:: ../INTRO.rst
+
+.. include:: ../README.rst
+    :start-line: 16
+    :end-line: 371
 
 Feedback
 ========
 
 If you have any suggestions or questions about **pygogo** feel free to email me
-at reubano@gmail.com.
-
-If you encounter any errors or problems with **pygogo**, please let me know!
-Open an Issue at the GitHub http://github.com/reubano/pygogo main repository.
+at reubano@gmail.com. If you encounter any errors or problems with **pygogo**,
+open an issue at http://github.com/reubano/pygogo/issues.
