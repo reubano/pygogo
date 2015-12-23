@@ -43,7 +43,7 @@ import sys
 from copy import copy
 from . import formatters, handlers, utils
 
-__version__ = '0.6.3'
+__version__ = '0.7.0'
 
 __all__ = ['formatters', 'handlers', 'utils']
 __title__ = 'pygogo'
@@ -86,13 +86,14 @@ class Gogo(object):
         +====================================+=================+
         | < levels['low']                    | none            |
         +------------------------------------+-----------------+
-        | >= levels['low'], < levels['high'] | handlers['low'] |
+        | >= levels['low'], < levels['high'] | low handler     |
         +------------------------------------+-----------------+
         | >= levels['high']                  | both handlers * |
         +------------------------------------+-----------------+
 
         * This is the case when :attr:`monolog` is `False`. If :attr:`monolog`
-          is True, then :attr:`high_hdlr` will be the only message handler
+          is True, then :attr:`handlers['high']` will be the only
+          message handler
 
     Args:
         name (string): The logger name.

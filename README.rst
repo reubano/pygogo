@@ -8,27 +8,30 @@ pygogo: a Python logger with super powers
     :width: 800
     :align: center
 
-.. include:: INTRO.rst
+.. include:: https://github.com/reubano/pygogo/blob/master/INTRO.rst
     :end-line: 38
 
-.. include:: USAGE.rst
+.. include:: https://github.com/reubano/pygogo/blob/master/USAGE.rst
 
-.. include:: INSTALLATION.rst
+.. include:: https://github.com/reubano/pygogo/blob/master/INSTALLATION.rst
 
 Project structure
 -----------------
 
 .. code-block:: bash
 
-    ├── AUTHORS.rst
+    ┌── AUTHORS.rst
     ├── CHANGES.rst
     ├── CONTRIBUTING.rst
+    ├── INSTALLATION.rst
+    ├── INTRO.rst
     ├── LICENSE
     ├── MANIFEST.in
     ├── Makefile
     ├── pygogo.png
     ├── README.rst
     ├── TODO.rst
+    ├── USAGE.rst
     ├── bin
     │   └── gogo
     ├── dev-requirements.txt
@@ -377,4 +380,4 @@ Please see the `contributing doc`_ for more details.
 .. |pypi| image:: https://img.shields.io/pypi/v/pygogo.svg
     :target: https://pypi.python.org/pypi/pygogo
 
-.. _contributing doc: https://github.com/reubano/pygogo/master/CONTRIBUTING.png
+.. _contributing doc: https://github.com/reubano/pygogo/blob/master/CONTRIBUTING.rst

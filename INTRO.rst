@@ -18,8 +18,8 @@ Motivation
 ----------
 
 The standard logging module is great, but requires a ton of boilerplate before
-you can do anything really interesting with it. pygogo provides many of these
-useful logging use-cases out of the box. A reimplementation of
+you can do anything really interesting with it. I designed pygogo to provide
+many useful logging use-cases out of the box. A reimplementation of
 `Using LoggerAdapters to impart contextual information`_ is shown below:
 
 .. code-block:: python

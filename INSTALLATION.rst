@@ -15,8 +15,9 @@ or easy_install
 
     easy_install pygogo
 
+.. [#] Detailed installation instructions
 
-.. [#] If you have ``virtualenvwrapper`` installed, at the command line type:
+If you have ``virtualenvwrapper`` installed, at the command line type:
 
 .. code-block:: bash
 
