@@ -84,12 +84,9 @@ class StructuredFormatter(logging.Formatter):
     """A logging formatter that creates a json string from log details
 
     Args:
-        args (string): The min level to log to low_hdlr.
+        fmt (string): Log message format.
 
-        kwargs (dict): Keyword arguments.
-
-    Kwargs:
-        high_hdlr (obj): The high pass log handler (a
+        datefmt (dict): Log date format.
 
     Returns:
         New instance of :class:`StructuredFormatter`
@@ -112,16 +109,13 @@ class StructuredFormatter(logging.Formatter):
         >>> [result[k] for k in keys]  # doctest: +ELLIPSIS
         [u'INFO', u'hello world', ..., u'root', u'20...']
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, fmt=None, datefmt=None):
         """Initialization method.
 
         Args:
-            args (string): The min level to log to low_hdlr.
+            fmt (string): Log message format.
 
-            kwargs (dict): Keyword arguments.
-
-        Kwargs:
-            high_hdlr (obj): The high pass log handler (a
+            datefmt (dict): Log date format.
 
         Returns:
             New instance of :class:`StructuredFormatter`
@@ -133,7 +127,7 @@ class StructuredFormatter(logging.Formatter):
         empty_record = logging.makeLogRecord({})
         filterer = lambda k: k not in empty_record.__dict__ and k != 'asctime'
         self.filterer = filterer
-        super(StructuredFormatter, self).__init__(*args, **kwargs)
+        super(StructuredFormatter, self).__init__(fmt, datefmt)
 
     def format(self, record):
         """ Formats a record as a dict string
@@ -178,7 +172,7 @@ class StructuredFormatter(logging.Formatter):
                 returned by `sys.exc_info()`
 
         Returns:
-            dict: The formatted exception
+            str: The formatted exception
 
         Examples:
             >>> from json import loads
