@@ -22,6 +22,7 @@ Examples:
     Add a structured formatter::
 
         >>> from io import StringIO
+        >>> from json import loads
 
         >>> s = StringIO()
         >>> logger = logging.getLogger('structured_logger')
@@ -60,13 +61,11 @@ import sys
 import traceback
 import itertools as it
 
-from json import loads
 from builtins import *
-
 from .utils import CustomEncoder
 
 BASIC_FORMAT = '%(message)s'
-BOM_FORMAT = u'\ufeff%(message)s'
+BOM_FORMAT = '\ufeff%(message)s'
 CONSOLE_FORMAT = '%(name)-12s: %(levelname)-8s %(message)s'
 FIXED_FORMAT = '%(asctime)s.%(msecs)-3d %(name)-12s %(levelname)-8s %(message)s'
 CSV_FORMAT = '%(asctime)s.%(msecs)d,%(name)s,%(levelname)s,"%(message)s"'
@@ -97,6 +96,7 @@ class StructuredFormatter(logging.Formatter):
 
     Examples:
         >>> from io import StringIO
+        >>> from json import loads
 
         >>> s = StringIO()
         >>> logger = logging.getLogger()
@@ -145,6 +145,8 @@ class StructuredFormatter(logging.Formatter):
             str: The formatted content
 
         Examples:
+            >>> from json import loads
+
             >>> formatter = StructuredFormatter(BASIC_FORMAT, datefmt='%Y')
             >>> logger = logging.getLogger()
             >>> args = (logging.INFO, '.', 0, 'hello world', [], None)
@@ -179,6 +181,8 @@ class StructuredFormatter(logging.Formatter):
             dict: The formatted exception
 
         Examples:
+            >>> from json import loads
+
             >>> formatter = StructuredFormatter(BASIC_FORMAT)
             >>> try:
             ...     1 / 0
@@ -191,8 +195,6 @@ class StructuredFormatter(logging.Formatter):
             ... # doctest: +NORMALIZE_WHITESPACE
             [u'<doctest pygogo...formatException[2]>', u'<module>', 2,
             u'1 / 0', u'exceptions.ZeroDivisionError', u'division by zero']
-
-
         """
         keys = ['type', 'value', 'filename', 'lineno', 'function', 'text']
         type_, value, trcbk = exc_info

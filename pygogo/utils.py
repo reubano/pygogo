@@ -22,7 +22,7 @@ from __future__ import (
 import logging
 import sys
 
-from json import JSONEncoder, loads
+from json import JSONEncoder
 from builtins import *
 
 module_hdlr = logging.StreamHandler(sys.stdout)
@@ -85,6 +85,8 @@ class StructuredMessage(object):
         :class:`pygogo.utils.StructuredAdapter`
 
     Examples:
+        >>> from json import loads
+
         >>> msg = StructuredMessage('hello world', key='value')
         >>> loads(str(msg)) == {'message': 'hello world', 'key': 'value'}
         True
@@ -115,6 +117,8 @@ class StructuredMessage(object):
             str: The encoded object
 
         Examples
+            >>> from json import loads
+
             >>> msg = str(StructuredMessage('hello world', key='value'))
             >>> loads(msg) == {'message': 'hello world', 'key': 'value'}
             True
@@ -134,6 +138,7 @@ class StructuredAdapter(logging.LoggerAdapter):
 
     Examples:
         >>> from tempfile import TemporaryFile
+        >>> from json import loads
 
         >>> f = TemporaryFile()
         >>> logger = logging.getLogger()
@@ -159,12 +164,12 @@ class StructuredAdapter(logging.LoggerAdapter):
 
         Examples:
             >>> logger = logging.getLogger()
-            >>> structured_logger = StructuredAdapter(logger, {'all': 'true'})
+            >>> structured_logger = StructuredAdapter(logger, {'all': True})
             >>> extra = {'key': 'value'}
             >>> m, k = structured_logger.process('message', {'extra': extra})
             >>> m  # doctest: +ELLIPSIS
             <pygogo.utils.StructuredMessage object at 0x...>
-            >>> k == {'extra': {'all': 'true', 'key': 'value'}}
+            >>> k == {'extra': {'all': True, 'key': 'value'}}
             True
         """
         extra = kwargs.get('extra', {})

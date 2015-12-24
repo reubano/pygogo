@@ -105,8 +105,8 @@ Examples:
         >>> logger1.debug('Quick zephyrs blow, daft Jim.')
         >>> logger1.info('How daft jumping zebras vex.')
         examples.one.area1: INFO     How daft jumping zebras vex.
-        >>> logger2.warning('Jail zesty vixen who grabbed pay.')
-        examples.one.area2: WARNING  Jail zesty vixen who grabbed pay.
+        >>> logger2.warning('Jail zesty vixen who pay.')
+        examples.one.area2: WARNING  Jail zesty vixen who pay.
         >>> logger2.error('The five boxing wizards jump.')
         examples.one.area2: ERROR    The five boxing wizards jump.
 
@@ -116,7 +116,7 @@ Examples:
         [u'2015... examples.one.base INFO     Jackdaws love my big sphinx.',
         u'2015... examples.one.area1 DEBUG    Quick zephyrs blow, daft Jim.',
         u'2015... examples.one.area1 INFO     How daft jumping zebras vex.',
-        u'2015... examples.one.area2 WARNING  Jail zesty vixen who grabbed pay.',
+        u'2015... examples.one.area2 WARNING  Jail zesty vixen who pay.',
         u'2015... examples.one.area2 ERROR    The five boxing wizards jump.']
 
 
