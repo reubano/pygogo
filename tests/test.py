@@ -41,8 +41,8 @@ def main(script, tests, verbose=False, stop=True):
     for pos, test in enumerate(tests):
         num = pos + 1
         opts, arguments, expected = test
-        joined_opts = ' '.join(opts)
-        joined_args = '"%s"' % '" "'.join(arguments)
+        joined_opts = ' '.join(opts) if opts else ''
+        joined_args = '"%s"' % '" "'.join(arguments) if arguments else ''
         command = "%s %s %s" % (script, joined_opts, joined_args)
         short_command = "%s %s %s" % (short_script, joined_opts, joined_args)
         result = env.run(command, cwd=p.abspath(p.dirname(p.dirname(__file__))))
@@ -91,8 +91,8 @@ if __name__ == '__main__':
     script = p.join(parent_dir, 'bin', 'gogo')
 
     tests = [
-        (['--help'], [''], True),
-        (['--version'], [''], 'gogo v%s\n' % gogo.__version__),
+        (['--help'], [], True),
+        (['--version'], [], 'gogo v%s\n' % gogo.__version__),
         ([], ['hello world'], 'hello world\n'),
         (['-l debug'], ['hello world'], ''),
         (['-Vl debug'], ['hello world'], 'hello world\n'),

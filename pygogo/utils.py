@@ -22,7 +22,7 @@ from __future__ import (
 import logging
 import sys
 
-from json import JSONEncoder
+from json import JSONEncoder, loads
 from builtins import *
 
 module_hdlr = logging.StreamHandler(sys.stdout)
@@ -55,19 +55,12 @@ class CustomEncoder(JSONEncoder):
         """
         if hasattr(obj, 'real'):
             encoded = float(obj)
-        elif set(['quantize', 'year', 'hour']).intersection(dir(obj)):
-            encoded = str(obj)
         elif hasattr(obj, 'union'):
             encoded = tuple(obj)
         elif set(['next', 'union', '__iter__']).intersection(dir(obj)):
             encoded = list(obj)
-        elif isinstance(obj, str):
-            encoded = obj.encode('unicode_escape').decode('ascii')
         else:
-            try:
-                encoded = super(CustomEncoder, self).default(obj)
-            except TypeError:
-                encoded = str(obj)
+            encoded = str(obj)
 
         return encoded
 
@@ -92,12 +85,9 @@ class StructuredMessage(object):
         :class:`pygogo.utils.StructuredAdapter`
 
     Examples:
-        >>> logger = logging.getLogger()
-        >>> hdlr = logging.StreamHandler(sys.stdout)
-        >>> hdlr.setFormatter(logging.Formatter('%(message)s'))
-        >>> logger.addHandler(hdlr)
-        >>> logger.info(StructuredMessage('hello world', key='value'))
-        {"message": "hello world", "key": "value"}
+        >>> msg = StructuredMessage('hello world', key='value')
+        >>> loads(str(msg)) == {'message': 'hello world', 'key': 'value'}
+        True
     """
     def __init__(self, message=None, **kwargs):
         """Initialization method.
@@ -125,10 +115,12 @@ class StructuredMessage(object):
             str: The encoded object
 
         Examples
-            >>> str(StructuredMessage('hello world', key='value'))
-            '{"message": "hello world", "key": "value"}'
+            >>> msg = str(StructuredMessage('hello world', key='value'))
+            >>> loads(msg) == {'message': 'hello world', 'key': 'value'}
+            True
+
         """
-        return CustomEncoder().encode(self.kwargs)
+        return str(CustomEncoder().encode(self.kwargs))
 
 
 class StructuredAdapter(logging.LoggerAdapter):
@@ -141,12 +133,18 @@ class StructuredAdapter(logging.LoggerAdapter):
         :meth:`pygogo.Gogo.get_structured_logger`
 
     Examples:
+        >>> from tempfile import TemporaryFile
+
+        >>> f = TemporaryFile()
         >>> logger = logging.getLogger()
-        >>> hdlr = logging.StreamHandler(sys.stdout)
+        >>> hdlr = logging.StreamHandler(f)
         >>> logger.addHandler(hdlr)
-        >>> structured_logger = StructuredAdapter(logger, {'all': 'true'})
-        >>> structured_logger.debug('hello', extra={'key': 'value'})
-        {"all": "true", "message": "hello", "key": "value"}
+        >>> structured_logger = StructuredAdapter(logger, {'all': True})
+        >>> structured_logger.debug('hello', extra={'key': u'value'})
+        >>> f.seek(0)
+        >>> loads(f.read()) == {
+        ...     'all': True, 'message': 'hello', 'key': 'value'}
+        True
     """
     def process(self, msg, kwargs):
         """ Modifies the message and/or keyword arguments passed to a logging
@@ -161,15 +159,13 @@ class StructuredAdapter(logging.LoggerAdapter):
 
         Examples:
             >>> logger = logging.getLogger()
-            >>> hdlr = logging.StreamHandler(sys.stdout)
-            >>> logger.addHandler(hdlr)
             >>> structured_logger = StructuredAdapter(logger, {'all': 'true'})
             >>> extra = {'key': 'value'}
             >>> m, k = structured_logger.process('message', {'extra': extra})
             >>> m  # doctest: +ELLIPSIS
             <pygogo.utils.StructuredMessage object at 0x...>
-            >>> k
-            {u'extra': {u'all': u'true', u'key': u'value'}}
+            >>> k == {'extra': {'all': 'true', 'key': 'value'}}
+            True
         """
         extra = kwargs.get('extra', {})
         extra.update(self.extra)

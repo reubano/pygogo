@@ -183,10 +183,10 @@ class TestMain(BaseTest):
         nt.assert_equal(console_msg, results)
 
     def test_structured_formatter(self):
-        console_msg = (
-            '{"snowman": "\\u2603", "name": "structured_formatter.base", '
-            '"level": "INFO", "message": "log message", "time": "2015", '
-            '"msecs": ..., "set_value": [1, 2, 3]}')
+        console_msg = {
+            'snowman': '\u2603', 'name': 'structured_formatter.base',
+            'level': 'INFO', 'message': 'log message', 'time': '2015',
+            'msecs': '...', 'set_value': [1, 2, 3]}
 
         log_format = gogo.formatters.BASIC_FORMAT
         skwargs = {'datefmt': '%Y'}
@@ -196,7 +196,14 @@ class TestMain(BaseTest):
         logger = gogo.Gogo('structured_formatter', **kwargs).logger
         extra = {'set_value': set([1, 2, 3]), 'snowman': '\u2603'}
         logger.info('log message', extra=extra)
-        nt.assert_equal_ellipsis(console_msg, sys.stdout.getvalue().strip())
+        result = loads(sys.stdout.getvalue())
+        result['msecs'] = str(result['msecs'])
+        keys = sorted(result.keys())
+        nt.assert_equal(sorted(console_msg.keys()), keys)
+
+        for k in keys:
+            f = nt.assert_equal_ellipsis if k == 'msecs' else nt.assert_equal
+            f(console_msg[k], result[k])
 
     def test_structured_logging(self):
         kwargs = {'persist': True}
