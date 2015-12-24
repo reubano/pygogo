@@ -9,7 +9,7 @@ from __future__ import (
     unicode_literals)
 
 from os import path as p
-from subprocess import call
+from subprocess import call, check_call, CalledProcessError
 
 from builtins import *
 from manager import Manager
@@ -18,16 +18,31 @@ manager = Manager()
 BASEDIR = p.dirname(__file__)
 
 
+def upload_():
+    """Upload distribution files"""
+    check_call('twine upload %s' % p.join(BASEDIR, 'dist', '*'), shell=True)
+
+
+def sdist_():
+    """Create a source distribution package"""
+    check_call(p.join(BASEDIR, 'helpers', 'srcdist'))
+
+
+def wheel_():
+    """Create a wheel package"""
+    check_call(p.join(BASEDIR, 'helpers', 'wheel'))
+
+
 @manager.command
 def clean():
     """Remove Python file and build artifacts"""
-    call(p.join(BASEDIR, 'helpers', 'clean'))
+    exit(call(p.join(BASEDIR, 'helpers', 'clean')))
 
 
 @manager.command
 def check():
     """Check staged changes for lint errors"""
-    call(p.join(BASEDIR, 'helpers', 'check-stage'))
+    exit(call(p.join(BASEDIR, 'helpers', 'check-stage')))
 
 
 @manager.arg('where', 'w', help='Modules to check')
@@ -35,25 +50,27 @@ def check():
 @manager.command
 def lint(where=None, strict=False):
     """Check style with linters"""
-    call(['flake8', where] if where else 'flake8')
     args = 'pylint --rcfile=tests/standard.rc -rn -fparseable pygogo'
-    call(args.split(' ') + ['--py3k'])
 
-    if strict:
-        call(args.split(' '))
+    try:
+        check_call(['flake8', where] if where else 'flake8')
+        check_call(args.split(' ') + ['--py3k'])
+        check_call(args.split(' ')) if strict else None
+    except CalledProcessError as e:
+        exit(e.returncode)
 
 
 @manager.command
 def pipme():
     """Install requirements.txt"""
-    call('pip install -r requirements.txt'.split(' '))
+    exit(call('pip install -r requirements.txt'.split(' ')))
 
 
 @manager.command
 def require():
     """Create requirements.txt"""
     cmd = 'pip freeze -l | grep -vxFf dev-requirements.txt > requirements.txt'
-    call(cmd, shell=True)
+    exit(call(cmd, shell=True))
 
 
 @manager.arg('where', 'w', help='test path', default=None)
@@ -63,58 +80,77 @@ def require():
 @manager.command
 def test(where=None, stop=False, tox=False):
     """Run nose, tox, and script tests"""
-    if tox:
-        call('tox')
-    else:
-        opts = '-xv' if stop else '-v'
-        opts += 'w %s' % where if where else ''
-        call(('nosetests %s' % opts).split(' '))
-        call(['python', p.join(BASEDIR, 'tests', 'test.py')])
+    opts = '-xv' if stop else '-v'
+    opts += 'w %s' % where if where else ''
+
+    try:
+        if tox:
+            check_call('tox')
+        else:
+            check_call(('nosetests %s' % opts).split(' '))
+            check_call(['python', p.join(BASEDIR, 'tests', 'test.py')])
+    except CalledProcessError as e:
+        exit(e.returncode)
 
 
 @manager.command
 def docs():
     """Generate Sphinx HTML documentation, including API docs"""
-    call(p.join(BASEDIR, 'helpers', 'docs'))
+    exit(call(p.join(BASEDIR, 'helpers', 'docs')))
 
 
 @manager.command
 def register():
     """Register package with PyPI"""
-    call('python %s register' % p.join(BASEDIR, 'setup.py'), shell=True)
+    exit(call('python %s register' % p.join(BASEDIR, 'setup.py'), shell=True))
 
 
 @manager.command
 def release():
     """Package and upload a release"""
-    sdist()
-    wheel()
-    upload()
+    try:
+        sdist_()
+        wheel_()
+        upload_()
+    except CalledProcessError as e:
+        exit(e.returncode)
 
 
 @manager.command
 def build():
     """Create a source distribution and wheel package"""
-    sdist()
-    wheel()
+    try:
+        sdist_()
+        wheel_()
+    except CalledProcessError as e:
+        exit(e.returncode)
 
 
 @manager.command
 def upload():
     """Upload distribution files"""
-    call('twine upload %s' % p.join(BASEDIR, 'dist', '*'), shell=True)
+    try:
+        upload_()
+    except CalledProcessError as e:
+        exit(e.returncode)
 
 
 @manager.command
 def sdist():
     """Create a source distribution package"""
-    call(p.join(BASEDIR, 'helpers', 'srcdist'))
+    try:
+        sdist_()
+    except CalledProcessError as e:
+        exit(e.returncode)
 
 
 @manager.command
 def wheel():
     """Create a wheel package"""
-    call(p.join(BASEDIR, 'helpers', 'wheel'))
+    try:
+        wheel_()
+    except CalledProcessError as e:
+        exit(e.returncode)
 
 
 if __name__ == '__main__':
