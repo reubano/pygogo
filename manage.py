@@ -59,18 +59,17 @@ def require():
 @manager.arg('where', 'w', help='test path', default=None)
 @manager.arg(
     'stop', 'x', help='Stop after first error', type=bool, default=False)
+@manager.arg('tox', 't', help='Run tox tests')
 @manager.command
-def test(where=None, stop=False):
-    """Run nose and script tests"""
-    opts = '-xv' if stop else '-v'
-    opts += 'w %s' % where if where else ''
-    call([p.join(BASEDIR, 'helpers', 'test'), opts])
-
-
-@manager.command
-def tox():
-    """Run tests on every Python version with tox"""
-    call('tox')
+def test(where=None, stop=False, tox=False):
+    """Run nose, tox, and script tests"""
+    if tox:
+        call('tox')
+    else:
+        opts = '-xv' if stop else '-v'
+        opts += 'w %s' % where if where else ''
+        call(('nosetests %s' % opts).split(' '))
+        call(['python', p.join(BASEDIR, 'tests', 'test.py')])
 
 
 @manager.command

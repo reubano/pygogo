@@ -32,7 +32,8 @@ lint:
 	flake8 pygogo tests
 
 test:
-	helpers/test
+	nosetests -xv
+	python tests/test.py
 
 release: sdist wheel upload
 
