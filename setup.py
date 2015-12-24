@@ -20,12 +20,13 @@ changes = pkutils.read('CHANGES.rst').replace('.. :changelog:', '')
 license = pygogo.__license__
 version = pygogo.__version__
 title = pygogo.__title__
+description = pkutils.__description__
 gh = 'https://github.com/reubano'
 
 setup(
     name=title,
     version=version,
-    description=pygogo.__description__,
+    description=description,
     long_description=readme + '\n\n' + changes,
     author=pygogo.__author__,
     author_email=pygogo.__email__,
@@ -38,7 +39,7 @@ setup(
     test_suite='nose.collector',
     license=license,
     zip_safe=False,
-    keywords=[title],
+    keywords=[title] + description.split(' '),
     package_data={},
     classifiers=[
         pkutils.LICENSES[license],
