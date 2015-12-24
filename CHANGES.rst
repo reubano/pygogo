@@ -18,7 +18,7 @@ Here you can find the recent changes to pygogo..
     :released: 2015-12-05
 
     .. change::
-        :tags: project
+        :tags: docs
 
         First release on PyPi.
 
