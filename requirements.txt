@@ -1,1 +1,1 @@
-pkutils==0.6.1
+pkutils==0.7.1
