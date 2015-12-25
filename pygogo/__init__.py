@@ -24,12 +24,21 @@ Examples:
 
     advanced usage::
 
-        >>> kwargs = {'monolog': True, 'high_hdlr': handlers.stdout_hdlr()}
+        >>> from io import StringIO
+        >>> from json import loads
+
+        >>> high = StringIO()
+        >>> low = StringIO()
+        >>> kwargs = {
+        ...     'monolog': True, 'high_hdlr': handlers.fileobj_hdlr(high),
+        ...     'low_hdlr': handlers.fileobj_hdlr(low)}
         >>> logger = Gogo('adv', **kwargs).get_structured_logger(ip='1.1.1.1')
-        >>> logger.debug('hello world')
-        {"ip": "1.1.1.1", "message": "hello world"}
-        >>> logger.error('hello world')
-        {"ip": "1.1.1.1", "message": "hello world"}
+        >>> logger.debug('debug')
+        >>> logger.error('error')
+        >>> loads(low.getvalue()) == {'ip': '1.1.1.1', 'message': 'debug'}
+        True
+        >>> loads(high.getvalue()) == {'ip': '1.1.1.1', 'message': 'error'}
+        True
 """
 
 from __future__ import (
@@ -41,9 +50,10 @@ import hashlib
 import sys
 
 from copy import copy
+from builtins import *
 from . import formatters, handlers, utils
 
-__version__ = '0.7.0'
+__version__ = '0.8.0'
 
 __all__ = ['formatters', 'handlers', 'utils']
 __title__ = 'pygogo'
@@ -349,15 +359,25 @@ class Gogo(object):
             New instance of :class:`pygogo.utils.StructuredAdapter`
 
         Examples
-            >>> logger = Gogo('structured').get_structured_logger(all='true')
+            >>> from io import StringIO
+            >>> from json import loads
+
+            >>> s = StringIO()
+            >>> going = Gogo('structured', low_hdlr=handlers.fileobj_hdlr(s))
+            >>> logger = going.get_structured_logger(all='true')
             >>> logger  # doctest: +ELLIPSIS
             <pygogo.utils.StructuredAdapter object at 0x...>
             >>> logger.debug('hello')
-            {"all": "true", "message": "hello"}
-            >>> logger.debug('hello', extra={'key': 'value'})
-            {"all": "true", "message": "hello", "key": "value"}
+            >>> logger.debug('extra', extra={'key': 'value'})
+            >>> s.seek(0)
+            0L
+            >>> loads(s.next()) == {'all': 'true', 'message': 'hello'}
+            True
+            >>> loads(s.next()) == {
+            ...     'all': 'true', 'message': 'extra', 'key': 'value'}
+            True
         """
-        values = frozenset(kwargs.iteritems())
+        values = frozenset(kwargs.items())
         name = name or hashlib.md5(str(values)).hexdigest()
         lggr_name = '%s.structured.%s' % (self.name, name)
         logger = logging.getLogger(lggr_name)
@@ -397,5 +417,5 @@ def copy_hdlr(hdlr):
         <logging.StreamHandler object at 0x...>
     """
     copied_hdlr = copy(hdlr)
-    copied_hdlr.filters = map(copy, hdlr.filters)
+    copied_hdlr.filters = [copy(f) for f in hdlr.filters]
     return copied_hdlr

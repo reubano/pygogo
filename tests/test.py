@@ -18,18 +18,20 @@ import pygogo as gogo
 
 from difflib import unified_diff
 from os import path as p
-from StringIO import StringIO
-from scripttest import TestFileEnvironment
+from io import StringIO
 from timeit import default_timer as timer
+
+from builtins import *
+from scripttest import TestFileEnvironment
 
 
 def main(script, tests, verbose=False, stop=True):
     """ Main method
+
     Returns 0 on success, 1 on failure
     """
     failures = 0
-    level = 'DEBUG' if verbose else 'INFO'
-    logger = gogo.Gogo(__name__, low_level=level).logger
+    logger = gogo.Gogo(__name__, verbose=verbose).logger
     short_script = p.basename(script)
     env = TestFileEnvironment('.scripttest')
 
@@ -38,22 +40,27 @@ def main(script, tests, verbose=False, stop=True):
     for pos, test in enumerate(tests):
         num = pos + 1
         opts, arguments, expected = test
-        joined_opts = ' '.join(opts)
-        joined_args = '"%s"' % '" "'.join(arguments)
+        joined_opts = ' '.join(opts) if opts else ''
+        joined_args = '"%s"' % '" "'.join(arguments) if arguments else ''
         command = "%s %s %s" % (script, joined_opts, joined_args)
         short_command = "%s %s %s" % (short_script, joined_opts, joined_args)
         result = env.run(command, cwd=p.abspath(p.dirname(p.dirname(__file__))))
         output = result.stdout
 
-        try:
-            check = open(expected)
-        except IOError:
-            check = StringIO(expected)
-        except TypeError:
-            check = StringIO(expected)
-            output = bool(output)
+        if isinstance(expected, bool):
+            text = StringIO(output).read()
+            outlines = [str(bool(text))]
+            checklines = StringIO(str(expected)).readlines()
+        elif p.isfile(expected):
+            outlines = StringIO(output).readlines()
 
-        args = [check.readlines(), StringIO(output).readlines()]
+            with open(expected, encoding='utf-8') as f:
+                checklines = f.readlines()
+        else:
+            outlines = StringIO(output).readlines()
+            checklines = StringIO(expected).readlines()
+
+        args = [checklines, outlines]
         kwargs = {'fromfile': 'expected', 'tofile': 'got'}
         diffs = ''.join(unified_diff(*args, **kwargs))
         passed = not diffs
@@ -83,8 +90,8 @@ if __name__ == '__main__':
     script = p.join(parent_dir, 'bin', 'gogo')
 
     tests = [
-        (['--help'], [''], True),
-        (['--version'], [''], 'gogo v%s\n' % gogo.__version__),
+        (['--help'], [], True),
+        (['--version'], [], 'gogo v%s\n' % gogo.__version__),
         ([], ['hello world'], 'hello world\n'),
         (['-l debug'], ['hello world'], ''),
         (['-Vl debug'], ['hello world'], 'hello world\n'),

@@ -8,9 +8,12 @@ examples
 README examples
 
 Examples:
-    Redirect stderr to stdout
+    Setup
 
         >>> import sys
+        >>> from json import loads
+        >>> from io import StringIO
+
         >>> sys.stderr = sys.stdout
 
 
@@ -18,24 +21,36 @@ Examples:
 
         >>> import pygogo as gogo
 
-        >>> logger = gogo.Gogo(__name__).get_structured_logger(connid='1234')
+        >>> s = StringIO()
+        >>> going = gogo.Gogo(__name__, low_hdlr=gogo.handlers.fileobj_hdlr(s))
+        >>> logger = going.get_structured_logger(connid='1234')
         >>> logger.info('log message')
-        {"message": "log message", "connid": "1234"}
+        >>> loads(s.getvalue()) == {'message': 'log message', 'connid': '1234'}
+        True
 
 
     Implementing structured logging
 
         >>> import pygogo as gogo
 
+        >>> s = StringIO()
+        >>> hdlr = gogo.handlers.fileobj_hdlr(s)
         >>> formatter = gogo.formatters.structured_formatter
-        >>> kwargs = {'low_level': 'info', 'low_formatter': formatter}
+        >>> kwargs = {
+        ...     'low_level': 'info', 'low_formatter': formatter,
+        ...     'low_hdlr': hdlr}
         >>> logger = gogo.Gogo('examples.three', **kwargs).logger
         >>> extra = {'set_value': set([1, 2, 3]), 'snowman': '☃'}
-        >>> logger.info('log message', extra=extra)  # doctest: +ELLIPSIS
-        ... # doctest: +NORMALIZE_WHITESPACE
-        {"snowman": "\\u2603", "name": "examples.three.base", "level": "INFO",
-        "message": "log message", "time": "2015...", "msecs": ...,
-        "set_value": [1, 2, 3]}
+        >>> logger.info('log message', extra=extra)
+        >>> result = loads(s.getvalue())
+        >>> keys = sorted(result.keys())
+        >>> keys  # doctest: +NORMALIZE_WHITESPACE
+        [u'level', u'message', u'msecs', u'name', u'set_value', u'snowman',
+        u'time']
+        >>> [result[k] for k in keys if k != 'snowman']
+        ... # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+        [u'INFO', u'log message', ..., u'examples.three.base',
+        [1, 2, 3], u'20...']
 
 
     Multiple handlers and formatters
@@ -61,13 +76,13 @@ Examples:
         >>> logger.critical('critical message')
         2015 - examples.two.base - CRITICAL - critical message
 
-        >>> with open('example2.log') as f:
+        >>> with open('example2.log', encoding='utf-8') as f:
         ...     [line.strip() for line in f]  # doctest: +NORMALIZE_WHITESPACE
-        ['2015 - examples.two.base - DEBUG - debug message',
-        '2015 - examples.two.base - INFO - info message',
-        '2015 - examples.two.base - WARNING - warn message',
-        '2015 - examples.two.base - ERROR - error message',
-        '2015 - examples.two.base - CRITICAL - critical message']
+        [u'2015 - examples.two.base - DEBUG - debug message',
+        u'2015 - examples.two.base - INFO - info message',
+        u'2015 - examples.two.base - WARNING - warn message',
+        u'2015 - examples.two.base - ERROR - error message',
+        u'2015 - examples.two.base - CRITICAL - critical message']
 
 
     Logging to multiple destinations
@@ -90,19 +105,19 @@ Examples:
         >>> logger1.debug('Quick zephyrs blow, daft Jim.')
         >>> logger1.info('How daft jumping zebras vex.')
         examples.one.area1: INFO     How daft jumping zebras vex.
-        >>> logger2.warning('Jail zesty vixen who grabbed pay.')
-        examples.one.area2: WARNING  Jail zesty vixen who grabbed pay.
+        >>> logger2.warning('Jail zesty vixen who pay.')
+        examples.one.area2: WARNING  Jail zesty vixen who pay.
         >>> logger2.error('The five boxing wizards jump.')
         examples.one.area2: ERROR    The five boxing wizards jump.
 
-        >>> with open('example1.log') as f:
+        >>> with open('example1.log', encoding='utf-8') as f:
         ...     [line.strip() for line in f]  # doctest: +NORMALIZE_WHITESPACE
         ...     # doctest: +ELLIPSIS
-        ['2015... examples.one.base INFO     Jackdaws love my big sphinx.',
-        '2015... examples.one.area1 DEBUG    Quick zephyrs blow, daft Jim.',
-        '2015... examples.one.area1 INFO     How daft jumping zebras vex.',
-        '2015... examples.one.area2 WARNING  Jail zesty vixen who grabbed pay.',
-        '2015... examples.one.area2 ERROR    The five boxing wizards jump.']
+        [u'2015... examples.one.base INFO     Jackdaws love my big sphinx.',
+        u'2015... examples.one.area1 DEBUG    Quick zephyrs blow, daft Jim.',
+        u'2015... examples.one.area1 INFO     How daft jumping zebras vex.',
+        u'2015... examples.one.area2 WARNING  Jail zesty vixen who pay.',
+        u'2015... examples.one.area2 ERROR    The five boxing wizards jump.']
 
 
     Reset stderr so logs aren't printed twice
@@ -143,3 +158,5 @@ Examples:
 from __future__ import (
     absolute_import, division, print_function, with_statement,
     unicode_literals)
+
+from builtins import *

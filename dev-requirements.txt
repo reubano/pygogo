@@ -2,6 +2,7 @@
 alabaster==0.7.6
 astroid==1.4.2
 Babel==2.1.1
+changelog==0.3.4
 colorama==0.3.5
 coverage==4.0.3
 flake8==2.5.1
@@ -24,5 +25,6 @@ sphinx-rtd-theme==0.1.9
 testfixtures==4.7.0
 tox==2.3.1
 twine==1.6.5
-wheel==0.22.0
+virtualenv==12.0.2
+wheel==0.24.0
 wrapt==1.10.6

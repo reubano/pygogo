@@ -21,17 +21,22 @@ Examples:
 
     Add a structured formatter::
 
-        >>> import sys
+        >>> from io import StringIO
+        >>> from json import loads
 
+        >>> s = StringIO()
         >>> logger = logging.getLogger('structured_logger')
-        >>> hdlr = logging.StreamHandler(sys.stdout)
+        >>> hdlr = logging.StreamHandler(s)
         >>> hdlr.setFormatter(structured_formatter)
         >>> extra = {'key': 'value'}
         >>> logger.addHandler(hdlr)
-        >>> logger.info('hello world', extra=extra)  # doctest: +ELLIPSIS
-        ... # doctest: +NORMALIZE_WHITESPACE
-        {"name": "structured_logger", "key": "value", "level": "INFO",
-        "message": "hello world", "time": "20...", "msecs": ...}
+        >>> logger.info('hello world', extra=extra)
+        >>> result = loads(s.getvalue())
+        >>> keys = sorted(result.keys())
+        >>> keys
+        [u'key', u'level', u'message', u'msecs', u'name', u'time']
+        >>> [result[k] for k in keys]  # doctest: +ELLIPSIS
+        [u'value', u'INFO', u'hello world', ..., u'structured_logger', u'20...']
 
 Attributes:
     BASIC_FORMAT (str): A basic format
@@ -56,10 +61,11 @@ import sys
 import traceback
 import itertools as it
 
+from builtins import *
 from .utils import CustomEncoder
 
 BASIC_FORMAT = '%(message)s'
-BOM_FORMAT = u'\ufeff%(message)s'
+BOM_FORMAT = '\ufeff%(message)s'
 CONSOLE_FORMAT = '%(name)-12s: %(levelname)-8s %(message)s'
 FIXED_FORMAT = '%(asctime)s.%(msecs)-3d %(name)-12s %(levelname)-8s %(message)s'
 CSV_FORMAT = '%(asctime)s.%(msecs)d,%(name)s,%(levelname)s,"%(message)s"'
@@ -78,37 +84,38 @@ class StructuredFormatter(logging.Formatter):
     """A logging formatter that creates a json string from log details
 
     Args:
-        args (string): The min level to log to low_hdlr.
+        fmt (string): Log message format.
 
-        kwargs (dict): Keyword arguments.
-
-    Kwargs:
-        high_hdlr (obj): The high pass log handler (a
+        datefmt (dict): Log date format.
 
     Returns:
         New instance of :class:`StructuredFormatter`
 
     Examples:
+        >>> from io import StringIO
+        >>> from json import loads
+
+        >>> s = StringIO()
         >>> logger = logging.getLogger()
         >>> formatter = StructuredFormatter(BASIC_FORMAT, datefmt=DATEFMT)
-        >>> hdlr = logging.StreamHandler(sys.stdout)
+        >>> hdlr = logging.StreamHandler(s)
         >>> hdlr.setFormatter(formatter)
         >>> logger.addHandler(hdlr)
-        >>> logger.info('hello world')  # doctest: +ELLIPSIS
-        ... # doctest: +NORMALIZE_WHITESPACE
-        {"name": "root", "level": "INFO", "message": "hello world", "time":
-        "20...", "msecs": ...}
+        >>> logger.info('hello world')
+        >>> result = loads(s.getvalue())
+        >>> keys = sorted(result.keys())
+        >>> keys
+        [u'level', u'message', u'msecs', u'name', u'time']
+        >>> [result[k] for k in keys]  # doctest: +ELLIPSIS
+        [u'INFO', u'hello world', ..., u'root', u'20...']
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, fmt=None, datefmt=None):
         """Initialization method.
 
         Args:
-            args (string): The min level to log to low_hdlr.
+            fmt (string): Log message format.
 
-            kwargs (dict): Keyword arguments.
-
-        Kwargs:
-            high_hdlr (obj): The high pass log handler (a
+            datefmt (dict): Log date format.
 
         Returns:
             New instance of :class:`StructuredFormatter`
@@ -120,7 +127,7 @@ class StructuredFormatter(logging.Formatter):
         empty_record = logging.makeLogRecord({})
         filterer = lambda k: k not in empty_record.__dict__ and k != 'asctime'
         self.filterer = filterer
-        super(StructuredFormatter, self).__init__(*args, **kwargs)
+        super(StructuredFormatter, self).__init__(fmt, datefmt)
 
     def format(self, record):
         """ Formats a record as a dict string
@@ -132,15 +139,18 @@ class StructuredFormatter(logging.Formatter):
             str: The formatted content
 
         Examples:
+            >>> from json import loads
+
             >>> formatter = StructuredFormatter(BASIC_FORMAT, datefmt='%Y')
             >>> logger = logging.getLogger()
-            >>> msg = 'hello world'
-            >>> args = (logging.INFO, '.', 0, msg, [], None)
+            >>> args = (logging.INFO, '.', 0, 'hello world', [], None)
             >>> record = logger.makeRecord('root', *args)
-            >>> formatter.format(record)  # doctest: +ELLIPSIS
-            ... # doctest: +NORMALIZE_WHITESPACE
-            '{"message": "hello world", "level": "INFO", "name": "root",
-            "msecs": ..., "time": "2015"}'
+            >>> result = loads(formatter.format(record))
+            >>> keys = sorted(result.keys())
+            >>> keys
+            [u'level', u'message', u'msecs', u'name', u'time']
+            >>> [result[k] for k in keys]  # doctest: +ELLIPSIS
+            [u'INFO', u'hello world', ..., u'root', u'20...']
         """
         extra = {
             'message': record.getMessage(),
@@ -152,7 +162,7 @@ class StructuredFormatter(logging.Formatter):
         keys = filter(self.filterer, record.__dict__)
         extra.update({k: record.__dict__[k] for k in keys})
         extra.pop('asctime', None)
-        return CustomEncoder().encode(extra)
+        return str(CustomEncoder().encode(extra))
 
     def formatException(self, exc_info):
         """Formats an exception as a dict string
@@ -162,24 +172,29 @@ class StructuredFormatter(logging.Formatter):
                 returned by `sys.exc_info()`
 
         Returns:
-            dict: The formatted exception
+            str: The formatted exception
 
         Examples:
+            >>> from json import loads
+
             >>> formatter = StructuredFormatter(BASIC_FORMAT)
             >>> try:
             ...     1 / 0
             ... except:
-            ...     formatter.formatException(sys.exc_info())
-            '{"function": "<module>", "text": "1 / 0", "value": \
-"division by zero", "filename": \
-"<doctest pygogo.formatters.StructuredFormatter.formatException[1]>", \
-"lineno": 2, "type": "exceptions.ZeroDivisionError"}'
+            ...     result = loads(formatter.formatException(sys.exc_info()))
+            >>> keys = sorted(result.keys())
+            >>> keys
+            [u'filename', u'function', u'lineno', u'text', u'type', u'value']
+            >>> [result[k] for k in keys]  # doctest: +ELLIPSIS
+            ... # doctest: +NORMALIZE_WHITESPACE
+            [u'<doctest pygogo...formatException[2]>', u'<module>', 2,
+            u'1 / 0', u'exceptions.ZeroDivisionError', u'division by zero']
         """
         keys = ['type', 'value', 'filename', 'lineno', 'function', 'text']
         type_, value, trcbk = exc_info
         stype = str(type_).replace('type', '').strip(" '<>")
         values = it.chain([stype, value], *traceback.extract_tb(trcbk))
-        return CustomEncoder().encode(dict(zip(keys, values)))
+        return str(CustomEncoder().encode(dict(zip(keys, values))))
 
 basic_formatter = logging.Formatter(BASIC_FORMAT)
 bom_formatter = logging.Formatter(BOM_FORMAT)

@@ -29,6 +29,7 @@ import socket
 
 from os import environ
 from logging import handlers as hdlrs
+from builtins import *
 
 ENCODING = 'utf-8'
 
@@ -73,7 +74,7 @@ def fileobj_hdlr(f, **kwargs):
         New instance of :class:`logging.StreamHandler`
 
     Examples:
-        >>> from StringIO import StringIO
+        >>> from io import StringIO
         >>> fileobj_hdlr(StringIO())  # doctest: +ELLIPSIS
         <logging.StreamHandler object at 0x...>
     """
