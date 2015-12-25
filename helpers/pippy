@@ -1,0 +1,192 @@
+#!/usr/bin/env sh -u
+#
+
+# source shflags
+. /usr/lib/shflags || return $?
+
+# configure shflags
+DEFINE_string 'cache' `echo ~/.pip/packages` 'path to package cache' 'c'
+DEFINE_string 'wheel' `echo ~/.pip/wheels` 'path to wheel dir' 'w'
+DEFINE_string 'requirements' '' 'the requirements file to install' 'r'
+DEFINE_boolean 'upgrade' 'false' 'install requirement even if already satisfied' 'u'
+DEFINE_string 'package' '' 'the pip package(s)' '' true
+
+# parse the command-line
+FLAGS "$@" || exit 1
+[ ${FLAGS_help} -eq ${FLAGS_FALSE} ] || exit
+eval set -- "${FLAGS_ARGV}"
+
+# check for packages
+if [ $# -eq 0 ]; then
+  packages=''
+else
+  packages=$@
+fi
+
+repl () {
+  printf '*%.0s' $(seq 2 $(echo $1 | wc -c))
+  echo
+}
+
+_install_wheel () {
+  package=$1
+  pip install --use-wheel --no-index --find-links=$FLAGS_wheel $package
+}
+
+_install_cache () {
+  package=$1
+  pip install --use-wheel --no-index --find-links=$FLAGS_cache $package
+}
+
+_install_memcache () {
+  package=$1
+  pip install --install-option="--with-libmemcached=/opt/local" \
+    --use-wheel --no-index --find-links=$FLAGS_cache
+}
+
+_make_wheel () {
+  package=$1
+  pip wheel --wheel-dir=$FLAGS_wheel --no-index --find-links=$FLAGS_cache $package
+}
+
+_make_memcache_wheel () {
+  package=$1
+  pip wheel --build-option="--with-libmemcached=/opt/local" \
+    --wheel-dir=$FLAGS_wheel --no-index --find-links=$FLAGS_cache
+}
+
+_pip_install () {
+  package=$1
+  pip install --download=$FLAGS_cache $package
+}
+
+_set_flags () {
+  # CFLAGS="-I /opt/local/include -L /opt/local/lib"
+  CFLAGS="-I /opt/local/include" LDFLAGS="-L /opt/local/lib" \
+    ARCHFLAGS="-arch x86_64"
+}
+
+_install () {
+  package=$1
+
+  repl "Checking for $package in cache..."
+  echo "Checking for $package in cache..."
+  repl "Checking for $package in cache..."
+
+  # try to install wheel
+  _install_wheel $package
+
+  if [ ! $? -eq 0 ]; then
+    repl "$package not found in cache! Downloading from pypi..."
+    echo "$package not found in cache! Downloading from pypi..."
+    repl "$package not found in cache! Downloading from pypi..."
+
+    # download package
+    if [[ $package == scrapy* ]] || [[ $package == service_identity* ]]; then
+      _set_flags
+      _pip_install $package
+    else
+      _pip_install $package
+    fi
+
+    # create wheel
+    if [[ $package == gevent* ]] || [[ $package == scrapy* ]]; then
+      _set_flags
+      _make_wheel $package
+    elif [[ $package == pylibmc* ]]; then
+      _make_memcache_wheel $package
+    else
+      _make_wheel $package
+    fi
+  else
+    repl "$package installed from cache!"
+    echo "$package installed from cache!"
+    repl "$package installed from cache!"
+    continue
+  fi
+
+  if [ $? -eq 0 ]; then
+    repl "$package downloaded! Now installing $package..."
+    echo "$package downloaded! Now installing $package..."
+    repl "$package downloaded! Now installing $package..."
+
+    if [[ $package == gevent* ]]; then
+      _set_flags
+      _install_wheel $package
+    elif [[ $package == pylibmc* ]]; then
+      _install_memcache $package
+    else
+      _install_wheel $package
+    fi
+
+    if [ $? -eq 0 ]; then
+      repl "$package installed!"
+      echo "$package installed!"
+      repl "$package installed!"
+    else
+      repl "$package not found in $FLAGS_wheel."
+      echo "$package not found in $FLAGS_wheel."
+      echo "Trying $FLAGS_cache..."
+      repl "$package not found in $FLAGS_wheel."
+
+      if [[ $package == gevent* ]]; then
+        _set_flags
+        _install_cache $package
+      elif [[ $package == pylibmc* ]]; then
+        _install_memcache $package
+      else
+        _install_cache $package
+      fi
+
+      if [ $? -eq 0 ]; then
+        repl "$package installed!"
+        echo "$package installed!"
+        repl "$package installed!"
+      else
+        repl "Failed to install $package! Try again."
+        echo "Failed to install $package! Try again."
+        repl "Failed to install $package! Try again."
+      fi
+    fi
+  else
+    repl "Failed to download $package! Try again."
+    echo "Failed to download $package! Try again."
+    repl "Failed to download $package! Try again."
+  fi
+}
+
+pippy () {
+  if $1; then
+    cd $2
+    file=$3
+    PREVDIR=$(dirname $3)
+
+    while read package || [[ -n $package ]]; do
+      if [[ $package == -r* ]]; then
+        pippy true $PREVDIR $(echo "$package" | cut -d' ' -f2)
+      fi
+
+      [ "$package" == '' ] || _install $package
+    done < $file
+  else
+    for package in "${@:3}"; do
+      _install $package
+    done
+  fi
+}
+
+if [ "${FLAGS_requirements}" != '' ]; then
+  pippy true '.' ${FLAGS_requirements}
+fi
+
+if [ "$packages" != '' ]; then
+  pippy false '.' $packages
+fi
+
+# # move any orphan wheel files (e.g., when dependencies were installed)
+# # I don't know why this doesn't work
+# for FILE in `$FLAGS_cache/*.whl`; do
+#   echo 'HI!'
+#   # echo "moving $FILE to $FLAGS_wheel/"
+#   # mv $FILE $FLAGS_wheel/
+# done
