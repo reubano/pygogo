@@ -31,8 +31,7 @@ def main(script, tests, verbose=False, stop=True):
     Returns 0 on success, 1 on failure
     """
     failures = 0
-    level = 'DEBUG' if verbose else 'INFO'
-    logger = gogo.Gogo(__name__, low_level=level).logger
+    logger = gogo.Gogo(__name__, verbose=verbose).logger
     short_script = p.basename(script)
     env = TestFileEnvironment('.scripttest')
 
