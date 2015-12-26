@@ -40,7 +40,7 @@ register:
 	python setup.py register
 
 sdist:
-	helpers/srcdist
+	helpers/sdist
 
 wheel:
 	helpers/wheel

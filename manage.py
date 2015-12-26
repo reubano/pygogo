@@ -25,7 +25,7 @@ def upload_():
 
 def sdist_():
     """Create a source distribution package"""
-    check_call(p.join(BASEDIR, 'helpers', 'srcdist'))
+    check_call(p.join(BASEDIR, 'helpers', 'sdist'))
 
 
 def wheel_():
