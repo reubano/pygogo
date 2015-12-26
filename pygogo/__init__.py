@@ -196,7 +196,7 @@ class Gogo(object):
         Examples:
             >>> from testfixtures import LogCapture
             >>> logger = Gogo('default').logger
-            >>> logger # doctest: +ELLIPSIS
+            >>> logger  # doctest: +ELLIPSIS
             <logging.Logger object at 0x...>
             >>> logger.debug('stdout')
             stdout
