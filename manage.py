@@ -33,10 +33,9 @@ def wheel_():
     check_call(p.join(BASEDIR, 'helpers', 'wheel'))
 
 
-@manager.command
-def clean():
+def clean_():
     """Remove Python file and build artifacts"""
-    exit(call(p.join(BASEDIR, 'helpers', 'clean')))
+    check_call(p.join(BASEDIR, 'helpers', 'clean'))
 
 
 @manager.command
@@ -109,6 +108,7 @@ def register():
 def release():
     """Package and upload a release"""
     try:
+        clean_()
         sdist_()
         wheel_()
         upload_()
@@ -120,6 +120,7 @@ def release():
 def build():
     """Create a source distribution and wheel package"""
     try:
+        clean_()
         sdist_()
         wheel_()
     except CalledProcessError as e:
@@ -139,6 +140,7 @@ def upload():
 def sdist():
     """Create a source distribution package"""
     try:
+        clean_()
         sdist_()
     except CalledProcessError as e:
         exit(e.returncode)
@@ -148,7 +150,17 @@ def sdist():
 def wheel():
     """Create a wheel package"""
     try:
+        clean_()
         wheel_()
+    except CalledProcessError as e:
+        exit(e.returncode)
+
+
+@manager.command
+def clean():
+    """Remove Python file and build artifacts"""
+    try:
+        clean_()
     except CalledProcessError as e:
         exit(e.returncode)
 
