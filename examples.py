@@ -44,13 +44,14 @@ Examples:
         >>> logger.info('log message', extra=extra)
         >>> result = loads(s.getvalue())
         >>> keys = sorted(result.keys())
-        >>> keys  # doctest: +NORMALIZE_WHITESPACE
-        [u'level', u'message', u'msecs', u'name', u'set_value', u'snowman',
-        u'time']
-        >>> [result[k] for k in keys if k != 'snowman']
-        ... # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
-        [u'INFO', u'log message', ..., u'examples.three.base',
-        [1, 2, 3], u'20...']
+        >>> keys == [
+        ...     'level', 'message', 'msecs', 'name', 'set_value', 'snowman',
+        ...     'time']
+        True
+        >>> blacklist = {'snowman', 'msecs', 'time'}
+        >>> [result[k] for k in keys if k not in blacklist] == [
+        ...     'INFO', 'log message', 'examples.three.base', [1, 2, 3]]
+        True
 
 
     Multiple handlers and formatters
@@ -70,19 +71,20 @@ Examples:
 
         >>> logger.debug('debug message')
         >>> logger.info('info message')
-        >>> logger.warn('warn message')
+        >>> logger.warning('warn message')
         >>> logger.error('error message')
         2015 - examples.two.base - ERROR - error message
         >>> logger.critical('critical message')
         2015 - examples.two.base - CRITICAL - critical message
 
         >>> with open('example2.log', encoding='utf-8') as f:
-        ...     [line.strip() for line in f]  # doctest: +NORMALIZE_WHITESPACE
-        [u'2015 - examples.two.base - DEBUG - debug message',
-        u'2015 - examples.two.base - INFO - info message',
-        u'2015 - examples.two.base - WARNING - warn message',
-        u'2015 - examples.two.base - ERROR - error message',
-        u'2015 - examples.two.base - CRITICAL - critical message']
+        ...     [line.strip() for line in f]  == [
+        ...         '2015 - examples.two.base - DEBUG - debug message',
+        ...         '2015 - examples.two.base - INFO - info message',
+        ...         '2015 - examples.two.base - WARNING - warn message',
+        ...         '2015 - examples.two.base - ERROR - error message',
+        ...         '2015 - examples.two.base - CRITICAL - critical message']
+        True
 
 
     Logging to multiple destinations
@@ -111,13 +113,13 @@ Examples:
         examples.one.area2: ERROR    The five boxing wizards jump.
 
         >>> with open('example1.log', encoding='utf-8') as f:
-        ...     [line.strip() for line in f]  # doctest: +NORMALIZE_WHITESPACE
-        ...     # doctest: +ELLIPSIS
-        [u'2015... examples.one.base INFO     Jackdaws love my big sphinx.',
-        u'2015... examples.one.area1 DEBUG    Quick zephyrs blow, daft Jim.',
-        u'2015... examples.one.area1 INFO     How daft jumping zebras vex.',
-        u'2015... examples.one.area2 WARNING  Jail zesty vixen who pay.',
-        u'2015... examples.one.area2 ERROR    The five boxing wizards jump.']
+        ...     [line.strip()[24:] for line in f] == [
+        ...         'examples.one.base INFO     Jackdaws love my big sphinx.',
+        ...         'examples.one.area1 DEBUG    Quick zephyrs blow, daft Jim.',
+        ...         'examples.one.area1 INFO     How daft jumping zebras vex.',
+        ...         'examples.one.area2 WARNING  Jail zesty vixen who pay.',
+        ...         'examples.one.area2 ERROR    The five boxing wizards jump.']
+        True
 
 
     Reset stderr so logs aren't printed twice

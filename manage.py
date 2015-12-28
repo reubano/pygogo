@@ -99,6 +99,12 @@ def docs():
 
 
 @manager.command
+def checkdocs():
+    """Check Sphinx documentation for link errors"""
+    exit(call(p.join(BASEDIR, 'helpers', 'check-docs')))
+
+
+@manager.command
 def register():
     """Register package with PyPI"""
     exit(call('python %s register' % p.join(BASEDIR, 'setup.py'), shell=True))

@@ -137,17 +137,16 @@ class StructuredAdapter(logging.LoggerAdapter):
         :meth:`pygogo.Gogo.get_structured_logger`
 
     Examples:
-        >>> from tempfile import TemporaryFile
+        >>> from io import StringIO
         >>> from json import loads
 
-        >>> f = TemporaryFile()
+        >>> s = StringIO()
         >>> logger = logging.getLogger()
-        >>> hdlr = logging.StreamHandler(f)
+        >>> hdlr = logging.StreamHandler(s)
         >>> logger.addHandler(hdlr)
         >>> structured_logger = StructuredAdapter(logger, {'all': True})
         >>> structured_logger.debug('hello', extra={'key': u'value'})
-        >>> f.seek(0)
-        >>> loads(f.read()) == {
+        >>> loads(s.getvalue()) == {
         ...     'all': True, 'message': 'hello', 'key': 'value'}
         True
     """
@@ -163,19 +162,21 @@ class StructuredAdapter(logging.LoggerAdapter):
             Tuple of (:class:`~pygogo.utils.StructuredMessage`, modified kwargs)
 
         Examples:
+            >>> from json import loads
+
             >>> logger = logging.getLogger()
             >>> structured_logger = StructuredAdapter(logger, {'all': True})
             >>> extra = {'key': 'value'}
             >>> m, k = structured_logger.process('message', {'extra': extra})
-            >>> m  # doctest: +ELLIPSIS
-            <pygogo.utils.StructuredMessage object at 0x...>
+            >>> loads(m) == {'all': True, 'message': 'message', 'key': 'value'}
+            True
             >>> k == {'extra': {'all': True, 'key': 'value'}}
             True
         """
         extra = kwargs.get('extra', {})
         extra.update(self.extra)
         kwargs['extra'] = extra
-        return StructuredMessage(msg, **extra), kwargs
+        return str(StructuredMessage(msg, **extra)), kwargs
 
 
 class LogFilter(logging.Filter):
@@ -258,7 +259,7 @@ def get_structured_filter(name='', **kwargs):
     Examples:
         >>> structured_filter = get_structured_filter(user='fred')
         >>> structured_filter  # doctest: +ELLIPSIS
-        <pygogo.utils.StructuredFilter object at 0x...>
+        <pygogo.utils...StructuredFilter object at 0x...>
         >>>
         >>> logger = logging.getLogger('structured_filter')
         >>> hdlr = logging.StreamHandler(sys.stdout)
