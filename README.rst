@@ -148,8 +148,6 @@ Library
     2015-12-18 18:51:30,416 - examples.fmt.base - ERROR - error message
     2015-12-18 18:51:30,416 - examples.fmt.base - CRITICAL - critical message
 
-.. [1] https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters
-
 *Structured logging* [2]_
 
 .. code-block:: python
@@ -165,8 +163,6 @@ Library
     # Prints the following to `stdout`:
 
     {"snowman": "\u2603", "name": "examples.structured.base", "level": "INFO", "message": "log message", "time": "2015-12-18 18:52:39", "msecs": 58.973073959350586, "set_value": [1, 2, 3]}
-
-.. [2] https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging
 
 *Using Filters to impart contextual information* [3]_
 
@@ -210,8 +206,6 @@ Library
     2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
     2015-12-19 10:12:24,479 a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 
-.. [3] https://docs.python.org/2/howto/logging-cookbook.html#using-filters-to-impart-contextual-information
-
 *Multiple loggers* [4]_
 
 .. code-block:: python
@@ -252,6 +246,12 @@ Library
     examples.lggrs.area2: WARNING  Jail zesty vixen who grabbed pay.
     examples.lggrs.area2: ERROR    The five boxing wizards jump.
 
+Notes
+~~~~~
+
+.. [1] https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters
+.. [2] https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging
+.. [3] https://docs.python.org/2/howto/logging-cookbook.html#using-filters-to-impart-contextual-information
 .. [4] https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations
 
 Command-line Interface
