@@ -36,4 +36,4 @@ Feedback
 
 If you have any suggestions or questions about **pygogo** feel free to email me
 at reubano@gmail.com. If you encounter any errors or problems with **pygogo**,
-open an issue at http://github.com/reubano/pygogo/issues.
+open an issue at https://github.com/reubano/pygogo/issues.

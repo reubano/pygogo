@@ -36,5 +36,5 @@ Otherwise, you can install globally::
 
     pip install bump
 
-.. _virtualenv: http://www.virtualenv.org/en/latest/index.html
+.. _virtualenv: https://virtualenv.pypa.io/en/latest/index.html
 .. _virtualenvwrapper: https://virtualenvwrapper.readthedocs.org/en/latest/

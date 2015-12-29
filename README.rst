@@ -32,6 +32,8 @@ you can do anything really interesting with it. I designed pygogo to provide
 many useful logging use-cases out of the box. A reimplementation of
 `Using LoggerAdapters to impart contextual information`_ is shown below:
 
+.. _Using LoggerAdapters to impart contextual information: https://docs.python.org/2/howto/logging-cookbook.html#using-loggeradapters-to-impart-contextual-information
+
 .. code-block:: python
 
     import pygogo as gogo
@@ -108,7 +110,9 @@ Library
     error message
     critical message
 
-*Custom formatter* [#]_
+*Custom formatter* [1]_
+
+.. [1] https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters
 
 .. code-block:: python
 
@@ -146,7 +150,9 @@ Library
     2015-12-18 18:51:30,416 - examples.fmt.base - ERROR - error message
     2015-12-18 18:51:30,416 - examples.fmt.base - CRITICAL - critical message
 
-*Structured logging* [#]_
+*Structured logging* [2]_
+
+.. [2] https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging
 
 .. code-block:: python
 
@@ -162,7 +168,9 @@ Library
 
     {"snowman": "\u2603", "name": "examples.structured.base", "level": "INFO", "message": "log message", "time": "2015-12-18 18:52:39", "msecs": 58.973073959350586, "set_value": [1, 2, 3]}
 
-*Using Filters to impart contextual information* [#]_
+*Using Filters to impart contextual information* [3]_
+
+.. [3] https://docs.python.org/2/howto/logging-cookbook.html#using-filters-to-impart-contextual-information
 
 .. code-block:: python
 
@@ -204,7 +212,9 @@ Library
     2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
     2015-12-19 10:12:24,479 a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 
-*Multiple loggers* [#]_
+*Multiple loggers* [4]_
+
+.. [4] https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations
 
 .. code-block:: python
 
@@ -404,14 +414,6 @@ Examples
 
     {"time": "2015-12-19 11:26:53.776", "name": "pygogo.runner", "level": "INFO", "message": "log message"}
 
-Footnotes
-~~~~~~~~~
-
-.. [#] https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters
-.. [#] https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging
-.. [#] https://docs.python.org/2/howto/logging-cookbook.html#using-filters-to-impart-contextual-information
-.. [#] https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations
-
 Installation
 ------------
 
@@ -440,14 +442,12 @@ Project structure
     ├── CHANGES.rst
     ├── CONTRIBUTING.rst
     ├── INSTALLATION.rst
-    ├── INTRO.rst
     ├── LICENSE
     ├── MANIFEST.in
     ├── Makefile
     ├── pygogo.png
     ├── README.rst
     ├── TODO.rst
-    ├── USAGE.rst
     ├── bin
     │   └── gogo
     ├── dev-requirements.txt
@@ -797,9 +797,6 @@ Please see the `contributing doc`_ for more details.
     :target: https://pypi.python.org/pypi/pygogo
 
 .. _logging module: https://docs.python.org/2/library/logging.html
-.. _Using LoggerAdapters to impart contextual information: https://docs.python.org/2/howto/logging-cookbook.html#using-loggeradapters-to-impart-contextual-information
-.. _logging module: https://docs.python.org/2/library/logging.html
-.. _Using LoggerAdapters to impart contextual information: https://docs.python.org/2/howto/logging-cookbook.html#using-loggeradapters-to-impart-contextual-information
 .. _virtualenv: http://www.virtualenv.org/en/latest/index.html
 .. _contributing doc: https://github.com/reubano/pygogo/blob/master/CONTRIBUTING.rst
 .. _installation doc: https://github.com/reubano/pygogo/blob/master/INSTALLATION.rst
