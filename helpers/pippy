@@ -44,8 +44,6 @@ else
   cmd="$install"
 fi
 
-echo $cmd
-
 CFLAGS="-I /opt/local/include"
 LDFLAGS="-L /opt/local/lib"
 ARCHFLAGS="-arch x86_64"
