@@ -273,7 +273,7 @@ Examples
 
 .. code-block:: bash
 
-    pygogo -h
+    gogo -h
 
 .. code-block:: bash
 
@@ -500,6 +500,8 @@ The following methods make use of these variables.
 
 .. code-block:: python
 
+    import pygogo as gogo
+
     kwargs = {'contextual': True}
     extra = {'additional': True}
 
@@ -514,7 +516,7 @@ log name, and log time.
 
 .. code-block:: python
 
-    logger = gogo.Gogo().get_structured_logger('base', **kwargs)
+    logger = gogo.Gogo('basic').get_structured_logger('base', **kwargs)
     logger.debug('message', extra=extra)
 
     # Prints the following to `stdout`:
@@ -530,7 +532,7 @@ message metadata, i.e., log level, log name, and log time.
 .. code-block:: python
 
     formatter = gogo.formatters.structured_formatter
-    logger = gogo.Gogo('struct', low_formatter=formatter).logger
+    logger = gogo.Gogo('struct', low_formatter=formatter).get_logger(**kwargs)
     logger.debug('message', extra=extra)
 
     # Prints the following to `stdout`:
@@ -548,12 +550,14 @@ the ``extra`` keyword and contextual information.
 .. code-block:: python
 
     formatter = gogo.formatters.json_formatter
-    logger = gogo.Gogo('json', low_formatter=formatter).logger
+    logger = gogo.Gogo('json', low_formatter=formatter).get_logger(**kwargs)
     logger.debug('message', extra=extra)
 
     # Prints the following to `stdout`:
 
     {"level": "DEBUG", "message": "message", "name": "json.base", "time": "2015-12-19 14:25:58.760"}
+
+    # Note that both `extra` and `kwargs` were ignored
 
 custom logger
 ^^^^^^^^^^^^^
@@ -585,27 +589,27 @@ Summary
 
 The following table can help make sense of the different methods:
 
-+----------------------------+-------------------+----------------------+----------------+---------------+
-|                            | structured logger | structured formatter | json formatter | custom logger |
-+============================+===================+======================+================+===============+
-| contextual information     | ✔                 | ✔                    |                | ✔             |
-+----------------------------+-------------------+----------------------+----------------+---------------+
-| ``extra`` param support    | ✔                 | ✔                    |                | ✔             |
-+----------------------------+-------------------+----------------------+----------------+---------------+
-| dynamic ``extra`` support  | ✔                 | ✔                    |                |               |
-+----------------------------+-------------------+----------------------+----------------+---------------+
-| message metadata           |                   | ✔                    | ✔              | ✔             |
-+----------------------------+-------------------+----------------------+----------------+---------------+
-| available via the cli      |                   | ✔                    | ✔              |               |
-+----------------------------+-------------------+----------------------+----------------+---------------+
-| ``msecs`` field            |                   | ✔                    |                |               |
-+----------------------------+-------------------+----------------------+----------------+---------------+
-| milliseconds in time field |                   |                      | ✔              | ✔             |
-+----------------------------+-------------------+----------------------+----------------+---------------+
-| custom date format         |                   |                      |                | ✔             |
-+----------------------------+-------------------+----------------------+----------------+---------------+
-| custom log format          |                   |                      |                | ✔             |
-+----------------------------+-------------------+----------------------+----------------+---------------+
++-------------------------------+-------------------+----------------------+----------------+---------------+
+|                               | structured logger | structured formatter | json formatter | custom logger |
++===============================+===================+======================+================+===============+
+| contextual information        | ✔                 | ✔                    |                | ✔             |
++-------------------------------+-------------------+----------------------+----------------+---------------+
+| ``extra`` param support       | ✔                 | ✔                    |                | ✔             |
++-------------------------------+-------------------+----------------------+----------------+---------------+
+| dynamic ``extra`` support     | ✔                 | ✔                    |                |               |
++-------------------------------+-------------------+----------------------+----------------+---------------+
+| message metadata              |                   | ✔                    | ✔              | ✔             |
++-------------------------------+-------------------+----------------------+----------------+---------------+
+| available via the command line|                   | ✔                    | ✔              |               |
++-------------------------------+-------------------+----------------------+----------------+---------------+
+| ``msecs`` field               |                   | ✔                    |                |               |
++-------------------------------+-------------------+----------------------+----------------+---------------+
+| milliseconds in time field    |                   |                      | ✔              | ✔             |
++-------------------------------+-------------------+----------------------+----------------+---------------+
+| custom date format            |                   |                      |                | ✔             |
++-------------------------------+-------------------+----------------------+----------------+---------------+
+| custom log format             |                   |                      |                | ✔             |
++-------------------------------+-------------------+----------------------+----------------+---------------+
 
 Formatters
 ----------

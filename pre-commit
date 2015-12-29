@@ -1,0 +1,4 @@
+#!/bin/sh
+#
+# to install type mv pre-commit .git/hooks/pre-commit
+helpers/check-stage
