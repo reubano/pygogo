@@ -1,7 +1,7 @@
 pygogo: a Python logger with super powers
 =========================================
 
-|versions| |pypi|
+|travis| |versions| |pypi|
 
 .. image:: https://raw.githubusercontent.com/reubano/pygogo/master/pygogo.png
     :alt: sample pygogo usage
@@ -789,6 +789,9 @@ If you add new classes or functions, please add the appropriate doc blocks with
 examples. Also, make sure the python linter and nose tests pass.
 
 Please see the `contributing doc`_ for more details.
+
+.. |travis| image:: https://img.shields.io/travis/reubano/pygogo.svg
+    :target: https://travis-ci.org/reubano/pygogo
 
 .. |versions| image:: https://img.shields.io/pypi/pyversions/pygogo.svg
     :target: https://pypi.python.org/pypi/pygogo
