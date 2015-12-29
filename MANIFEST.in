@@ -6,6 +6,4 @@ include TODO.rst
 include LICENSE
 include README.rst
 include INSTALLATION.rst
-include USAGE.rst
-include INTRO.rst
 include *requirements.txt

@@ -119,4 +119,4 @@ Before you submit a pull request, check that it meets these guidelines:
 
 .. _issues: https://github.com/reubano/pygogo/issues
 .. _repo: https://github.com/reubano/pygogo
-.. _virtualenv: http://www.virtualenv.org/en/latest/index.html
+.. _virtualenv: https://virtualenv.pypa.io/en/latest/index.html
