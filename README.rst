@@ -112,8 +112,6 @@ Library
 
 *Custom formatter* [1]_
 
-.. [1] https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters
-
 .. code-block:: python
 
     import logging
@@ -150,9 +148,9 @@ Library
     2015-12-18 18:51:30,416 - examples.fmt.base - ERROR - error message
     2015-12-18 18:51:30,416 - examples.fmt.base - CRITICAL - critical message
 
-*Structured logging* [2]_
+.. [1] https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters
 
-.. [2] https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging
+*Structured logging* [2]_
 
 .. code-block:: python
 
@@ -168,9 +166,9 @@ Library
 
     {"snowman": "\u2603", "name": "examples.structured.base", "level": "INFO", "message": "log message", "time": "2015-12-18 18:52:39", "msecs": 58.973073959350586, "set_value": [1, 2, 3]}
 
-*Using Filters to impart contextual information* [3]_
+.. [2] https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging
 
-.. [3] https://docs.python.org/2/howto/logging-cookbook.html#using-filters-to-impart-contextual-information
+*Using Filters to impart contextual information* [3]_
 
 .. code-block:: python
 
@@ -212,9 +210,9 @@ Library
     2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
     2015-12-19 10:12:24,479 a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 
-*Multiple loggers* [4]_
+.. [3] https://docs.python.org/2/howto/logging-cookbook.html#using-filters-to-impart-contextual-information
 
-.. [4] https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations
+*Multiple loggers* [4]_
 
 .. code-block:: python
 
@@ -253,6 +251,8 @@ Library
     examples.lggrs.area1: INFO     How daft jumping zebras vex.
     examples.lggrs.area2: WARNING  Jail zesty vixen who grabbed pay.
     examples.lggrs.area2: ERROR    The five boxing wizards jump.
+
+.. [4] https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations
 
 Command-line Interface
 ~~~~~~~~~~~~~~~~~~~~~~
