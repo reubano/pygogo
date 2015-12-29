@@ -53,7 +53,7 @@ from copy import copy
 from builtins import *
 from . import formatters, handlers, utils
 
-__version__ = '0.8.0'
+__version__ = '0.8.1'
 
 __all__ = ['formatters', 'handlers', 'utils']
 __title__ = 'pygogo'
@@ -194,9 +194,12 @@ class Gogo(object):
             New instance of :class:`logging.Logger`
 
         Examples:
-            >>> from testfixtures import LogCapture
+            >>> from io import StringIO
+
+            >>> s = StringIO()
+            >>> sys.stderr = s
             >>> logger = Gogo('default').logger
-            >>> logger # doctest: +ELLIPSIS
+            >>> logger  # doctest: +ELLIPSIS
             <logging.Logger object at 0x...>
             >>> logger.debug('stdout')
             stdout
@@ -205,11 +208,9 @@ class Gogo(object):
             >>> logger.debug('ignored')
             >>> logger.info('stdout')
             stdout
-            >>> with LogCapture() as l:
-            ...     logger.warning('stderr')
-            ...     print(l)
-            ignore_if_lt_info.base WARNING
-              stderr
+            >>> logger.warning('stderr')
+            >>> s.getvalue().strip() == 'stderr'
+            True
         """
         return self.get_logger()
 
@@ -369,16 +370,16 @@ class Gogo(object):
             <pygogo.utils.StructuredAdapter object at 0x...>
             >>> logger.debug('hello')
             >>> logger.debug('extra', extra={'key': 'value'})
-            >>> s.seek(0)
-            0L
-            >>> loads(s.next()) == {'all': 'true', 'message': 'hello'}
+            >>> s.seek(0) or 0
+            0
+            >>> loads(next(s)) == {'all': 'true', 'message': 'hello'}
             True
-            >>> loads(s.next()) == {
+            >>> loads(next(s)) == {
             ...     'all': 'true', 'message': 'extra', 'key': 'value'}
             True
         """
         values = frozenset(kwargs.items())
-        name = name or hashlib.md5(str(values)).hexdigest()
+        name = name or hashlib.md5(str(values).encode('utf-8')).hexdigest()
         lggr_name = '%s.structured.%s' % (self.name, name)
         logger = logging.getLogger(lggr_name)
 

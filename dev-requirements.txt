@@ -5,7 +5,9 @@ Babel==2.1.1
 changelog==0.3.4
 colorama==0.3.5
 coverage==4.0.3
+docutils==0.12
 flake8==2.5.1
+Jinja2==2.8
 lazy-object-proxy==1.2.1
 logilab-common==1.1.0
 manage.py==0.2.10

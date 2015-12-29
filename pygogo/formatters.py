@@ -33,10 +33,11 @@ Examples:
         >>> logger.info('hello world', extra=extra)
         >>> result = loads(s.getvalue())
         >>> keys = sorted(result.keys())
-        >>> keys
-        [u'key', u'level', u'message', u'msecs', u'name', u'time']
-        >>> [result[k] for k in keys]  # doctest: +ELLIPSIS
-        [u'value', u'INFO', u'hello world', ..., u'structured_logger', u'20...']
+        >>> keys == ['key', 'level', 'message', 'msecs', 'name', 'time']
+        True
+        >>> [result[k] for k in keys if k not in {'msecs', 'time'}] == [
+        ...     'value', 'INFO', 'hello world', 'structured_logger']
+        True
 
 Attributes:
     BASIC_FORMAT (str): A basic format
@@ -104,10 +105,11 @@ class StructuredFormatter(logging.Formatter):
         >>> logger.info('hello world')
         >>> result = loads(s.getvalue())
         >>> keys = sorted(result.keys())
-        >>> keys
-        [u'level', u'message', u'msecs', u'name', u'time']
-        >>> [result[k] for k in keys]  # doctest: +ELLIPSIS
-        [u'INFO', u'hello world', ..., u'root', u'20...']
+        >>> keys == ['level', 'message', 'msecs', 'name', 'time']
+        True
+        >>> [result[k] for k in keys if k not in {'msecs', 'time'}] == [
+        ...     'INFO', 'hello world', 'root']
+        True
     """
     def __init__(self, fmt=None, datefmt=None):
         """Initialization method.
@@ -121,7 +123,7 @@ class StructuredFormatter(logging.Formatter):
             New instance of :class:`StructuredFormatter`
 
         Examples:
-            >>> StructuredFormatter('name') # doctest: +ELLIPSIS
+            >>> StructuredFormatter('name')  # doctest: +ELLIPSIS
             <pygogo.formatters.StructuredFormatter object at 0x...>
         """
         empty_record = logging.makeLogRecord({})
@@ -147,10 +149,11 @@ class StructuredFormatter(logging.Formatter):
             >>> record = logger.makeRecord('root', *args)
             >>> result = loads(formatter.format(record))
             >>> keys = sorted(result.keys())
-            >>> keys
-            [u'level', u'message', u'msecs', u'name', u'time']
-            >>> [result[k] for k in keys]  # doctest: +ELLIPSIS
-            [u'INFO', u'hello world', ..., u'root', u'20...']
+            >>> keys == ['level', 'message', 'msecs', 'name', 'time']
+            True
+            >>> [result[k] for k in keys if k not in {'msecs', 'time'}] == [
+            ...     'INFO', 'hello world', 'root']
+            True
         """
         extra = {
             'message': record.getMessage(),
@@ -183,12 +186,14 @@ class StructuredFormatter(logging.Formatter):
             ... except:
             ...     result = loads(formatter.formatException(sys.exc_info()))
             >>> keys = sorted(result.keys())
-            >>> keys
-            [u'filename', u'function', u'lineno', u'text', u'type', u'value']
-            >>> [result[k] for k in keys]  # doctest: +ELLIPSIS
-            ... # doctest: +NORMALIZE_WHITESPACE
-            [u'<doctest pygogo...formatException[2]>', u'<module>', 2,
-            u'1 / 0', u'exceptions.ZeroDivisionError', u'division by zero']
+            >>> keys == [
+            ...     'filename', 'function', 'lineno', 'text', 'type', 'value']
+            True
+            >>> [result[k] for k in keys if k not in {'filename', 'type'}] == [
+            ...     '<module>', 2, '1 / 0', 'division by zero']
+            True
+            >>> result['type'][-17:] == 'ZeroDivisionError'
+            True
         """
         keys = ['type', 'value', 'filename', 'lineno', 'function', 'text']
         type_, value, trcbk = exc_info
