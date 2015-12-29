@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# -*- coding: utf-8 -*-
+
+# generate Sphinx HTML documentation, including API docs
+
+cd docs
+make linkcheck
+# make doctest
