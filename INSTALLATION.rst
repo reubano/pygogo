@@ -1,7 +1,7 @@
 Installation
 ------------
 
-(You are using a `virtualenv`_ [#]_, right?)
+(You are using a `virtualenv`_, right?)
 
 At the command line, install bump using either ``pip`` (recommended)
 
@@ -15,7 +15,8 @@ or ``easy_install``
 
     easy_install bump
 
-.. [#] Detailed installation instructions:
+Detailed installation instructions
+----------------------------------
 
 If you have `virtualenvwrapper`_ installed, at the command line type:
 

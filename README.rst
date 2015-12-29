@@ -1,7 +1,7 @@
 pygogo: a Python logger with super powers
 =========================================
 
-|versions| |pypi|
+|travis| |versions| |pypi|
 
 .. image:: https://raw.githubusercontent.com/reubano/pygogo/master/pygogo.png
     :alt: sample pygogo usage
@@ -55,6 +55,9 @@ pygogo is intended to be used either directly as a Python library or from the co
 
 Library
 ~~~~~~~
+
+Examples
+^^^^^^^^
 
 *Hello World*
 
@@ -112,8 +115,6 @@ Library
 
 *Custom formatter* [1]_
 
-.. [1] https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters
-
 .. code-block:: python
 
     import logging
@@ -152,8 +153,6 @@ Library
 
 *Structured logging* [2]_
 
-.. [2] https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging
-
 .. code-block:: python
 
     import pygogo as gogo
@@ -169,8 +168,6 @@ Library
     {"snowman": "\u2603", "name": "examples.structured.base", "level": "INFO", "message": "log message", "time": "2015-12-18 18:52:39", "msecs": 58.973073959350586, "set_value": [1, 2, 3]}
 
 *Using Filters to impart contextual information* [3]_
-
-.. [3] https://docs.python.org/2/howto/logging-cookbook.html#using-filters-to-impart-contextual-information
 
 .. code-block:: python
 
@@ -214,8 +211,6 @@ Library
 
 *Multiple loggers* [4]_
 
-.. [4] https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations
-
 .. code-block:: python
 
     import pygogo as gogo
@@ -254,18 +249,25 @@ Library
     examples.lggrs.area2: WARNING  Jail zesty vixen who grabbed pay.
     examples.lggrs.area2: ERROR    The five boxing wizards jump.
 
+Notes
+^^^^^
+
+.. [1] https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters
+.. [2] https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging
+.. [3] https://docs.python.org/2/howto/logging-cookbook.html#using-filters-to-impart-contextual-information
+.. [4] https://docs.python.org/2/howto/logging-cookbook.html#logging-to-multiple-destinations
+
 Command-line Interface
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Usage
-^^^^^
+Examples
+^^^^^^^^
+
+*Basic Usage*
 
 .. code-block:: bash
 
     gogo [options] <message>
-
-Examples
-^^^^^^^^
 
 *show help*
 
@@ -789,6 +791,9 @@ If you add new classes or functions, please add the appropriate doc blocks with
 examples. Also, make sure the python linter and nose tests pass.
 
 Please see the `contributing doc`_ for more details.
+
+.. |travis| image:: https://img.shields.io/travis/reubano/pygogo.svg
+    :target: https://travis-ci.org/reubano/pygogo
 
 .. |versions| image:: https://img.shields.io/pypi/pyversions/pygogo.svg
     :target: https://pypi.python.org/pypi/pygogo
