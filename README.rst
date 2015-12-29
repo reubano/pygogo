@@ -56,6 +56,9 @@ pygogo is intended to be used either directly as a Python library or from the co
 Library
 ~~~~~~~
 
+Examples
+^^^^^^^^
+
 *Hello World*
 
 .. code-block:: bash
@@ -247,7 +250,7 @@ Library
     examples.lggrs.area2: ERROR    The five boxing wizards jump.
 
 Notes
-~~~~~
+^^^^^
 
 .. [1] https://docs.python.org/2/howto/logging-cookbook.html#multiple-handlers-and-formatters
 .. [2] https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging
@@ -257,15 +260,14 @@ Notes
 Command-line Interface
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Usage
-^^^^^
+Examples
+^^^^^^^^
+
+*Basic Usage*
 
 .. code-block:: bash
 
     gogo [options] <message>
-
-Examples
-^^^^^^^^
 
 *show help*
 
