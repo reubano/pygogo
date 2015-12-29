@@ -10,7 +10,7 @@ import sys
 from os import path as p
 from builtins import *
 
-import pygogo
+import pygogo as module
 import pkutils
 
 try:
@@ -23,33 +23,33 @@ requirements = list(pkutils.parse_requirements('requirements.txt'))
 dev_requirements = list(pkutils.parse_requirements('dev-requirements.txt'))
 readme = pkutils.read('README.rst')
 changes = pkutils.read('CHANGES.rst').replace('.. :changelog:', '')
-license = pygogo.__license__
-version = pygogo.__version__
-title = pygogo.__title__
-description = pkutils.__description__
-gh = 'https://github.com/reubano'
+license = module.__license__
+version = module.__version__
+project = module.__title__
+description = module.__description__
+user = 'reubano'
 
 if sys.version_info.major == 2:
     requirements.append('future==0.15.2')
 
 setup(
-    name=title,
+    name=project,
     version=version,
     description=description,
     long_description='%s\n\n%s' % (readme, changes),
-    author=pygogo.__author__,
-    author_email=pygogo.__email__,
-    url='%s/%s' % (gh, title),
-    download_url='%s/%s/downloads/%s*.tgz' % (gh, title, title),
+    author=module.__author__,
+    author_email=module.__email__,
+    url=pkutils.get_url(project, user),
+    download_url=pkutils.get_dl_url(project, user, version),
     packages=find_packages(exclude=['docs', 'tests']),
     include_package_data=True,
+    package_data={},
     install_requires=requirements,
-    tests_require=dev_requirements,
     test_suite='nose.collector',
+    tests_require=dev_requirements,
     license=license,
     zip_safe=False,
     keywords=[title] + description.split(' '),
-    package_data={},
     classifiers=[
         pkutils.LICENSES[license],
         'Development Status :: 3 - Alpha',
@@ -59,12 +59,13 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: Implementation :: PyPy',
         'Environment :: Console',
+        'Topic :: Software Development :: Libraries :: Python Modules',
         'Intended Audience :: Developers',
+        'Operating System :: POSIX :: Linux',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
-        'Operating System :: POSIX',
-        'Operating System :: POSIX :: Linux',
     ],
     platforms=['MacOS X', 'Windows', 'Linux'],
     scripts=[p.join('bin', 'gogo')],
