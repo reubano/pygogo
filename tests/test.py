@@ -14,12 +14,13 @@ from __future__ import (
     unicode_literals)
 
 import sys
-import pygogo as gogo
 
 from difflib import unified_diff
 from os import path as p
 from io import StringIO
 from timeit import default_timer as timer
+
+import pygogo as gogo
 
 from builtins import *
 from scripttest import TestFileEnvironment
