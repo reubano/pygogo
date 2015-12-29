@@ -49,7 +49,7 @@ setup(
     tests_require=dev_requirements,
     license=license,
     zip_safe=False,
-    keywords=[title] + description.split(' '),
+    keywords=[description] + description.split(' '),
     classifiers=[
         pkutils.LICENSES[license],
         'Development Status :: 3 - Alpha',
