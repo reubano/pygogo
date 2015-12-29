@@ -10,7 +10,6 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   usage
    installation
    contributing
    authors
@@ -27,8 +26,6 @@ API and Indices
 
 Overview
 ========
-
-.. include:: ../INTRO.rst
 
 .. include:: ../README.rst
     :start-line: 16

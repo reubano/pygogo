@@ -3,37 +3,38 @@ Installation
 
 (You are using a `virtualenv`_ [#]_, right?)
 
-At the command line, install pygogo using either pip (recommended)
+At the command line, install bump using either ``pip`` (recommended)
 
 .. code-block:: bash
 
-    pip install pypygogo
+    pip install bump
 
-or easy_install
-
-.. code-block:: bash
-
-    easy_install pygogo
-
-.. [#] Detailed installation instructions
-
-If you have ``virtualenvwrapper`` installed, at the command line type:
+or ``easy_install``
 
 .. code-block:: bash
 
-    mkvirtualenv pygogo
-    pip install pygogo
+    easy_install bump
+
+.. [#] Detailed installation instructions:
+
+If you have `virtualenvwrapper`_ installed, at the command line type:
+
+.. code-block:: bash
+
+    mkvirtualenv bump
+    pip install bump
 
 Or, if you only have ``virtualenv`` installed:
 
 .. code-block:: bash
 
-	virtualenv ~/.venvs/pygogo
-	source ~/.venvs/pygogo/bin/activate
-	pip install pygogo
+	virtualenv ~/.venvs/bump
+	source ~/.venvs/bump/bin/activate
+	pip install bump
 
 Otherwise, you can install globally::
 
-    pip install pygogo
+    pip install bump
 
 .. _virtualenv: http://www.virtualenv.org/en/latest/index.html
+.. _virtualenvwrapper: https://virtualenvwrapper.readthedocs.org/en/latest/
