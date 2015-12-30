@@ -8,6 +8,21 @@ pygogo: a Python logger with super powers
     :width: 800
     :align: center
 
+Index
+-----
+- `Introduction`_
+- `Motivation`_
+- `Usage`_
+- `Installation`_
+- `Project structure`_
+- `Design Principles`_
+- `Structured Logging`_
+- `Formatters`_
+- `Handlers`_
+- `Scripts`_
+- `Contributing`_
+- `License`_
+
 Introduction
 ------------
 
