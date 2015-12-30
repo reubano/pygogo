@@ -60,13 +60,10 @@ many useful logging use-cases out of the box. A reimplementation of
 
     {"message": "log message", "connid": "1234"}
 
-
 Usage
 -----
 
 pygogo is intended to be used either directly as a Python library or from the command line.
-
-.. _library:
 
 Library
 ~~~~~~~
