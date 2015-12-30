@@ -796,7 +796,7 @@ examples. Also, make sure the python linter and nose tests pass.
 
 Please see the `contributing doc`_ for more details.
 
-.. |travis| image:: https://img.shields.io/travis/reubano/pygogo.svg
+.. |travis| image:: https://img.shields.io/travis/reubano/pygogo/master.svg
     :target: https://travis-ci.org/reubano/pygogo
 
 .. |versions| image:: https://img.shields.io/pypi/pyversions/pygogo.svg
