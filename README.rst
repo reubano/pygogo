@@ -14,7 +14,7 @@ Index
 - `Motivation`_
 - `Usage`_
 - `Installation`_
-- `Project structure`_
+- `Project Structure`_
 - `Design Principles`_
 - `Structured Logging`_
 - `Formatters`_
@@ -448,7 +448,7 @@ or ``easy_install``
 
 Please see the `installation doc`_ for more details.
 
-Project structure
+Project Structure
 -----------------
 
 .. code-block:: bash
