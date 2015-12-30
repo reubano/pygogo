@@ -793,13 +793,6 @@ Examples
     manage lint
     manage test
 
-License
--------
-
-pygogo is distributed under the `MIT License`_.
-
-.. _MIT License: http://opensource.org/licenses/MIT
-
 Contributing
 ------------
 
@@ -808,6 +801,11 @@ If you add new classes or functions, please add the appropriate doc blocks with
 examples. Also, make sure the python linter and nose tests pass.
 
 Please see the `contributing doc`_ for more details.
+
+License
+-------
+
+pygogo is distributed under the `MIT License`_.
 
 .. |travis| image:: https://img.shields.io/travis/reubano/pygogo/master.svg
     :target: https://travis-ci.org/reubano/pygogo
@@ -818,6 +816,7 @@ Please see the `contributing doc`_ for more details.
 .. |pypi| image:: https://img.shields.io/pypi/v/pygogo.svg
     :target: https://pypi.python.org/pypi/pygogo
 
+.. _MIT License: http://opensource.org/licenses/MIT
 .. _logging module: https://docs.python.org/2/library/logging.html
 .. _virtualenv: http://www.virtualenv.org/en/latest/index.html
 .. _contributing doc: https://github.com/reubano/pygogo/blob/master/CONTRIBUTING.rst
