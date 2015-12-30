@@ -63,7 +63,8 @@ many useful logging use-cases out of the box. A reimplementation of
 Usage
 -----
 
-pygogo is intended to be used either directly as a Python library or from the command line.
+pygogo is intended to be used either directly as a Python `library`_ or from
+the terminal via the `command-line interface`_.
 
 Library
 ~~~~~~~
