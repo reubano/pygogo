@@ -27,7 +27,7 @@ else
 fi
 
 if [ ${FLAGS_py3} -eq ${FLAGS_TRUE} ]; then
-  pip='python3 -m pip'
+  pip='pip3'
 else
   pip='pip'
 fi
