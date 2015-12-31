@@ -3,7 +3,7 @@ pygogo: a Python logger with super powers
 
 |travis| |versions| |pypi|
 
-.. image:: https://raw.githubusercontent.com/reubano/pygogo/master/pygogo.png
+.. image:: https://raw.githubusercontent.com/reubano/pygogo/master/gogo.png
     :alt: sample pygogo usage
     :width: 800
     :align: center
