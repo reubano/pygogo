@@ -3,25 +3,16 @@ pygogo: a Python logger with super powers
 
 |travis| |versions| |pypi|
 
-.. image:: https://raw.githubusercontent.com/reubano/pygogo/master/pygogo.png
+.. image:: https://raw.githubusercontent.com/reubano/pygogo/master/gogo.png
     :alt: sample pygogo usage
     :width: 800
     :align: center
 
 Index
 -----
-- `Introduction`_
-- `Motivation`_
-- `Usage`_
-- `Installation`_
-- `Project Structure`_
-- `Design Principles`_
-- `Structured Logging`_
-- `Formatters`_
-- `Handlers`_
-- `Scripts`_
-- `Contributing`_
-- `License`_
+`Introduction`_ | `Requirements`_ | `Motivation`_ | `Usage`_ | `Installation`_ |
+`Project Structure`_ | `Design Principles`_ | `Structured Logging`_ |
+`Formatters`_ | `Handlers`_ | `Scripts`_ | `Contributing`_ | `License`_
 
 Introduction
 ------------
@@ -38,6 +29,12 @@ With pygogo, you can
 - Send logs to stdout, stderr, file, email, sockets, and more..
 - Inter-operate with the standard python logging module
 - and much more...
+
+Requirements
+------------
+
+pygogo has been tested and is known to work on Python 2.7, 3.4, and 3.5;
+PyPy 4.0; and PyPy3 2.4
 
 Motivation
 ----------
