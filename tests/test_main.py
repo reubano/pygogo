@@ -185,7 +185,7 @@ class TestMain(BaseTest):
     def test_structured_formatter(self):
         console_msg = {
             'snowman': '\u2603', 'name': 'structured_formatter.base',
-            'level': 'INFO', 'message': 'log message', 'time': '2015',
+            'level': 'INFO', 'message': 'log message', 'time': '20...',
             'msecs': '...', 'set_value': [1, 2, 3]}
 
         log_format = gogo.formatters.BASIC_FORMAT
@@ -200,9 +200,10 @@ class TestMain(BaseTest):
         result['msecs'] = str(result['msecs'])
         keys = sorted(result.keys())
         nt.assert_equal(sorted(console_msg.keys()), keys)
+        whitelist = {'msecs', 'time'}
 
         for k in keys:
-            f = nt.assert_equal_ellipsis if k == 'msecs' else nt.assert_equal
+            f = nt.assert_equal_ellipsis if k in whitelist else nt.assert_equal
             f(console_msg[k], result[k])
 
     def test_structured_logging(self):
