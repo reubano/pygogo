@@ -10,18 +10,9 @@ pygogo: a Python logger with super powers
 
 Index
 -----
-- `Introduction`_
-- `Motivation`_
-- `Usage`_
-- `Installation`_
-- `Project Structure`_
-- `Design Principles`_
-- `Structured Logging`_
-- `Formatters`_
-- `Handlers`_
-- `Scripts`_
-- `Contributing`_
-- `License`_
+`Introduction`_ | `Requirements`_ | `Motivation`_ | `Usage`_ | `Installation`_ |
+`Project Structure`_ | `Design Principles`_ | `Structured Logging`_ |
+`Formatters`_ | `Handlers`_ | `Scripts`_ | `Contributing`_ | `License`_
 
 Introduction
 ------------
