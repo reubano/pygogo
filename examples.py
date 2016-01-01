@@ -72,18 +72,18 @@ Examples:
         >>> logger.debug('debug message')
         >>> logger.info('info message')
         >>> logger.warning('warn message')
-        >>> logger.error('error message')
-        2015 - examples.two.base - ERROR - error message
-        >>> logger.critical('critical message')
-        2015 - examples.two.base - CRITICAL - critical message
+        >>> logger.error('error message')  # doctest: +ELLIPSIS
+        20... - examples.two.base - ERROR - error message
+        >>> logger.critical('critical message')  # doctest: +ELLIPSIS
+        20... - examples.two.base - CRITICAL - critical message
 
         >>> with open('example2.log', encoding='utf-8') as f:
-        ...     [line.strip() for line in f]  == [
-        ...         '2015 - examples.two.base - DEBUG - debug message',
-        ...         '2015 - examples.two.base - INFO - info message',
-        ...         '2015 - examples.two.base - WARNING - warn message',
-        ...         '2015 - examples.two.base - ERROR - error message',
-        ...         '2015 - examples.two.base - CRITICAL - critical message']
+        ...     [line.strip()[5:] for line in f] == [
+        ...         '- examples.two.base - DEBUG - debug message',
+        ...         '- examples.two.base - INFO - info message',
+        ...         '- examples.two.base - WARNING - warn message',
+        ...         '- examples.two.base - ERROR - error message',
+        ...         '- examples.two.base - CRITICAL - critical message']
         True
 
 
@@ -142,19 +142,19 @@ Examples:
         >>> a1 = going.get_logger('b.c', ip='123.231.231.123', user='fred')
         >>> a2 = going.get_logger('e.f', ip='192.168.0.1', user='sheila')
 
-        >>> a1.debug('A debug message')
-        2015 a.b.c DEBUG    IP: 123.231.231.123 User: fred     A debug message
-        >>> a1.info('An info %s', 'message')
-        2015 a.b.c INFO     IP: 123.231.231.123 User: fred     An info message
+        >>> a1.debug('A debug message')  # doctest: +ELLIPSIS
+        20... a.b.c DEBUG    IP: 123.231.231.123 User: fred     A debug message
+        >>> a1.info('An info %s', 'message')  # doctest: +ELLIPSIS
+        20... a.b.c INFO     IP: 123.231.231.123 User: fred     An info message
 
         >>> for level in [getattr(logging, l) for l in levels]:
         ...    name = logging.getLevelName(level)
-        ...    a2.log(level, 'A %s msg', name)
-        2015 a.e.f DEBUG    IP: 192.168.0.1     User: sheila   A DEBUG msg
-        2015 a.e.f INFO     IP: 192.168.0.1     User: sheila   A INFO msg
-        2015 a.e.f WARNING  IP: 192.168.0.1     User: sheila   A WARNING msg
-        2015 a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
-        2015 a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
+        ...    a2.log(level, 'A %s msg', name)  # doctest: +ELLIPSIS
+        20... a.e.f DEBUG    IP: 192.168.0.1     User: sheila   A DEBUG msg
+        20... a.e.f INFO     IP: 192.168.0.1     User: sheila   A INFO msg
+        20... a.e.f WARNING  IP: 192.168.0.1     User: sheila   A WARNING msg
+        20... a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
+        20... a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 """
 
 from __future__ import (
