@@ -17,6 +17,17 @@ Examples:
         >>> sys.stderr = sys.stdout
 
 
+    Hello World
+
+        >>> from pygogo import logger
+        >>>
+        >>> logger.debug('hello world')
+        hello world
+        >>> logger.error('hello error')
+        hello error
+        hello error
+
+
     Using LoggerAdapters to impart contextual information
 
         >>> import pygogo as gogo

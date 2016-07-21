@@ -73,10 +73,10 @@ Examples
 
 .. code-block:: python
 
-    import pygogo as gogo
+    from pygogo import logger
 
-    gogo.Gogo().logger.debug('hello world')
-    gogo.Gogo().logger.error('hello error')
+    logger.debug('hello world')
+    logger.error('hello error')
 
     # Prints the following to `stdout`
 

@@ -420,3 +420,5 @@ def copy_hdlr(hdlr):
     copied_hdlr = copy(hdlr)
     copied_hdlr.filters = [copy(f) for f in hdlr.filters]
     return copied_hdlr
+
+logger = Gogo().logger
