@@ -1,4 +1,4 @@
-.PHONY: help clean check-stage pipme require lint test tox register upload release sdist wheel docs
+.PHONY: help clean check-stage pipme require lint test tox register upload release sdist wheel
 
 help:
 	@echo "clean - remove Python file and build artifacts"
@@ -13,7 +13,6 @@ help:
 	@echo "upload - upload dist files"
 	@echo "register - register package with PyPI"
 	@echo "tox - run tests on every Python version with tox"
-	@echo "docs - generate Sphinx HTML documentation, including API docs"
 
 clean:
 	helpers/clean
@@ -52,6 +51,3 @@ upload:
 
 tox:
 	tox
-
-docs:
-	helpers/docs

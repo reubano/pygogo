@@ -6,12 +6,9 @@ from __future__ import (
     unicode_literals)
 
 import sys
+import pkutils
 
 from os import path as p
-from builtins import *
-
-import pygogo as module
-import pkutils
 
 try:
     from setuptools import setup, find_packages
@@ -19,11 +16,11 @@ except ImportError:
     from distutils.core import setup, find_packages
 
 sys.dont_write_bytecode = True
-py2_requirements = sorted(pkutils.parse_requirements('py2-requirements.txt'))
-py3_requirements = sorted(pkutils.parse_requirements('requirements.txt'))
-dev_requirements = sorted(pkutils.parse_requirements('dev-requirements.txt'))
+py2_requirements = set(pkutils.parse_requirements('py2-requirements.txt'))
+dev_requirements = set(pkutils.parse_requirements('dev-requirements.txt'))
 readme = pkutils.read('README.rst')
 changes = pkutils.read('CHANGES.rst').replace('.. :changelog:', '')
+module = pkutils.parse_module('pygogo/__init__.py')
 license = module.__license__
 version = module.__version__
 project = module.__title__
@@ -31,13 +28,12 @@ description = module.__description__
 user = 'reubano'
 
 # Conditional sdist dependencies:
-if 'bdist_wheel' not in sys.argv and sys.version_info.major == 2:
-    requirements = py2_requirements
-else:
-    requirements = py3_requirements
+bdist = 'bdist_wheel' in sys.argv
+py2 = sys.version_info.major == 2
+requirements = py2_requirements if py2 and not bdist else []
 
-# Conditional bdist_wheel dependencies:
-extras_require = sorted(set(py2_requirements).difference(py3_requirements))
+# Setup requirements
+setup_require = [r for r in dev_requirements if 'pkutils' in r]
 
 setup(
     name=project,
@@ -48,11 +44,15 @@ setup(
     author_email=module.__email__,
     url=pkutils.get_url(project, user),
     download_url=pkutils.get_dl_url(project, user, version),
-    packages=find_packages(exclude=['docs', 'tests']),
+    packages=find_packages(exclude=['tests']),
     include_package_data=True,
     package_data={},
     install_requires=requirements,
-    extras_require={':python_version<"3.0"': extras_require},
+    extras_require={
+        'python_version<3.0': py2_requirements,
+        'develop': dev_requirements,
+    },
+    setup_requires=setup_require,
     test_suite='nose.collector',
     tests_require=dev_requirements,
     license=license,
@@ -60,7 +60,7 @@ setup(
     keywords=[project] + description.split(' '),
     classifiers=[
         pkutils.LICENSES[license],
-        'Development Status :: 3 - Alpha',
+        pkutils.get_status(version),
         'Natural Language :: English',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',

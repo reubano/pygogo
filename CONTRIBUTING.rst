@@ -81,6 +81,7 @@ Or, if you only have ``virtualenv`` installed
     virtualenv --no-site-packages ~/.venvs/pygogo
     source ~/.venvs/pygogo/bin/activate
     pip install -r dev-requirements.txt
+    pip install -r requirements.txt
     python setup.py develop
 
 3. Create a branch for local development
@@ -95,6 +96,8 @@ Or, if you only have ``virtualenv`` installed
 
     manage lint
     manage test
+
+    # or to run the full integration tests
     manage tox
 
 5. Commit your changes and push your branch to GitHub

@@ -71,7 +71,7 @@ Examples
 
 *Hello World*
 
-.. code-block:: bash
+.. code-block:: python
 
     import pygogo as gogo
 
@@ -89,7 +89,7 @@ Examples
 
 *Log based debugging*
 
-.. code-block:: bash
+.. code-block:: python
 
     import pygogo as gogo
 
@@ -101,7 +101,7 @@ Examples
 
 *Disabled dual logging*
 
-.. code-block:: bash
+.. code-block:: python
 
     import pygogo as gogo
 
@@ -285,7 +285,7 @@ Examples
 
     gogo -h
 
-.. code-block:: bash
+*CLI usage*
 
     usage: gogo [options] <message>
 
@@ -450,43 +450,41 @@ Project Structure
 
 .. code-block:: bash
 
-    ┌── AUTHORS.rst
-    ├── CHANGES.rst
-    ├── CONTRIBUTING.rst
-    ├── INSTALLATION.rst
-    ├── LICENSE
-    ├── MANIFEST.in
-    ├── Makefile
-    ├── pygogo.png
-    ├── README.rst
-    ├── TODO.rst
-    ├── bin
+    ┌── bin
     │   └── gogo
-    ├── dev-requirements.txt
-    ├── examples.py
+    ├── docs
+    │   ├── AUTHORS.rst
+    │   ├── CHANGES.rst
+    │   ├── INSTALLATION.rst
+    │   └── TODO.rst
     ├── helpers
     │   ├── check-stage
     │   ├── clean
-    │   ├── docs
-    │   ├── sdist
+    │   ├── pippy
     │   ├── srcdist
-    │   ├── test
     │   └── wheel
-    ├── manage.py
     ├── pygogo
     │   ├── __init__.py
     │   ├── formatters.py
     │   ├── handlers.py
     │   ├── main.py
     │   └── utils.py
-    ├── requirements.txt
-    ├── setup.cfg
-    ├── setup.py
     ├── tests
     │   ├── __init__.py
     │   ├── standard.rc
     │   ├── test.py
     │   └── test_main.py
+    ├── CONTRIBUTING.rst
+    ├── LICENSE
+    ├── MANIFEST.in
+    ├── Makefile
+    ├── README.rst
+    ├── dev-requirements.txt
+    ├── examples.py
+    ├── manage.py
+    ├── py2-requirements.txt
+    ├── setup.cfg
+    ├── setup.py
     └── tox.ini
 
 Design Principles
@@ -817,4 +815,4 @@ pygogo is distributed under the `MIT License`_.
 .. _logging module: https://docs.python.org/2/library/logging.html
 .. _virtualenv: http://www.virtualenv.org/en/latest/index.html
 .. _contributing doc: https://github.com/reubano/pygogo/blob/master/CONTRIBUTING.rst
-.. _installation doc: https://github.com/reubano/pygogo/blob/master/INSTALLATION.rst
+.. _installation doc: https://github.com/reubano/pygogo/blob/master/docs/INSTALLATION.rst
