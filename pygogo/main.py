@@ -60,16 +60,16 @@ parser.add_argument(
 parser.add_argument(
     '-L', '--high-level', metavar='LEVEL', choices=LEVELS, default='warning',
     help=(
-        "Min level to log to the high pass handler\n(default: warning)."
-        "\nMust be one of: %s,\n%s.\n\n" % (
-            ', '.join(HDLRS[:4]), ', '.join(HDLRS[4:]))))
+        "Min level to log to the high pass handler\n"
+        "(default: warning). Must be one of: %s,\n%s.\n\n" % (
+            ', '.join(LEVELS[:1]), ', '.join(LEVELS[1:]))))
 
 parser.add_argument(
     '-e', '--low-level', metavar='LEVEL', choices=LEVELS, default='debug',
     help=(
-        "Min level to log to the low pass handler\n(default: debug)."
-        "\nMust be one of: %s,\n%s.\n\n" % (
-            ', '.join(HDLRS[:4]), ', '.join(HDLRS[4:]))))
+        "Min level to log to the low pass handler\n"
+        "(default: debug). Must be one of: %s,\n%s.\n\n" % (
+            ', '.join(LEVELS[:1]), ', '.join(LEVELS[1:]))))
 
 parser.add_argument(
     '-F', '--high-format', metavar='FORMAT', choices=FORMATS, default='basic',
