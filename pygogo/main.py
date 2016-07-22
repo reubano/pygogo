@@ -135,12 +135,11 @@ parser.add_argument(
     '-V', '--verbose', help='Increase output verbosity.', action='store_true',
     default=False)
 
-args = parser.parse_args()
-
 
 def run():
     """CLI runner
     """
+    args = parser.parse_args()
     gogo_logger = gogo.Gogo(__name__, verbose=args.verbose).get_logger('run')
 
     if args.version:
