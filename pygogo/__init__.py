@@ -26,7 +26,7 @@ Examples:
 
         >>> from io import StringIO
         >>> from json import loads
-
+        >>>
         >>> high = StringIO()
         >>> low = StringIO()
         >>> kwargs = {
@@ -174,7 +174,7 @@ class Gogo(object):
         elif self.levels['high'] < self.levels['low']:
             raise ValueError('high_level must be >= low_level')
 
-        self.loggers = set([])
+        self.loggers = set()
         self.name = name
         self.handlers = {
             'high': kwargs.get('high_hdlr', handlers.stderr_hdlr()),
@@ -329,6 +329,7 @@ class Gogo(object):
                 kwargs['name'] = lggr_name
 
             fmtrs = [self.formatters['high'], self.formatters['low']]
+
             for zipped in self.zip(*fmtrs):
                 hdlr, level, fmtr, monolog = zipped
                 copied_hdlr = copy_hdlr(hdlr)
