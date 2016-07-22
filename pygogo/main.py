@@ -5,8 +5,7 @@
 """ A Python logging library with super powers """
 
 from __future__ import (
-    absolute_import, division, print_function, with_statement,
-    unicode_literals)
+    absolute_import, division, print_function, unicode_literals)
 
 import sys
 import itertools as it
