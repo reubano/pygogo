@@ -134,7 +134,6 @@ def upload():
 def sdist():
     """Create a source distribution package"""
     try:
-        clean_()
         sdist_()
     except CalledProcessError as e:
         exit(e.returncode)
@@ -144,7 +143,6 @@ def sdist():
 def wheel():
     """Create a wheel package"""
     try:
-        clean_()
         wheel_()
     except CalledProcessError as e:
         exit(e.returncode)
