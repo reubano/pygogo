@@ -1,4 +1,6 @@
 *.py[cod]
+.cookiecutter
+.scripttest/*
 
 # C extensions
 *.so
