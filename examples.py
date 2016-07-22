@@ -34,19 +34,19 @@ Examples:
         >>>
         >>> def main(name, verbose=False):
         ...     logger = gogo.Gogo(name, verbose=verbose).logger
-        ...     logger.debug('I will log to `stdout` only if `verbose` is True')
+        ...     logger.debug('I will log to `stdout` if `verbose` is True')
         ...     logger.info('I will log to `stdout` always')
-        ...     logger.warning('I will log to both `stdout` and `stderr` always')
+        ...     logger.warning('I will log to both `stdout` and `stderr`')
         >>>
         >>> main('quite')
         I will log to `stdout` always
-        I will log to both `stdout` and `stderr` always
-        I will log to both `stdout` and `stderr` always
+        I will log to both `stdout` and `stderr`
+        I will log to both `stdout` and `stderr`
         >>> main('verbose', True)
-        I will log to `stdout` only if `verbose` is True
+        I will log to `stdout` if `verbose` is True
         I will log to `stdout` always
-        I will log to both `stdout` and `stderr` always
-        I will log to both `stdout` and `stderr` always
+        I will log to both `stdout` and `stderr`
+        I will log to both `stdout` and `stderr`
 
 
     Disabled dual logging
@@ -88,7 +88,7 @@ Examples:
         >>> kwargs = {
         ...     'low_level': 'info', 'low_formatter': formatter,
         ...     'low_hdlr': hdlr}
-        >>> logger = gogo.Gogo('examples.one', **kwargs).logger
+        >>> logger = gogo.Gogo('ex.one', **kwargs).logger
         >>> extra = {'set_value': set([1, 2, 3]), 'snowman': '☃'}
         >>> logger.info('log message', extra=extra)
         >>> result = loads(s.getvalue())
@@ -99,7 +99,7 @@ Examples:
         True
         >>> blacklist = {'snowman', 'msecs', 'time'}
         >>> [result[k] for k in keys if k not in blacklist] == [
-        ...     'INFO', 'log message', 'examples.one.base', [1, 2, 3]]
+        ...     'INFO', 'log message', 'ex.one.base', [1, 2, 3]]
         True
 
 
@@ -112,7 +112,7 @@ Examples:
         >>> formatter = logging.Formatter(log_format, datefmt='%Y')
         >>>
         >>> logger = gogo.Gogo(
-        ...     'examples.two',
+        ...     'ex.two',
         ...     low_hdlr=gogo.handlers.file_hdlr('example2.log', mode='w'),
         ...     low_formatter=formatter,
         ...     high_level='error',
@@ -122,17 +122,17 @@ Examples:
         >>> logger.info('info message')
         >>> logger.warning('warn message')
         >>> logger.error('error message')  # doctest: +ELLIPSIS
-        20... - examples.two.base - ERROR - error message
+        20... - ex.two.base - ERROR - error message
         >>> logger.critical('critical message')  # doctest: +ELLIPSIS
-        20... - examples.two.base - CRITICAL - critical message
+        20... - ex.two.base - CRITICAL - critical message
 
         >>> with open('example2.log', encoding='utf-8') as f:
         ...     [line.strip()[5:] for line in f] == [
-        ...         '- examples.two.base - DEBUG - debug message',
-        ...         '- examples.two.base - INFO - info message',
-        ...         '- examples.two.base - WARNING - warn message',
-        ...         '- examples.two.base - ERROR - error message',
-        ...         '- examples.two.base - CRITICAL - critical message']
+        ...         '- ex.two.base - DEBUG - debug message',
+        ...         '- ex.two.base - INFO - info message',
+        ...         '- ex.two.base - WARNING - warn message',
+        ...         '- ex.two.base - ERROR - error message',
+        ...         '- ex.two.base - CRITICAL - critical message']
         True
 
 
@@ -141,7 +141,7 @@ Examples:
         >>> import pygogo as gogo
         >>>
         >>> going = gogo.Gogo(
-        ...     'examples.three',
+        ...     'ex.three',
         ...     low_hdlr=gogo.handlers.file_hdlr('example1.log', mode='w'),
         ...     low_formatter=gogo.formatters.fixed_formatter,
         ...     high_level='info',
@@ -152,22 +152,22 @@ Examples:
         >>> root = going.logger
         >>>
         >>> root.info('Jackdaws love my big sphinx.')
-        examples.three.base: INFO     Jackdaws love my big sphinx.
+        ex.three.base: INFO     Jackdaws love my big sphinx.
         >>> logger1.debug('Quick zephyrs blow, daft Jim.')
         >>> logger1.info('How daft jumping zebras vex.')
-        examples.three.area1: INFO     How daft jumping zebras vex.
+        ex.three.area1: INFO     How daft jumping zebras vex.
         >>> logger2.warning('Jail zesty vixen who pay.')
-        examples.three.area2: WARNING  Jail zesty vixen who pay.
+        ex.three.area2: WARNING  Jail zesty vixen who pay.
         >>> logger2.error('The five boxing wizards jump.')
-        examples.three.area2: ERROR    The five boxing wizards jump.
+        ex.three.area2: ERROR    The five boxing wizards jump.
         >>>
         >>> with open('example1.log', encoding='utf-8') as f:
         ...     [line.strip()[24:] for line in f] == [
-        ...         'examples.three.base INFO     Jackdaws love my big sphinx.',
-        ...         'examples.three.area1 DEBUG    Quick zephyrs blow, daft Jim.',
-        ...         'examples.three.area1 INFO     How daft jumping zebras vex.',
-        ...         'examples.three.area2 WARNING  Jail zesty vixen who pay.',
-        ...         'examples.three.area2 ERROR    The five boxing wizards jump.']
+        ...         'ex.three.base INFO     Jackdaws love my big sphinx.',
+        ...         'ex.three.area1 DEBUG    Quick zephyrs blow, daft Jim.',
+        ...         'ex.three.area1 INFO     How daft jumping zebras vex.',
+        ...         'ex.three.area2 WARNING  Jail zesty vixen who pay.',
+        ...         'ex.three.area2 ERROR    The five boxing wizards jump.']
         True
 
 

@@ -14,16 +14,16 @@ from __future__ import (
 
 import sys
 
-from difflib import unified_diff
-from os import path as p
-from io import StringIO
-from timeit import default_timer as timer
-
 sys.path.append('../pygogo')
-import pygogo as gogo
+import pygogo as gogo                       # noqa
 
-from builtins import *
-from scripttest import TestFileEnvironment
+from difflib import unified_diff            # noqa
+from os import path as p                    # noqa
+from io import StringIO                     # noqa
+from timeit import default_timer as timer   # noqa
+
+from builtins import *                      # noqa
+from scripttest import TestFileEnvironment  # noqa
 
 
 def main(script, tests, verbose=False, stop=True):
