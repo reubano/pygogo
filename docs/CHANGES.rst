@@ -1,25 +1,187 @@
-=========
 Changelog
 =========
 
-Here you can find the recent changes to pygogo..
+v0.8.13 (2016-01-01)
+--------------------
 
-.. changelog::
-    :version: dev
-    :released: Ongoing
+Bugfixes
+~~~~~~~~
 
-    .. change::
-        :tags:  docs
+- Fix new year bug.
 
-        Updated CHANGES.
+v0.8.10 (2015-12-30)
+--------------------
 
-.. changelog::
-    :version: 0.1.0
-    :released: 2015-12-05
+Bugfixes
+~~~~~~~~
 
-    .. change::
-        :tags: docs
+- Fix capitalization.
 
-        First release on PyPi.
+- Fix optional dependency parsing.
 
-.. todo:: vim: set filetype=rst:
+- Fix spacing and remove unneeded marker.
+
+v0.8.9 (2015-12-30)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix conditional dependency configuration.
+
+- Fix requirements.
+
+v0.8.8 (2015-12-29)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix project name.
+
+v0.8.7 (2015-12-29)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Add pygogo to script path.
+
+- Add pygogo to test path.
+
+v0.8.6 (2015-12-29)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix doccheck errors.
+
+v0.8.5 (2015-12-29)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Add missing helper script.
+
+v0.8.4 (2015-12-29)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix setup.py (again!)
+
+v0.8.3 (2015-12-29)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix setup.py.
+
+v0.8.2 (2015-12-29)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix travis.
+
+v0.8.1 (2015-12-29)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix tox config and tests.
+
+- Change helper script name.
+
+- Fix spacing.
+
+- Fix makefile error.
+
+- Only clean once.
+
+v0.8.0 (2015-12-25)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix sphinx.
+
+- Fix tox.
+
+- Fix lint errors.
+
+- Fix tests.
+
+v0.7.0 (2015-12-23)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix lint error.
+
+v0.6.3 (2015-12-22)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix pylint errors.
+
+- Fix pylint and make check optional.
+
+- Don’t overwrite fmtrs argument.
+
+v0.5.0 (2015-12-20)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix duplicate handler/filter bug.
+
+- Fix tests.
+
+- Fix assertion arg orders.
+
+v0.4.0 (2015-12-19)
+-------------------
+
+New
+~~~
+
+- Add BOM formatter.
+
+Bugfixes
+~~~~~~~~
+
+- Fix spelling and spacing.
+
+- Fix lint errors.
+
+- Fix example.
+
+- Fix lint errors and add msecs to formatter.
+
+- Remove ‘ascitime’ from StructuredFormatter.
+
+- Use port if given.
+
+- Fix docblocks.
+
+v0.2.2 (2015-12-07)
+-------------------
+
+Bugfixes
+~~~~~~~~
+
+- Fix typo.
+
+
