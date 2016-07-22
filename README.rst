@@ -208,15 +208,15 @@ Examples
     2015-12-19 10:12:24,479 a.b.c DEBUG    IP: 123.231.231.123 User: fred     A debug message
     2015-12-19 10:12:24,479 a.b.c INFO     IP: 123.231.231.123 User: fred     An info message
     2015-12-19 10:12:24,479 a.e.f DEBUG    IP: 192.168.0.1     User: sheila   A DEBUG msg
-    2015-12-19 10:12:24,479 a.e.f INFO     IP: 192.168.0.1     User: sheila   A INFO msg
+    2015-12-19 10:12:24,479 a.e.f INFO     IP: 192.168.0.1     User: sheila   AN INFO msg
     2015-12-19 10:12:24,479 a.e.f WARNING  IP: 192.168.0.1     User: sheila   A WARNING msg
-    2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
+    2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   AN ERROR msg
     2015-12-19 10:12:24,479 a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 
     # Prints the following to `stderr` (messages at level `WARNING` or above):
 
     2015-12-19 10:12:24,479 a.e.f WARNING  IP: 192.168.0.1     User: sheila   A WARNING msg
-    2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
+    2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   AN ERROR msg
     2015-12-19 10:12:24,479 a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 
 *Multiple loggers* [4]_

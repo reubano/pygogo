@@ -31,27 +31,39 @@ Examples:
     Log based debugging
 
         >>> import pygogo as gogo
-
-        >>> def main(verbose=False):
-        >>>     logger = gogo.Gogo(__name__, verbose=verbose).logger
-        >>>     logger.debug('I will log to `stdout` only if `verbose` is True')
-        >>>     logger.info('I will log to `stdout` always')
-        >>>     logger.warning('I will log to both `stdout` and `stderr` always')
-
-        >>> main()
-        >>> main(True)
+        >>>
+        >>> def main(name, verbose=False):
+        ...     logger = gogo.Gogo(name, verbose=verbose).logger
+        ...     logger.debug('I will log to `stdout` only if `verbose` is True')
+        ...     logger.info('I will log to `stdout` always')
+        ...     logger.warning('I will log to both `stdout` and `stderr` always')
+        >>>
+        >>> main('quite')
+        I will log to `stdout` always
+        I will log to both `stdout` and `stderr` always
+        I will log to both `stdout` and `stderr` always
+        >>> main('verbose', True)
+        I will log to `stdout` only if `verbose` is True
+        I will log to `stdout` always
+        I will log to both `stdout` and `stderr` always
+        I will log to both `stdout` and `stderr` always
 
 
     Disabled dual logging
 
         >>> import pygogo as gogo
-
-        >>> logger = gogo.Gogo(monolog=True).logger
+        >>>
+        >>> logger = gogo.Gogo('monolog', monolog=True).logger
         >>> logger.debug('debug message')
+        debug message
         >>> logger.info('info message')
+        info message
         >>> logger.warning('warning message')
+        warning message
         >>> logger.error('error message')
+        error message
         >>> logger.critical('critical message')
+        critical message
 
 
     Using LoggerAdapters to impart contextual information
@@ -59,7 +71,7 @@ Examples:
         >>> import pygogo as gogo
         >>>
         >>> s = StringIO()
-        >>> going = gogo.Gogo(__name__, low_hdlr=gogo.handlers.fileobj_hdlr(s))
+        >>> going = gogo.Gogo('context', low_hdlr=gogo.handlers.fileobj_hdlr(s))
         >>> logger = going.get_structured_logger(connid='1234')
         >>> logger.info('log message')
         >>> loads(s.getvalue()) == {'message': 'log message', 'connid': '1234'}
@@ -185,12 +197,13 @@ Examples:
         20... a.b.c INFO     IP: 123.231.231.123 User: fred     An info message
         >>>
         >>> for level in [getattr(logging, l) for l in levels]:
-        ...    name = logging.getLevelName(level)
-        ...    a2.log(level, 'A %s msg', name)  # doctest: +ELLIPSIS
+        ...     name = logging.getLevelName(level)
+        ...     pronoun = 'AN' if name[0] in 'AEIOU' else 'A'
+        ...     a2.log(level, '%s %s msg', pronoun, name)  # doctest: +ELLIPSIS
         20... a.e.f DEBUG    IP: 192.168.0.1     User: sheila   A DEBUG msg
-        20... a.e.f INFO     IP: 192.168.0.1     User: sheila   A INFO msg
+        20... a.e.f INFO     IP: 192.168.0.1     User: sheila   AN INFO msg
         20... a.e.f WARNING  IP: 192.168.0.1     User: sheila   A WARNING msg
-        20... a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
+        20... a.e.f ERROR    IP: 192.168.0.1     User: sheila   AN ERROR msg
         20... a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 """
 
