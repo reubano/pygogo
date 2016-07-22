@@ -1,6 +1,29 @@
 Changelog
 =========
 
+%%version%% (unreleased)
+------------------------
+
+New
+~~~
+
+- Add changelog.
+
+- Add quick logger instantiation.
+
+Bugfixes
+~~~~~~~~
+
+- Don’t parse args unless running as script.
+
+- Fix CLI usage text.
+
+- Fix examples.
+
+- Fix packaging scripts.
+
+- Update docs, fix requirements, and remove sphinx.
+
 v0.8.13 (2016-01-01)
 --------------------
 
