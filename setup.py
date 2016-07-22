@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
+from __future__ import absolute_import, division, print_function
 
 import sys
 import pkutils
@@ -18,8 +17,8 @@ sys.dont_write_bytecode = True
 py2_requirements = set(pkutils.parse_requirements('py2-requirements.txt'))
 dev_requirements = set(pkutils.parse_requirements('dev-requirements.txt'))
 readme = pkutils.read('README.rst')
-changes = pkutils.read('docs/CHANGES.rst')
-module = pkutils.parse_module('pygogo/__init__.py')
+changes = pkutils.read(p.join('docs', 'CHANGES.rst'))
+module = pkutils.parse_module(p.join('pygogo', '__init__.py'))
 license = module.__license__
 version = module.__version__
 project = module.__title__
@@ -45,7 +44,7 @@ setup(
     download_url=pkutils.get_dl_url(project, user, version),
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
-    package_data={},
+    package_data={'helpers': ['helpers/*'], 'docs': ['docs/*']},
     install_requires=requirements,
     extras_require={
         'python_version<3.0': py2_requirements,
