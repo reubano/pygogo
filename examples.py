@@ -28,6 +28,32 @@ Examples:
         hello error
 
 
+    Log based debugging
+
+        >>> import pygogo as gogo
+
+        >>> def main(verbose=False):
+        >>>     logger = gogo.Gogo(__name__, verbose=verbose).logger
+        >>>     logger.debug('I will log to `stdout` only if `verbose` is True')
+        >>>     logger.info('I will log to `stdout` always')
+        >>>     logger.warning('I will log to both `stdout` and `stderr` always')
+
+        >>> main()
+        >>> main(True)
+
+
+    Disabled dual logging
+
+        >>> import pygogo as gogo
+
+        >>> logger = gogo.Gogo(monolog=True).logger
+        >>> logger.debug('debug message')
+        >>> logger.info('info message')
+        >>> logger.warning('warning message')
+        >>> logger.error('error message')
+        >>> logger.critical('critical message')
+
+
     Using LoggerAdapters to impart contextual information
 
         >>> import pygogo as gogo
