@@ -1,6 +1,7 @@
 *.py[cod]
 .cookiecutter
 .scripttest/*
+example*.log
 
 # C extensions
 *.so
@@ -28,6 +29,7 @@ htmlcov/*
 .coverage
 .tox
 nosetests.xml
+.noseids
 
 # Translations
 *.mo
