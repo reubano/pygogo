@@ -1,3 +1,0 @@
--r ../dev-requirements.txt
-changelog
-sphinx

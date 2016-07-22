@@ -1,9 +1,7 @@
 recursive-include tests *
-include AUTHORS.rst
-include CHANGES.rst
-include CONTRIBUTING.rst
-include TODO.rst
+recursive-include helpers *
+recursive-include docs *
 include LICENSE
-include README.rst
-include INSTALLATION.rst
+include *.rst
 include *requirements.txt
+include examples.py

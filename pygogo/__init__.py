@@ -26,7 +26,7 @@ Examples:
 
         >>> from io import StringIO
         >>> from json import loads
-
+        >>>
         >>> high = StringIO()
         >>> low = StringIO()
         >>> kwargs = {
@@ -42,8 +42,7 @@ Examples:
 """
 
 from __future__ import (
-    absolute_import, division, print_function, with_statement,
-    unicode_literals)
+    absolute_import, division, print_function, unicode_literals)
 
 import logging
 import hashlib
@@ -53,7 +52,7 @@ from copy import copy
 from builtins import *
 from . import formatters, handlers, utils
 
-__version__ = '0.8.13'
+__version__ = '0.9.0'
 
 __all__ = ['formatters', 'handlers', 'utils']
 __title__ = 'pygogo'
@@ -174,7 +173,7 @@ class Gogo(object):
         elif self.levels['high'] < self.levels['low']:
             raise ValueError('high_level must be >= low_level')
 
-        self.loggers = set([])
+        self.loggers = set()
         self.name = name
         self.handlers = {
             'high': kwargs.get('high_hdlr', handlers.stderr_hdlr()),
@@ -329,6 +328,7 @@ class Gogo(object):
                 kwargs['name'] = lggr_name
 
             fmtrs = [self.formatters['high'], self.formatters['low']]
+
             for zipped in self.zip(*fmtrs):
                 hdlr, level, fmtr, monolog = zipped
                 copied_hdlr = copy_hdlr(hdlr)
@@ -420,3 +420,5 @@ def copy_hdlr(hdlr):
     copied_hdlr = copy(hdlr)
     copied_hdlr.filters = [copy(f) for f in hdlr.filters]
     return copied_hdlr
+
+logger = Gogo().logger

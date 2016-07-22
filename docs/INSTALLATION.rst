@@ -35,7 +35,7 @@ Or, if you only have ``virtualenv`` installed:
 
 Otherwise, you can install globally::
 
-    pip install pygogo
+    pip install --user pygogo
 
 .. _virtualenv: https://virtualenv.pypa.io/en/latest/index.html
 .. _virtualenvwrapper: https://virtualenvwrapper.readthedocs.org/en/latest/

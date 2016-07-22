@@ -34,7 +34,7 @@ Requirements
 ------------
 
 pygogo has been tested and is known to work on Python 2.7, 3.4, and 3.5;
-PyPy 4.0; and PyPy3 2.4
+PyPy2 5.1.1; and PyPy3 2.4
 
 Motivation
 ----------
@@ -71,12 +71,12 @@ Examples
 
 *Hello World*
 
-.. code-block:: bash
+.. code-block:: python
 
-    import pygogo as gogo
+    from pygogo import logger
 
-    gogo.Gogo().logger.debug('hello world')
-    gogo.Gogo().logger.error('hello error')
+    logger.debug('hello world')
+    logger.error('hello error')
 
     # Prints the following to `stdout`
 
@@ -89,7 +89,7 @@ Examples
 
 *Log based debugging*
 
-.. code-block:: bash
+.. code-block:: python
 
     import pygogo as gogo
 
@@ -101,7 +101,7 @@ Examples
 
 *Disabled dual logging*
 
-.. code-block:: bash
+.. code-block:: python
 
     import pygogo as gogo
 
@@ -208,15 +208,15 @@ Examples
     2015-12-19 10:12:24,479 a.b.c DEBUG    IP: 123.231.231.123 User: fred     A debug message
     2015-12-19 10:12:24,479 a.b.c INFO     IP: 123.231.231.123 User: fred     An info message
     2015-12-19 10:12:24,479 a.e.f DEBUG    IP: 192.168.0.1     User: sheila   A DEBUG msg
-    2015-12-19 10:12:24,479 a.e.f INFO     IP: 192.168.0.1     User: sheila   A INFO msg
+    2015-12-19 10:12:24,479 a.e.f INFO     IP: 192.168.0.1     User: sheila   AN INFO msg
     2015-12-19 10:12:24,479 a.e.f WARNING  IP: 192.168.0.1     User: sheila   A WARNING msg
-    2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
+    2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   AN ERROR msg
     2015-12-19 10:12:24,479 a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 
     # Prints the following to `stderr` (messages at level `WARNING` or above):
 
     2015-12-19 10:12:24,479 a.e.f WARNING  IP: 192.168.0.1     User: sheila   A WARNING msg
-    2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   A ERROR msg
+    2015-12-19 10:12:24,479 a.e.f ERROR    IP: 192.168.0.1     User: sheila   AN ERROR msg
     2015-12-19 10:12:24,479 a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 
 *Multiple loggers* [4]_
@@ -285,7 +285,7 @@ Examples
 
     gogo -h
 
-.. code-block:: bash
+*CLI usage*
 
     usage: gogo [options] <message>
 
@@ -450,43 +450,41 @@ Project Structure
 
 .. code-block:: bash
 
-    ┌── AUTHORS.rst
-    ├── CHANGES.rst
-    ├── CONTRIBUTING.rst
-    ├── INSTALLATION.rst
-    ├── LICENSE
-    ├── MANIFEST.in
-    ├── Makefile
-    ├── pygogo.png
-    ├── README.rst
-    ├── TODO.rst
-    ├── bin
+    ┌── bin
     │   └── gogo
-    ├── dev-requirements.txt
-    ├── examples.py
+    ├── docs
+    │   ├── AUTHORS.rst
+    │   ├── CHANGES.rst
+    │   ├── INSTALLATION.rst
+    │   └── TODO.rst
     ├── helpers
     │   ├── check-stage
     │   ├── clean
-    │   ├── docs
-    │   ├── sdist
+    │   ├── pippy
     │   ├── srcdist
-    │   ├── test
     │   └── wheel
-    ├── manage.py
     ├── pygogo
     │   ├── __init__.py
     │   ├── formatters.py
     │   ├── handlers.py
     │   ├── main.py
     │   └── utils.py
-    ├── requirements.txt
-    ├── setup.cfg
-    ├── setup.py
     ├── tests
     │   ├── __init__.py
     │   ├── standard.rc
     │   ├── test.py
     │   └── test_main.py
+    ├── CONTRIBUTING.rst
+    ├── LICENSE
+    ├── MANIFEST.in
+    ├── Makefile
+    ├── README.rst
+    ├── dev-requirements.txt
+    ├── examples.py
+    ├── manage.py
+    ├── py2-requirements.txt
+    ├── setup.cfg
+    ├── setup.py
     └── tox.ini
 
 Design Principles
@@ -817,4 +815,4 @@ pygogo is distributed under the `MIT License`_.
 .. _logging module: https://docs.python.org/2/library/logging.html
 .. _virtualenv: http://www.virtualenv.org/en/latest/index.html
 .. _contributing doc: https://github.com/reubano/pygogo/blob/master/CONTRIBUTING.rst
-.. _installation doc: https://github.com/reubano/pygogo/blob/master/INSTALLATION.rst
+.. _installation doc: https://github.com/reubano/pygogo/blob/master/docs/INSTALLATION.rst

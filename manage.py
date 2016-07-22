@@ -5,13 +5,10 @@
 """ A script to manage development tasks """
 
 from __future__ import (
-    absolute_import, division, print_function, with_statement,
-    unicode_literals)
+    absolute_import, division, print_function, unicode_literals)
 
 from os import path as p
 from subprocess import call, check_call, CalledProcessError
-
-from builtins import *
 from manager import Manager
 
 manager = Manager()
@@ -20,7 +17,7 @@ BASEDIR = p.dirname(__file__)
 
 def upload_():
     """Upload distribution files"""
-    check_call('twine upload %s' % p.join(BASEDIR, 'dist', '*'), shell=True)
+    check_call(['twine', 'upload', p.join(BASEDIR, 'dist', '*')])
 
 
 def sdist_():
@@ -49,12 +46,13 @@ def check():
 @manager.command
 def lint(where=None, strict=False):
     """Check style with linters"""
-    args = 'pylint --rcfile=tests/standard.rc -rn -fparseable pygogo'
+    args = [
+        'pylint', '--rcfile=tests/standard.rc', '-rn', '-fparseable', 'pygogo']
 
     try:
         check_call(['flake8', where] if where else 'flake8')
-        check_call(args.split(' ') + ['--py3k'])
-        check_call(args.split(' ')) if strict else None
+        check_call(args + ['--py3k'])
+        check_call(args) if strict else None
     except CalledProcessError as e:
         exit(e.returncode)
 
@@ -62,7 +60,7 @@ def lint(where=None, strict=False):
 @manager.command
 def pipme():
     """Install requirements.txt"""
-    exit(call('pip install -r requirements.txt'.split(' ')))
+    exit(call('pip', 'install', '-r', 'requirements.txt'))
 
 
 @manager.command
@@ -75,16 +73,35 @@ def require():
 @manager.arg('where', 'w', help='test path', default=None)
 @manager.arg(
     'stop', 'x', help='Stop after first error', type=bool, default=False)
-@manager.arg('tox', 't', help='Run tox tests')
+@manager.arg(
+    'failed', 'f', help='Run failed tests', type=bool, default=False)
+@manager.arg(
+    'cover', 'c', help='Add coverage report', type=bool, default=False)
+@manager.arg('tox', 't', help='Run tox tests', type=bool, default=False)
+@manager.arg('detox', 'd', help='Run detox tests', type=bool, default=False)
+@manager.arg(
+    'verbose', 'v', help='Use detailed errors', type=bool, default=False)
+@manager.arg(
+    'parallel', 'p', help='Run tests in parallel in multiple processes',
+    type=bool, default=False)
+@manager.arg(
+    'debug', 'D', help='Use nose.loader debugger', type=bool, default=False)
 @manager.command
-def test(where=None, stop=False, tox=False):
+def test(where=None, stop=None, **kwargs):
     """Run nose, tox, and script tests"""
     opts = '-xv' if stop else '-v'
-    opts += 'w %s' % where if where else ''
+    opts += ' --with-coverage' if kwargs.get('cover') else ''
+    opts += ' --failed' if kwargs.get('failed') else ' --with-id'
+    opts += ' --processes=-1' if kwargs.get('parallel') else ''
+    opts += ' --detailed-errors' if kwargs.get('verbose') else ''
+    opts += ' --debug=nose.loader' if kwargs.get('debug') else ''
+    opts += ' -w %s' % where if where else ''
 
     try:
-        if tox:
+        if kwargs.get('tox'):
             check_call('tox')
+        elif kwargs.get('detox'):
+            check_call('detox')
         else:
             check_call(('nosetests %s' % opts).split(' '))
             check_call(['python', p.join(BASEDIR, 'tests', 'test.py')])
@@ -93,21 +110,9 @@ def test(where=None, stop=False, tox=False):
 
 
 @manager.command
-def docs():
-    """Generate Sphinx HTML documentation, including API docs"""
-    exit(call(p.join(BASEDIR, 'helpers', 'docs')))
-
-
-@manager.command
-def checkdocs():
-    """Check Sphinx documentation for link errors"""
-    exit(call(p.join(BASEDIR, 'helpers', 'check-docs')))
-
-
-@manager.command
 def register():
     """Register package with PyPI"""
-    exit(call('python %s register' % p.join(BASEDIR, 'setup.py'), shell=True))
+    exit(call('python', p.join(BASEDIR, 'setup.py'), 'register'))
 
 
 @manager.command
@@ -146,7 +151,6 @@ def upload():
 def sdist():
     """Create a source distribution package"""
     try:
-        clean_()
         sdist_()
     except CalledProcessError as e:
         exit(e.returncode)
@@ -156,7 +160,6 @@ def sdist():
 def wheel():
     """Create a wheel package"""
     try:
-        clean_()
         wheel_()
     except CalledProcessError as e:
         exit(e.returncode)
