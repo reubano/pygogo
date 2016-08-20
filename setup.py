@@ -26,9 +26,8 @@ description = module.__description__
 user = 'reubano'
 
 # Conditional sdist dependencies:
-bdist = 'bdist_wheel' in sys.argv
 py2 = sys.version_info.major == 2
-requirements = py2_requirements if py2 and not bdist else []
+requirements = py2_requirements if py2 else []
 
 # Setup requirements
 setup_require = [r for r in dev_requirements if 'pkutils' in r]
