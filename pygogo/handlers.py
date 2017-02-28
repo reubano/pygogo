@@ -127,10 +127,10 @@ def socket_hdlr(host='localhost', port=None, tcp=False, **kwargs):
         <logging.handlers.SocketHandler object at 0x...>
     """
     if tcp:
-        def_port = logging.handlers.DEFAULT_TCP_LOGGING_PORT
+        def_port = hdlrs.DEFAULT_TCP_LOGGING_PORT
         handler = hdlrs.SocketHandler
     else:
-        def_port = logging.handlers.DEFAULT_UDP_LOGGING_PORT
+        def_port = hdlrs.DEFAULT_UDP_LOGGING_PORT
         handler = hdlrs.DatagramHandler
 
     address = (host, port or def_port)
@@ -155,10 +155,10 @@ def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
         <logging.handlers.SysLogHandler object at 0x...>
     """
     if tcp:
-        def_port = logging.handlers.SYSLOG_TCP_PORT
+        def_port = hdlrs.SYSLOG_TCP_PORT
         socktype = socket.SOCK_STREAM
     else:
-        def_port = logging.handlers.SYSLOG_UDP_PORT
+        def_port = hdlrs.SYSLOG_UDP_PORT
         socktype = socket.SOCK_DGRAM
 
     address = (host, port or def_port)
