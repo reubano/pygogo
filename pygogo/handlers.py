@@ -30,6 +30,11 @@ from os import environ
 from logging import handlers as hdlrs
 from builtins import *
 
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
+
 ENCODING = 'utf-8'
 
 module_hdlr = logging.StreamHandler(sys.stdout)
@@ -209,28 +214,33 @@ def buffered_hdlr(target=None, capacity=4096, level='error', **kwargs):
     return hdlrs.MemoryHandler(capacity, level.upper(), target)
 
 
-def webhook_hdlr(url, host='localhost', port=None, get=False, **kwargs):
+def webhook_hdlr(url, **kwargs):
     """A web log handler
 
     Args:
         url (string): The logging endpoint.
 
-        host (string): The host name (default: localhost).
-
-        port (int): The port (default: None).
-
+    Kwargs:
         get (bool): Use a GET request instead of POST (default: False).
 
     Returns:
         New instance of :class:`logging.handlers.HTTPHandler`
 
     Examples:
-        >>> webhook_hdlr('api/log', 'mysite.com')  # doctest: +ELLIPSIS
+        >>> webhook_hdlr('http://api.mysite.com/log')  # doctest: +ELLIPSIS
         <logging.handlers.HTTPHandler object at 0x...>
     """
-    method = 'GET' if get else 'POST'
-    host = '%s:%s' % (host, port) if port else host
-    return hdlrs.HTTPHandler(host, url, method=method)
+    parsed = urlparse(url)
+    secure = parsed.scheme == 'https'
+    method = 'GET' if kwargs.get('get') else 'POST'
+    args = (parsed.netloc, parsed.path)
+
+    try:
+        hdlr = hdlrs.HTTPHandler(*args, method=method, secure=secure)
+    except TypeError:
+        hdlr = hdlrs.HTTPHandler(*args, method=method)
+
+    return hdlr
 
 
 def email_hdlr(subject=None, **kwargs):
