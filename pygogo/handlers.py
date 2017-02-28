@@ -141,7 +141,8 @@ def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
     """A syslog log handler
 
     Args:
-        host (string): The host name (default: localhost).
+        host (string): The host name (default: localhost). Set to None to use
+            the platform dependent domain socket.
 
         port (int): The port (default: `logging.handlers` default).
 
@@ -154,6 +155,9 @@ def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
         >>> syslog_hdlr()  # doctest: +ELLIPSIS
         <logging.handlers.SysLogHandler object at 0x...>
     """
+    # http://stackoverflow.com/a/13874620/408556
+    DEF_SOCKETS = {'linux2': '/dev/log', 'darwin': '/var/run/syslog'}
+
     if tcp:
         def_port = hdlrs.SYSLOG_TCP_PORT
         socktype = socket.SOCK_STREAM
@@ -161,8 +165,26 @@ def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
         def_port = hdlrs.SYSLOG_UDP_PORT
         socktype = socket.SOCK_DGRAM
 
-    address = (host, port or def_port)
-    return hdlrs.SysLogHandler(address, socktype=socktype)
+    if kwargs.get('address'):
+        address = kwargs['address']
+    elif host:
+        address = (host, port or def_port)
+    elif sys.platform in DEF_SOCKETS:
+        address = DEF_SOCKETS[sys.platform]
+    else:
+        msg = 'Domain socket location for {} is not supported.'
+        raise ValueError(msg.format(sys.platform))
+
+    if kwargs.get('facility'):
+        facility = kwargs['facility']
+    elif kwargs.get('local_num') and 8 > kwargs['local_num'] >= 0:
+        # http://unix.stackexchange.com/a/146993
+        value = 'LOG_LOCAL{}'.format(kwargs['facility'])
+        facility = getattr(hdlrs.SysLogHandler, value)
+    else:
+        facility = hdlrs.SysLogHandler.LOG_USER
+
+    return hdlrs.SysLogHandler(address, facility=facility, socktype=socktype)
 
 
 def buffered_hdlr(target=None, capacity=4096, level='error', **kwargs):
