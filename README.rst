@@ -20,7 +20,7 @@ Introduction
 pygogo is a Python logging `library`_ and `command-line interface`_ with super powers.
 pygogo leverages the standard Python `logging module`_ under the hood, so there's
 no need to learn yet-another logging library. The default implementation sends
-all messages to ``stdout``, and any messages at level ``WARNING`` or above to ``stderr``.
+all messages to ``stdout``, and any messages at level ``WARNING`` or above also to ``stderr``.
 
 With pygogo, you can
 
