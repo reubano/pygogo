@@ -378,6 +378,7 @@ class Gogo(object):
             ...     'all': 'true', 'message': 'extra', 'key': 'value'}
             True
         """
+        # pylint: disable=dict-items-not-iterating
         values = frozenset(kwargs.items())
         name = name or hashlib.md5(str(values).encode('utf-8')).hexdigest()
         lggr_name = '%s.structured.%s' % (self.name, name)
