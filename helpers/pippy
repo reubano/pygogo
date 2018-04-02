@@ -1,6 +1,8 @@
 #!/usr/bin/env sh -u
 #
 
+pip install -U pip
+
 _install () {
   package=$1
   echo "installing $package from $PIP_WHEEL_DIR..."
