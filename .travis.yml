@@ -36,7 +36,6 @@ install:
         pip install -r py2-requirements.txt
       fi
 
-
 script:
   - manage lint
   - manage test
