@@ -52,7 +52,7 @@ from copy import copy
 from builtins import *
 from . import formatters, handlers, utils
 
-__version__ = '0.10.0'
+__version__ = '0.11.0'
 
 __all__ = ['formatters', 'handlers', 'utils']
 __title__ = 'pygogo'
