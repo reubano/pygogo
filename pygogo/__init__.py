@@ -52,7 +52,7 @@ from copy import copy
 from builtins import *
 from . import formatters, handlers, utils
 
-__version__ = '0.10.0'
+__version__ = '0.11.0'
 
 __all__ = ['formatters', 'handlers', 'utils']
 __title__ = 'pygogo'
@@ -378,6 +378,7 @@ class Gogo(object):
             ...     'all': 'true', 'message': 'extra', 'key': 'value'}
             True
         """
+        # pylint: disable=dict-items-not-iterating
         values = frozenset(kwargs.items())
         name = name or hashlib.md5(str(values).encode('utf-8')).hexdigest()
         lggr_name = '%s.structured.%s' % (self.name, name)

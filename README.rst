@@ -20,7 +20,7 @@ Introduction
 pygogo is a Python logging `library`_ and `command-line interface`_ with super powers.
 pygogo leverages the standard Python `logging module`_ under the hood, so there's
 no need to learn yet-another logging library. The default implementation sends
-all messages to ``stdout``, and any messages at level ``WARNING`` or above to ``stderr``.
+all messages to ``stdout``, and any messages at level ``WARNING`` or above also to ``stderr``.
 
 With pygogo, you can
 
@@ -34,7 +34,7 @@ Requirements
 ------------
 
 pygogo has been tested and is known to work on Python 2.7, 3.4, and 3.5;
-PyPy2 5.1.1; and PyPy3 2.4
+PyPy2.7; and PyPy3.5.
 
 Motivation
 ----------
