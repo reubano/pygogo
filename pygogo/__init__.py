@@ -199,7 +199,7 @@ class Gogo(object):
             >>> sys.stderr = s
             >>> logger = Gogo('default').logger
             >>> logger  # doctest: +ELLIPSIS
-            <logging.Logger object at 0x...>
+            <...Logger...>
             >>> logger.debug('stdout')
             stdout
             >>> kwargs = {'low_level': 'info', 'monolog': True}
@@ -250,7 +250,7 @@ class Gogo(object):
             >>> going.update_hdlr(hdlr, going.levels['low'], **kwargs)
             >>> [hdlr.formatter, hdlr.filters, hdlr.level]
             ...  # doctest: +ELLIPSIS
-            [<logging.Formatter obj...>, [<pygogo.utils.LogFilter obj...>], 10]
+            [<...Formatter obj...>, [<pygogo.utils.LogFilter obj...>], 10]
         """
         hdlr.setLevel(level)
 
@@ -285,7 +285,7 @@ class Gogo(object):
         Examples:
             >>> hdlr = logging.StreamHandler(sys.stdout)
             >>> copy_hdlr(hdlr) # doctest: +ELLIPSIS
-            <logging.StreamHandler object at 0x...>
+            <...StreamHandler...>
         """
         hdlrs = [self.handlers['high'], self.handlers['low']]
         levels = [self.levels['high'], self.levels['low']]
@@ -312,7 +312,7 @@ class Gogo(object):
             >>> going = Gogo()
             >>> logger = going.get_logger('default')
             >>> logger # doctest: +ELLIPSIS
-            <logging.Logger object at 0x...>
+            <...Logger...>
             >>> logger.info('from default')
             from default
             >>> going.get_logger('new').info('from new')
@@ -367,7 +367,7 @@ class Gogo(object):
             >>> going = Gogo('structured', low_hdlr=handlers.fileobj_hdlr(s))
             >>> logger = going.get_structured_logger(all='true')
             >>> logger  # doctest: +ELLIPSIS
-            <pygogo.utils.StructuredAdapter object at 0x...>
+            <...StructuredAdapter...>
             >>> logger.debug('hello')
             >>> logger.debug('extra', extra={'key': 'value'})
             >>> s.seek(0) or 0
@@ -416,7 +416,7 @@ def copy_hdlr(hdlr):
     Examples:
         >>> hdlr = logging.StreamHandler(sys.stdout)
         >>> copy_hdlr(hdlr) # doctest: +ELLIPSIS
-        <logging.StreamHandler object at 0x...>
+        <...StreamHandler...>
     """
     copied_hdlr = copy(hdlr)
     copied_hdlr.filters = [copy(f) for f in hdlr.filters]
