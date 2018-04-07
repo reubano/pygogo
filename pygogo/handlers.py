@@ -50,7 +50,7 @@ def stdout_hdlr(**kwargs):
 
     Examples:
         >>> stdout_hdlr()  # doctest: +ELLIPSIS
-        <logging.StreamHandler object at 0x...>
+        <...StreamHandler...>
     """
     return logging.StreamHandler(sys.stdout)
 
@@ -63,7 +63,7 @@ def stderr_hdlr(**kwargs):
 
     Examples:
         >>> stderr_hdlr()  # doctest: +ELLIPSIS
-        <logging.StreamHandler object at 0x...>
+        <...StreamHandler...>
     """
     return logging.StreamHandler(sys.stderr)
 
@@ -80,7 +80,7 @@ def fileobj_hdlr(f, **kwargs):
     Examples:
         >>> from io import StringIO
         >>> fileobj_hdlr(StringIO())  # doctest: +ELLIPSIS
-        <logging.StreamHandler object at 0x...>
+        <...StreamHandler...>
     """
     return logging.StreamHandler(f)
 
@@ -105,7 +105,7 @@ def file_hdlr(filename, mode='a', encoding=ENCODING, delay=False, **kwargs):
         >>> from tempfile import NamedTemporaryFile
         >>> f = NamedTemporaryFile()
         >>> file_hdlr(f.name)  # doctest: +ELLIPSIS
-        <logging.FileHandler object at 0x...>
+        <...FileHandler...>
     """
     fkwargs = {'mode': mode, 'encoding': encoding, 'delay': delay}
     return logging.FileHandler(filename, **fkwargs)
@@ -127,9 +127,9 @@ def socket_hdlr(host='localhost', port=None, tcp=False, **kwargs):
 
     Examples:
         >>> socket_hdlr()  # doctest: +ELLIPSIS
-        <logging.handlers.DatagramHandler object at 0x...>
+        <...DatagramHandler...>
         >>> socket_hdlr(tcp=True)  # doctest: +ELLIPSIS
-        <logging.handlers.SocketHandler object at 0x...>
+        <...SocketHandler...>
     """
     if tcp:
         def_port = hdlrs.DEFAULT_TCP_LOGGING_PORT
@@ -158,7 +158,7 @@ def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
 
     Examples:
         >>> syslog_hdlr()  # doctest: +ELLIPSIS
-        <logging.handlers.SysLogHandler object at 0x...>
+        <...SysLogHandler...>
     """
     # http://stackoverflow.com/a/13874620/408556
     DEF_SOCKETS = {'linux2': '/dev/log', 'darwin': '/var/run/syslog'}
@@ -208,7 +208,7 @@ def buffered_hdlr(target=None, capacity=4096, level='error', **kwargs):
 
     Examples:
         >>> buffered_hdlr()  # doctest: +ELLIPSIS
-        <logging.handlers.MemoryHandler object at 0x...>
+        <...MemoryHandler...>
     """
     target = target or logging.StreamHandler(sys.stdout)
     return hdlrs.MemoryHandler(capacity, level.upper(), target)
@@ -228,7 +228,7 @@ def webhook_hdlr(url, **kwargs):
 
     Examples:
         >>> webhook_hdlr('http://api.mysite.com/log')  # doctest: +ELLIPSIS
-        <logging.handlers.HTTPHandler object at 0x...>
+        <...HTTPHandler...>
     """
     parsed = urlparse(url)
     secure = parsed.scheme == 'https'
@@ -270,7 +270,7 @@ def email_hdlr(subject=None, **kwargs):
 
     Examples:
         >>> email_hdlr('hello world')  # doctest: +ELLIPSIS
-        <logging.handlers.SMTPHandler object at 0x...>
+        <...SMTPHandler...>
     """
     host = kwargs.get('host', 'localhost')
     port = kwargs.get('port')
