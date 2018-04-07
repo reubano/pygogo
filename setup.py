@@ -14,8 +14,8 @@ except ImportError:
     from distutils.core import setup, find_packages
 
 sys.dont_write_bytecode = True
-py2_requirements = list(set(pkutils.parse_requirements('py2-requirements.txt')))
-dev_requirements = list(set(pkutils.parse_requirements('dev-requirements.txt')))
+py2_requirements = list(pkutils.parse_requirements('py2-requirements.txt'))
+dev_requirements = list(pkutils.parse_requirements('dev-requirements.txt'))
 readme = pkutils.read('README.rst')
 changes = pkutils.read(p.join('docs', 'CHANGES.rst'))
 module = pkutils.parse_module(p.join('pygogo', '__init__.py'))
