@@ -395,7 +395,7 @@ Examples
     gogo --level=error -m 'error message'
     gogo --level=critical -m 'critical message'
 
-    # Prints the following to `stdout.log` (all messages at level `INFO` or below):
+    # Prints the following to `stdout` (all messages at level `INFO` or below):
 
     debug message
     info message
