@@ -243,7 +243,7 @@ def webhook_hdlr(url, **kwargs):
     return hdlr
 
 
-def email_hdlr(subject=None, **kwargs):
+def email_hdlr(subject="You've got mail", **kwargs):
     """An email log handler
 
     Args:
@@ -275,10 +275,9 @@ def email_hdlr(subject=None, **kwargs):
     host = kwargs.get('host', 'localhost')
     port = kwargs.get('port')
     address = (host, port) if port else host
-    sender = kwargs.get('sender', '%s@gmail.com' % environ.get('USER'))
     def_recipient = '%s@gmail.com' % environ.get('USER')
+    sender = kwargs.get('sender', def_recipient)
     recipients = kwargs.get('recipients', [def_recipient])
-    subject = kwargs.get('subject', "You've got mail")
     username = kwargs.get('username')
     password = kwargs.get('password')
 
