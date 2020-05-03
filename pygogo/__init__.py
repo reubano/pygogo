@@ -48,18 +48,18 @@ import sys
 from copy import copy
 from . import formatters, handlers, utils
 
-__version__ = '0.12.0'
+__version__ = "0.12.0"
 
-__all__ = ['formatters', 'handlers', 'utils']
-__title__ = 'pygogo'
-__author__ = 'Reuben Cummings'
-__description__ = 'A Python logging library with super powers'
-__email__ = 'reubano@gmail.com'
-__license__ = 'MIT'
-__copyright__ = 'Copyright 2015 Reuben Cummings'
+__all__ = ["formatters", "handlers", "utils"]
+__title__ = "pygogo"
+__author__ = "Reuben Cummings"
+__description__ = "A Python logging library with super powers"
+__email__ = "reubano@gmail.com"
+__license__ = "MIT"
+__copyright__ = "Copyright 2015 Reuben Cummings"
 
 module_hdlr = logging.StreamHandler(sys.stdout)
-module_fltr = logging.Filter(name='%s.init' % __name__)
+module_fltr = logging.Filter(name="%s.init" % __name__)
 
 # prevent handler from logging `pygogo.main` events
 module_hdlr.addFilter(module_fltr)
@@ -141,45 +141,48 @@ class Gogo(object):
         message
     """
 
-    def __init__(self, name='root', high_level=None, low_level=None, **kwargs):
+    def __init__(self, name="root", high_level=None, low_level=None, **kwargs):
         """Initialization method.
 
         Examples:
             >>> Gogo('name') # doctest: +ELLIPSIS
             <pygogo.Gogo object at 0x...>
         """
-        verbose = kwargs.get('verbose')
-        high_level = high_level or 'warning'
+        verbose = kwargs.get("verbose")
+        high_level = high_level or "warning"
 
         if verbose is None:
-            low_level = low_level or 'debug'
+            low_level = low_level or "debug"
         elif verbose:
-            low_level = 'debug'
+            low_level = "debug"
         else:
-            low_level = 'info'
+            low_level = "info"
 
         self.levels = {
-            'high': getattr(logging, high_level.upper(), None),
-            'low': getattr(logging, low_level.upper(), None)}
+            "high": getattr(logging, high_level.upper(), None),
+            "low": getattr(logging, low_level.upper(), None),
+        }
 
-        if not isinstance(self.levels['high'], int):
-            raise ValueError('Invalid high_level: %s' % self.levels['high'])
-        elif not isinstance(self.levels['low'], int):
-            raise ValueError('Invalid low_level: %s' % self.levels['low'])
-        elif self.levels['high'] < self.levels['low']:
-            raise ValueError('high_level must be >= low_level')
+        if not isinstance(self.levels["high"], int):
+            raise ValueError("Invalid high_level: %s" % self.levels["high"])
+        elif not isinstance(self.levels["low"], int):
+            raise ValueError("Invalid low_level: %s" % self.levels["low"])
+        elif self.levels["high"] < self.levels["low"]:
+            raise ValueError("high_level must be >= low_level")
 
         self.loggers = set()
         self.name = name
         self.handlers = {
-            'high': kwargs.get('high_hdlr', handlers.stderr_hdlr()),
-            'low': kwargs.get('low_hdlr', handlers.stdout_hdlr())}
+            "high": kwargs.get("high_hdlr", handlers.stderr_hdlr()),
+            "low": kwargs.get("low_hdlr", handlers.stdout_hdlr()),
+        }
 
         self.formatters = {
-            'high': kwargs.get('high_formatter', formatters.basic_formatter),
-            'low': kwargs.get('low_formatter', formatters.basic_formatter)}
+            "high": kwargs.get("high_formatter", formatters.basic_formatter),
+            "low": kwargs.get("low_formatter", formatters.basic_formatter),
+        }
 
-        self.monolog = kwargs.get('monolog')
+        self.monolog = kwargs.get("monolog")
 
     @property
     def logger(self):
@@ -251,7 +254,7 @@ class Gogo(object):
         hdlr.setLevel(level)
 
         if monolog:
-            log_filter = utils.LogFilter(self.levels['high'])
+            log_filter = utils.LogFilter(self.levels["high"])
             hdlr.addFilter(log_filter)
 
         if kwargs:
@@ -283,12 +286,12 @@ class Gogo(object):
             >>> copy_hdlr(hdlr) # doctest: +ELLIPSIS
             <...StreamHandler...>
         """
-        hdlrs = [self.handlers['high'], self.handlers['low']]
-        levels = [self.levels['high'], self.levels['low']]
+        hdlrs = [self.handlers["high"], self.handlers["low"]]
+        levels = [self.levels["high"], self.levels["low"]]
         monologs = [False, self.monolog]
         return zip(hdlrs, levels, fmtrs, monologs)
 
-    def get_logger(self, name='base', **kwargs):
+    def get_logger(self, name="base", **kwargs):
         """Retrieve a named logger.
 
         Args:
@@ -314,16 +317,16 @@ class Gogo(object):
             >>> going.get_logger('new').info('from new')
             from new
         """
-        lggr_name = '%s.%s' % (self.name, name)
+        lggr_name = "%s.%s" % (self.name, name)
         logger = logging.getLogger(lggr_name)
 
         if lggr_name not in self.loggers:
             self.loggers.add(lggr_name)
 
             if kwargs:
-                kwargs['name'] = lggr_name
+                kwargs["name"] = lggr_name
 
-            fmtrs = [self.formatters['high'], self.formatters['low']]
+            fmtrs = [self.formatters["high"], self.formatters["low"]]
 
             for zipped in self.zip(*fmtrs):
                 hdlr, level, fmtr, monolog = zipped
@@ -331,7 +334,7 @@ class Gogo(object):
                 self.update_hdlr(copied_hdlr, level, fmtr, monolog, **kwargs)
                 logger.addHandler(copied_hdlr)
 
-            logger.setLevel(self.levels['low'])
+            logger.setLevel(self.levels["low"])
 
         return logger
 
@@ -376,8 +379,8 @@ class Gogo(object):
         """
         # pylint: disable=dict-items-not-iterating
         values = frozenset(kwargs.items())
-        name = name or hashlib.md5(str(values).encode('utf-8')).hexdigest()
-        lggr_name = '%s.structured.%s' % (self.name, name)
+        name = name or hashlib.md5(str(values).encode("utf-8")).hexdigest()
+        lggr_name = "%s.structured.%s" % (self.name, name)
         logger = logging.getLogger(lggr_name)
 
         if lggr_name not in self.loggers:
@@ -390,7 +393,7 @@ class Gogo(object):
                 self.update_hdlr(copied_hdlr, level, fmtr, monolog)
                 logger.addHandler(copied_hdlr)
 
-            logger.setLevel(self.levels['low'])
+            logger.setLevel(self.levels["low"])
 
         return utils.StructuredAdapter(logger, kwargs)
 
@@ -417,5 +420,6 @@ def copy_hdlr(hdlr):
     copied_hdlr = copy(hdlr)
     copied_hdlr.filters = [copy(f) for f in hdlr.filters]
     return copied_hdlr
+
 
 logger = Gogo().logger

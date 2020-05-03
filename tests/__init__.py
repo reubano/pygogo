@@ -22,21 +22,21 @@ def setup_package():
     """database context creation"""
     global initialized
     initialized = True
-    module_logger.debug('Package Setup\n')
+    module_logger.debug("Package Setup\n")
 
 
 def teardown_package():
     """database context removal"""
     global initialized
     initialized = False
-    module_logger.debug('Package Teardown\n')
+    module_logger.debug("Package Teardown\n")
 
 
 class BaseTest(unittest.TestCase):
     def runTest(self, *args, **kwargs):
         pass
 
-    def assertEqualEllipsis(self, expected, actual, marker='...', msg=None):
+    def assertEqualEllipsis(self, expected, actual, marker="...", msg=None):
         """Checks whether actual is equal to expected while ignoring ellipsis
         content.
 
@@ -52,7 +52,7 @@ class BaseTest(unittest.TestCase):
         if marker not in expected:
             self.assertEqual(expected, actual, msg)
 
-        replaced = re.escape(expected).replace(re.escape(marker), '(.*?)')
+        replaced = re.escape(expected).replace(re.escape(marker), "(.*?)")
 
         if re.match(replaced, actual, re.M | re.S) is None:
             self.assertMultiLineEqual(expected, actual, msg)

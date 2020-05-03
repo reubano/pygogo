@@ -31,7 +31,7 @@ try:
 except ImportError:
     from urlparse import urlparse
 
-ENCODING = 'utf-8'
+ENCODING = "utf-8"
 
 module_hdlr = logging.StreamHandler(sys.stdout)
 module_logger = logging.getLogger(__name__)
@@ -81,7 +81,7 @@ def fileobj_hdlr(f, **kwargs):
     return logging.StreamHandler(f)
 
 
-def file_hdlr(filename, mode='a', encoding=ENCODING, delay=False, **kwargs):
+def file_hdlr(filename, mode="a", encoding=ENCODING, delay=False, **kwargs):
     """A file log handler
 
     Args:
@@ -103,11 +103,11 @@ def file_hdlr(filename, mode='a', encoding=ENCODING, delay=False, **kwargs):
         >>> file_hdlr(f.name)  # doctest: +ELLIPSIS
         <...FileHandler...>
     """
-    fkwargs = {'mode': mode, 'encoding': encoding, 'delay': delay}
+    fkwargs = {"mode": mode, "encoding": encoding, "delay": delay}
     return logging.FileHandler(filename, **fkwargs)
 
 
-def socket_hdlr(host='localhost', port=None, tcp=False, **kwargs):
+def socket_hdlr(host="localhost", port=None, tcp=False, **kwargs):
     """A socket log handler
 
     Args:
@@ -138,7 +138,7 @@ def socket_hdlr(host='localhost', port=None, tcp=False, **kwargs):
     return handler(*address)
 
 
-def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
+def syslog_hdlr(host="localhost", port=None, tcp=False, **kwargs):
     """A syslog log handler
 
     Args:
@@ -157,7 +157,7 @@ def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
         <...SysLogHandler...>
     """
     # http://stackoverflow.com/a/13874620/408556
-    DEF_SOCKETS = {'linux2': '/dev/log', 'darwin': '/var/run/syslog'}
+    DEF_SOCKETS = {"linux2": "/dev/log", "darwin": "/var/run/syslog"}
 
     if tcp:
         def_port = hdlrs.SYSLOG_TCP_PORT
@@ -166,21 +166,21 @@ def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
         def_port = hdlrs.SYSLOG_UDP_PORT
         socktype = socket.SOCK_DGRAM
 
-    if kwargs.get('address'):
-        address = kwargs['address']
+    if kwargs.get("address"):
+        address = kwargs["address"]
     elif host:
         address = (host, port or def_port)
     elif sys.platform in DEF_SOCKETS:
         address = DEF_SOCKETS[sys.platform]
     else:
-        msg = 'Domain socket location for {} is not supported.'
+        msg = "Domain socket location for {} is not supported."
         raise ValueError(msg.format(sys.platform))
 
-    if kwargs.get('facility'):
-        facility = kwargs['facility']
-    elif kwargs.get('local_num') and 8 > kwargs['local_num'] >= 0:
+    if kwargs.get("facility"):
+        facility = kwargs["facility"]
+    elif kwargs.get("local_num") and 8 > kwargs["local_num"] >= 0:
         # http://unix.stackexchange.com/a/146993
-        value = 'LOG_LOCAL{}'.format(kwargs['facility'])
+        value = "LOG_LOCAL{}".format(kwargs["facility"])
         facility = getattr(hdlrs.SysLogHandler, value)
     else:
         facility = hdlrs.SysLogHandler.LOG_USER
@@ -188,7 +188,7 @@ def syslog_hdlr(host='localhost', port=None, tcp=False, **kwargs):
     return hdlrs.SysLogHandler(address, facility=facility, socktype=socktype)
 
 
-def buffered_hdlr(target=None, capacity=4096, level='error', **kwargs):
+def buffered_hdlr(target=None, capacity=4096, level="error", **kwargs):
     """A memory buffered log handler
 
     Args:
@@ -227,8 +227,8 @@ def webhook_hdlr(url, **kwargs):
         <...HTTPHandler...>
     """
     parsed = urlparse(url)
-    secure = parsed.scheme == 'https'
-    method = 'GET' if kwargs.get('get') else 'POST'
+    secure = parsed.scheme == "https"
+    method = "GET" if kwargs.get("get") else "POST"
     args = (parsed.netloc, parsed.path)
 
     try:
@@ -268,14 +268,14 @@ def email_hdlr(subject="You've got mail", **kwargs):
         >>> email_hdlr('hello world')  # doctest: +ELLIPSIS
         <...SMTPHandler...>
     """
-    host = kwargs.get('host', 'localhost')
-    port = kwargs.get('port')
+    host = kwargs.get("host", "localhost")
+    port = kwargs.get("port")
     address = (host, port) if port else host
-    def_recipient = '%s@gmail.com' % environ.get('USER')
-    sender = kwargs.get('sender', def_recipient)
-    recipients = kwargs.get('recipients', [def_recipient])
-    username = kwargs.get('username')
-    password = kwargs.get('password')
+    def_recipient = "%s@gmail.com" % environ.get("USER")
+    sender = kwargs.get("sender", def_recipient)
+    recipients = kwargs.get("recipients", [def_recipient])
+    username = kwargs.get("username")
+    password = kwargs.get("password")
 
     args = (address, sender, recipients, subject)
     credentials = (username, password) if username or password else None
