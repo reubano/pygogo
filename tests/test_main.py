@@ -8,9 +8,6 @@ tests.test_main
 Provides unit tests for the website.
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
 import nose.tools as nt
 import logging
 import sys
@@ -18,7 +15,6 @@ import pygogo as gogo
 
 from io import StringIO
 from json import loads
-from builtins import *
 from . import BaseTest
 
 module_logger = gogo.Gogo(__name__).logger

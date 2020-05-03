@@ -4,15 +4,11 @@
 
 """ A Python logging library with super powers """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
 import sys
 import itertools as it
 
 from os import getcwd, path as p
 from argparse import RawTextHelpFormatter, ArgumentParser
-from builtins import *
 
 import pygogo as gogo
 

@@ -53,15 +53,11 @@ Attributes:
     DATEFMT (str): Standard date format
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
 import logging
 import sys
 import traceback
 import itertools as it
 
-from builtins import *
 from .utils import CustomEncoder
 
 BASIC_FORMAT = '%(message)s'

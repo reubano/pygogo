@@ -1,11 +1,10 @@
 sudo: false
 language: python
 python:
-  - "2.7"
-  - "3.5"
   - "3.6"
-  - "pypy"
-  - "pypy3.5"
+  - "3.7"
+  - "3.8"
+  - "pypy3"
 
 cache:
   directories:
@@ -31,10 +30,6 @@ before_install:
 
 install:
   - pip install -r dev-requirements.txt
-  - |
-      if [[ $TRAVIS_PYTHON_VERSION != *"3"* ]]; then
-        pip install -r py2-requirements.txt
-      fi
 
 script:
   - manage lint
@@ -43,7 +38,6 @@ script:
 after_success:
   - if [[ "$TRAVIS_PULL_REQUEST" == "true" ]]; then exit 0; fi
   - if [[ "$TRAVIS_BRANCH" != "master" ]]; then exit 0; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" != "2.7" ]]; then exit 0; fi
 
 deploy:
   provider: pypi

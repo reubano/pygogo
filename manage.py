@@ -4,9 +4,6 @@
 
 """ A script to manage development tasks """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
 from os import path as p
 from subprocess import call, check_call, CalledProcessError
 from manager import Manager

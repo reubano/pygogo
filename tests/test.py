@@ -9,9 +9,6 @@ tests.test
 Provides scripttests pygogo CLI functionality.
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
 import sys
 
 sys.path.append('../pygogo')

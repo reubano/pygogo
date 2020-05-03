@@ -15,14 +15,10 @@ Examples:
 
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
 import logging
 import sys
 
 from json import JSONEncoder
-from builtins import *
 
 module_hdlr = logging.StreamHandler(sys.stdout)
 module_logger = logging.getLogger(__name__)

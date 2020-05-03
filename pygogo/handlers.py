@@ -19,16 +19,12 @@ Attributes:
     ENCODING (str): The module encoding
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
 import sys
 import logging
 import socket
 
 from os import environ
 from logging import handlers as hdlrs
-from builtins import *
 
 try:
     from urllib.parse import urlparse

@@ -41,15 +41,11 @@ Examples:
         True
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
 import logging
 import hashlib
 import sys
 
 from copy import copy
-from builtins import *
 from . import formatters, handlers, utils
 
 __version__ = '0.12.0'
