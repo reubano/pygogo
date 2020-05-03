@@ -16,6 +16,11 @@ env:
     - PIP_FIND_LINKS=file://$HOME/.cache/pip/wheels
     - PYTHONHASHSEED=94967295
 
+matrix:
+  fast_finish: true
+  allow_failures:
+  - python: pypy3
+
 notifications:
   email:
     on_success: always
