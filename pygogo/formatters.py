@@ -120,7 +120,7 @@ class StructuredFormatter(logging.Formatter):
             New instance of :class:`StructuredFormatter`
 
         Examples:
-            >>> StructuredFormatter('name')  # doctest: +ELLIPSIS
+            >>> StructuredFormatter("%(message)s")  # doctest: +ELLIPSIS
             <pygogo.formatters.StructuredFormatter object at 0x...>
         """
         empty_record = logging.makeLogRecord({})
