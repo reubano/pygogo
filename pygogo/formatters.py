@@ -53,27 +53,24 @@ Attributes:
     DATEFMT (str): Standard date format
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
 import logging
 import sys
 import traceback
 import itertools as it
 
-from builtins import *
 from .utils import CustomEncoder
 
-BASIC_FORMAT = '%(message)s'
-BOM_FORMAT = '\ufeff%(message)s'
-CONSOLE_FORMAT = '%(name)-12s: %(levelname)-8s %(message)s'
-FIXED_FORMAT = '%(asctime)s.%(msecs)-3d %(name)-12s %(levelname)-8s %(message)s'
+BASIC_FORMAT = "%(message)s"
+BOM_FORMAT = "\ufeff%(message)s"
+CONSOLE_FORMAT = "%(name)-12s: %(levelname)-8s %(message)s"
+FIXED_FORMAT = "%(asctime)s.%(msecs)-3d %(name)-12s %(levelname)-8s %(message)s"
 CSV_FORMAT = '%(asctime)s.%(msecs)d,%(name)s,%(levelname)s,"%(message)s"'
 JSON_FORMAT = (
     '{"time": "%(asctime)s.%(msecs)d", "name": "%(name)s", "level":'
-    ' "%(levelname)s", "message": "%(message)s"}')
+    ' "%(levelname)s", "message": "%(message)s"}'
+)
 
-DATEFMT = '%Y-%m-%d %H:%M:%S'
+DATEFMT = "%Y-%m-%d %H:%M:%S"
 
 module_hdlr = logging.StreamHandler(sys.stdout)
 module_logger = logging.getLogger(__name__)
@@ -110,6 +107,7 @@ class StructuredFormatter(logging.Formatter):
         ...     'INFO', 'hello world', 'root']
         True
     """
+
     def __init__(self, fmt=None, datefmt=None):
         """Initialization method.
 
@@ -122,11 +120,11 @@ class StructuredFormatter(logging.Formatter):
             New instance of :class:`StructuredFormatter`
 
         Examples:
-            >>> StructuredFormatter('name')  # doctest: +ELLIPSIS
+            >>> StructuredFormatter("%(message)s")  # doctest: +ELLIPSIS
             <pygogo.formatters.StructuredFormatter object at 0x...>
         """
         empty_record = logging.makeLogRecord({})
-        filterer = lambda k: k not in empty_record.__dict__ and k != 'asctime'
+        filterer = lambda k: k not in empty_record.__dict__ and k != "asctime"
         self.filterer = filterer
         super(StructuredFormatter, self).__init__(fmt, datefmt)
 
@@ -155,15 +153,16 @@ class StructuredFormatter(logging.Formatter):
             True
         """
         extra = {
-            'message': record.getMessage(),
-            'time': self.formatTime(record, self.datefmt),
-            'msecs': record.msecs,
-            'name': record.name,
-            'level': record.levelname}
+            "message": record.getMessage(),
+            "time": self.formatTime(record, self.datefmt),
+            "msecs": record.msecs,
+            "name": record.name,
+            "level": record.levelname,
+        }
 
         keys = filter(self.filterer, record.__dict__)
         extra.update({k: record.__dict__[k] for k in keys})
-        extra.pop('asctime', None)
+        extra.pop("asctime", None)
         return str(CustomEncoder().encode(extra))
 
     def formatException(self, exc_info):
@@ -194,11 +193,12 @@ class StructuredFormatter(logging.Formatter):
             >>> result['type'][-17:] == 'ZeroDivisionError'
             True
         """
-        keys = ['type', 'value', 'filename', 'lineno', 'function', 'text']
+        keys = ["type", "value", "filename", "lineno", "function", "text"]
         type_, value, trcbk = exc_info
-        stype = str(type_).replace('type', '').strip(" '<>")
+        stype = str(type_).replace("type", "").strip(" '<>")
         values = it.chain([stype, value], *traceback.extract_tb(trcbk))
         return str(CustomEncoder().encode(dict(zip(keys, values))))
+
 
 basic_formatter = logging.Formatter(BASIC_FORMAT)
 bom_formatter = logging.Formatter(BOM_FORMAT)

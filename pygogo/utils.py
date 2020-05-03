@@ -15,14 +15,10 @@ Examples:
 
 """
 
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
 import logging
 import sys
 
 from json import JSONEncoder
-from builtins import *
 
 module_hdlr = logging.StreamHandler(sys.stdout)
 module_logger = logging.getLogger(__name__)
@@ -39,6 +35,7 @@ class CustomEncoder(JSONEncoder):
         >>> dumps(range(5), cls=CustomEncoder)
         '[0, 1, 2, 3, 4]'
     """
+
     def default(self, obj):
         """ Encodes a given object
 
@@ -52,11 +49,11 @@ class CustomEncoder(JSONEncoder):
             >>> CustomEncoder().default(range(5))
             [0, 1, 2, 3, 4]
         """
-        if hasattr(obj, 'real'):
+        if hasattr(obj, "real"):
             encoded = float(obj)
-        elif hasattr(obj, 'union'):
+        elif hasattr(obj, "union"):
             encoded = tuple(obj)
-        elif set(['next', 'union', '__iter__']).intersection(dir(obj)):
+        elif set(["next", "union", "__iter__"]).intersection(dir(obj)):
             encoded = list(obj)
         else:
             encoded = str(obj)
@@ -90,6 +87,7 @@ class StructuredMessage(object):
         >>> loads(str(msg)) == {'message': 'hello world', 'key': 'value'}
         True
     """
+
     def __init__(self, message=None, **kwargs):
         """Initialization method.
 
@@ -106,7 +104,7 @@ class StructuredMessage(object):
             >>> StructuredMessage('message')  # doctest: +ELLIPSIS
             <pygogo.utils.StructuredMessage object at 0x...>
         """
-        kwargs['message'] = message
+        kwargs["message"] = message
         self.kwargs = kwargs
 
     def __str__(self):
@@ -149,6 +147,7 @@ class StructuredAdapter(logging.LoggerAdapter):
         ...     'all': True, 'message': 'hello', 'key': 'value'}
         True
     """
+
     def process(self, msg, kwargs):
         """ Modifies the message and/or keyword arguments passed to a logging
         call in order to insert contextual information.
@@ -172,9 +171,9 @@ class StructuredAdapter(logging.LoggerAdapter):
             >>> k == {'extra': {'all': True, 'key': 'value'}}
             True
         """
-        extra = kwargs.get('extra', {})
+        extra = kwargs.get("extra", {})
         extra.update(self.extra)
-        kwargs['extra'] = extra
+        kwargs["extra"] = extra
         return str(StructuredMessage(msg, **extra)), kwargs
 
 
@@ -209,6 +208,7 @@ class LogFilter(logging.Filter):
     See also:
         :meth:`pygogo.Gogo.update_hdlr`
     """
+
     def __init__(self, level):
         """Initialization method.
 
@@ -242,7 +242,7 @@ class LogFilter(logging.Filter):
         return record.levelno < self.high_level
 
 
-def get_structured_filter(name='', **kwargs):
+def get_structured_filter(name="", **kwargs):
     """Returns a structured filter that injects contextual information into
     log records.
 
@@ -270,10 +270,12 @@ def get_structured_filter(name='', **kwargs):
         User fred said, "A debug message".
 
     """
+
     class StructuredFilter(logging.Filter):
         """
         Injects contextual information into log records.
         """
+
         def filter(self, record):
             """Adds contextual information to a log record
 

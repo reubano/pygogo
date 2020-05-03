@@ -33,8 +33,7 @@ With pygogo, you can
 Requirements
 ------------
 
-pygogo has been tested and is known to work on Python 2.7, 3.5, and 3.6;
-PyPy2.7; and PyPy3.5.
+pygogo has been tested and is known to work on Python 3.6, 3.7, and 3.8; and PyPy3.6.
 
 Motivation
 ----------

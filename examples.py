@@ -206,8 +206,3 @@ Examples:
         20... a.e.f ERROR    IP: 192.168.0.1     User: sheila   AN ERROR msg
         20... a.e.f CRITICAL IP: 192.168.0.1     User: sheila   A CRITICAL msg
 """
-
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
-from builtins import *
