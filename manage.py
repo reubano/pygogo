@@ -47,12 +47,14 @@ def check():
 @manager.command
 def lint(where=None, strict=False):
     """Check style with linters"""
-    args = ["pylint", "--rcfile=tests/standard.rc", "-rn", "-fparseable", "pygogo"]
+    extra = where.split(" ") if where else DEF_WHERE
+    args = ["pylint", "--rcfile=tests/pylintrc", "-rn", "-fparseable"]
 
     try:
-        check_call(["flake8", where] if where else "flake8")
-        check_call(args + ["--py3k"])
-        check_call(args) if strict else None
+        if strict:
+            check_call(args + extra)
+        else:
+            check_call(["flake8"] + extra)
     except CalledProcessError as e:
         exit(e.returncode)
 
