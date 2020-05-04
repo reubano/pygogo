@@ -48,7 +48,7 @@ import sys
 from copy import copy
 from . import formatters, handlers, utils
 
-__version__ = "0.13.1"
+__version__ = "0.13.2"
 
 __all__ = ["formatters", "handlers", "utils"]
 __title__ = "pygogo"
