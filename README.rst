@@ -1,5 +1,5 @@
-pygogo: a Python logger with super powers
-=========================================
+pygogo: a Python logger with superpowers
+========================================
 
 |travis| |versions| |pypi|
 
