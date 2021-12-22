@@ -10,7 +10,7 @@ from manager import Manager
 
 manager = Manager()
 BASEDIR = p.dirname(__file__)
-DEF_WHERE = ["pygogo", "bin", "pygogo", "tests", "manage.py", "examples.py", "setup.py"]
+DEF_WHERE = ["pygogo", "bin", "tests", "manage.py", "examples.py", "setup.py"]
 
 
 def _upload():
