@@ -111,6 +111,20 @@ class Gogo(object):
 
         kwargs (dict): Keyword arguments.
 
+        +---------------------+---------------+
+        | messages level      | Numeric value |
+        +=====================+===============+
+        | critical            | 50            |
+        +---------------------+---------------+
+        | error               | 40            |
+        +---------------------+---------------+
+        | warning             | 30            |
+        +---------------------+---------------+
+        | info                | 20            |
+        +---------------------+---------------+
+        | debug               | 10            |
+        +---------------------+---------------+
+
     Kwargs:
         high_hdlr (obj): The high pass log handler (a :class:`logging.handlers`
             instance, default: `stderr` StreamHandler).
