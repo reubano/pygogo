@@ -148,7 +148,7 @@ class TestMain(BaseTest):
         nt.assert_equal(f.read().strip(), logger1_msg)
         logger2_msg = ""
 
-        for level in [getattr(logging, l) for l in levels]:
+        for level in [getattr(logging, i) for i in levels]:
             name = logging.getLevelName(level)
             logger2_msg += "%s message\n" % name
             logger2.log(level, "%s %s", name, "message")
@@ -243,7 +243,7 @@ class TestMain(BaseTest):
             logger.debug("message", extra=extra)
 
         lines = sys.stdout.getvalue().strip().split("\n")
-        results = [loads(l) for l in lines]
+        results = [loads(i) for i in lines]
 
         # Assert the following loggers provide the log event meta data
         nt.assert_is_not_subset(meta, results[0])
@@ -304,5 +304,5 @@ class TestMain(BaseTest):
                 nt.assert_not_equal(f1, f2)
 
         lines = sys.stdout.getvalue().strip().split("\n")
-        nt.assert_not_equal(*(loads(l)["test"] for l in lines[0:2]))
-        nt.assert_not_equal(*(loads(l)["test"] for l in lines[2:4]))
+        nt.assert_not_equal(*(loads(i)["test"] for i in lines[0:2]))
+        nt.assert_not_equal(*(loads(i)["test"] for i in lines[2:4]))

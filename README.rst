@@ -1,5 +1,5 @@
-pygogo: a Python logger with super powers
-=========================================
+pygogo: a Python logger with superpowers
+========================================
 
 |travis| |versions| |pypi|
 
@@ -652,7 +652,7 @@ builtin CSV format in python
 
     datefmt = gogo.formatters.DATEFMT
     formatter = logging.Formatter(gogo.formatters.CSV_FORMAT, datefmt=datefmt)
-    gogo.Gogo('csv', low_format=formatter).get_logger('custom').debug('message')
+    gogo.Gogo('csv', low_formatter=formatter).get_logger('custom').debug('message')
 
     # Prints the following to `stdout`:
 

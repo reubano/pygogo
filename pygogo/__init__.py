@@ -48,7 +48,7 @@ import sys
 from copy import copy
 from . import formatters, handlers, utils
 
-__version__ = "0.13.2"
+__version__ = "0.14.0"
 
 __all__ = ["formatters", "handlers", "utils"]
 __title__ = "pygogo"
@@ -110,6 +110,20 @@ class Gogo(object):
             (default: debug).
 
         kwargs (dict): Keyword arguments.
+
+        +---------------------+---------------+
+        | messages level      | Numeric value |
+        +=====================+===============+
+        | critical            | 50            |
+        +---------------------+---------------+
+        | error               | 40            |
+        +---------------------+---------------+
+        | warning             | 30            |
+        +---------------------+---------------+
+        | info                | 20            |
+        +---------------------+---------------+
+        | debug               | 10            |
+        +---------------------+---------------+
 
     Kwargs:
         high_hdlr (obj): The high pass log handler (a :class:`logging.handlers`

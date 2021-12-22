@@ -239,26 +239,19 @@ def webhook_hdlr(url, **kwargs):
     return hdlr
 
 
-def email_hdlr(subject="You've got mail", **kwargs):
+def email_hdlr(subject="You've got mail", host="localhost", port=587, **kwargs):
     """An email log handler
 
-    Args:
-        subject (str): The email subject (default: You've got mail.).
-
-        kwargs(dict): Keyword arguments.
-
     Kwargs:
+        subject (str): The email subject (default: You've got mail.).
         host (str): The email server host (default: localhost).
-
-        port (str): The email sever port (default: None).
-
+        port (str): The email sever port (default: 587).
         sender (str): The email sender (default: the system username at gmail).
 
         recipients (List[str]): The email recipients (default: the system
             username at gmail).
 
         username (str): The email sever username (default: None).
-
         password (str): The email sever password (default: None).
 
     Returns:
@@ -268,12 +261,10 @@ def email_hdlr(subject="You've got mail", **kwargs):
         >>> email_hdlr('hello world')  # doctest: +ELLIPSIS
         <...SMTPHandler...>
     """
-    host = kwargs.get("host", "localhost")
-    port = kwargs.get("port")
     address = (host, port) if port else host
-    def_recipient = "%s@gmail.com" % environ.get("USER")
-    sender = kwargs.get("sender", def_recipient)
-    recipients = kwargs.get("recipients", [def_recipient])
+    def_email = "%s@gmail.com" % environ.get("USER")
+    sender = kwargs.get("sender", def_email)
+    recipients = kwargs.get("recipients", [def_email])
     username = kwargs.get("username")
     password = kwargs.get("password")
 
