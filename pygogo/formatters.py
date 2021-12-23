@@ -237,12 +237,14 @@ class StructuredFormatter(BaseFormatter):
         >>> logger.addHandler(hdlr)
         >>> logger.info('hello world')
         >>> result = loads(s.getvalue())
-        >>> keys = sorted(result.keys())
-        >>> keys == ['level', 'message', 'msecs', 'name', 'time']
-        True
-        >>> [result[k] for k in keys if k not in {'msecs', 'time'}] == [
-        ...     'INFO', 'hello world', 'root']
-        True
+        >>> sorted(result.keys())
+        ['level', 'message', 'msecs', 'name', 'time']
+        >>> result['level']
+        'INFO'
+        >>> result['message']
+        'hello world'
+        >>> result['name']
+        'root'
     """
 
     def format(self, record):
@@ -262,12 +264,14 @@ class StructuredFormatter(BaseFormatter):
             >>> args = (logging.INFO, '.', 0, 'hello world', [], None)
             >>> record = logger.makeRecord('root', *args)
             >>> result = loads(formatter.format(record))
-            >>> keys = sorted(result.keys())
-            >>> keys == ['level', 'message', 'msecs', 'name', 'time']
-            True
-            >>> [result[k] for k in keys if k not in {'msecs', 'time'}] == [
-            ...     'INFO', 'hello world', 'root']
-            True
+            >>> sorted(result.keys())
+            ['level', 'message', 'msecs', 'name', 'time']
+            >>> result['level']
+            'INFO'
+            >>> result['message']
+            'hello world'
+            >>> result['name']
+            'root'
         """
         extra = {
             "message": record.getMessage(),
