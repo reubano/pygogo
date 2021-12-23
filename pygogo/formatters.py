@@ -162,7 +162,6 @@ class StructuredFormatter(logging.Formatter):
 
         keys = filter(self.filterer, record.__dict__)
         extra.update({k: record.__dict__[k] for k in keys})
-        extra.pop("asctime", None)
         return str(CustomEncoder().encode(extra))
 
     def formatException(self, exc_info):
@@ -177,12 +176,14 @@ class StructuredFormatter(logging.Formatter):
 
         Examples:
             >>> from json import loads
-
-            >>> formatter = StructuredFormatter(BASIC_FORMAT)
+            >>>
+            >>> formatter = StructuredFormatter()
+            >>>
             >>> try:
             ...     1 / 0
             ... except:
             ...     result = loads(formatter.formatException(sys.exc_info()))
+            >>>
             >>> keys = sorted(result.keys())
             >>> keys == [
             ...     'filename', 'function', 'lineno', 'text', 'type', 'value']
@@ -195,8 +196,7 @@ class StructuredFormatter(logging.Formatter):
         """
         keys = ["type", "value", "filename", "lineno", "function", "text"]
         type_, value, trcbk = exc_info
-        stype = str(type_).replace("type", "").strip(" '<>")
-        values = it.chain([stype, value], *traceback.extract_tb(trcbk))
+        values = it.chain([type_.__name__, value], *traceback.extract_tb(trcbk))
         return str(CustomEncoder().encode(dict(zip(keys, values))))
 
 
