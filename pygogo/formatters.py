@@ -118,8 +118,6 @@ class CsvFormatter(BaseFormatter):
         New instance of :class:`CsvFormatter`
 
     Examples:
-        >>> from io import StringIO
-        >>>
         >>> s = StringIO()
         >>> logger = logging.getLogger()
         >>> formatter = CsvFormatter(datefmt=DATEFMT)
@@ -323,8 +321,6 @@ class ColorizedFormatter(BaseFormatter):
         New instance of :class:`ColorizedFormatter`
 
     Examples:
-        >>> from io import StringIO
-        >>>
         >>> s = StringIO()
         >>> logger = logging.getLogger()
         >>> formatter = ColorizedFormatter(datefmt=DATEFMT)
