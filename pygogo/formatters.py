@@ -192,14 +192,22 @@ class CsvFormatter(BaseFormatter):
             ...     1 / 0
             ... except:
             ...     formatter.formatException(sys.exc_info())
-            '"ZeroDivisionError","division by zero","<docte...>","2","<module>","1 / 0"'
+            '"ZeroDivisionError","division...","0","<docte...>","2","<module>","1 / 0"'
         """
         type_, value, trcbk = exc_info
 
-        # ["type", "value", "filename", "lineno", "function", "text"]
-        self.writer.writerow(
-            it.chain([type_.__name__, value], *traceback.extract_tb(trcbk))
-        )
+        for pos, frame in enumerate(traceback.extract_tb(trcbk)):
+            row = [
+                type_.__name__,
+                value,
+                pos,
+                frame.filename,
+                frame.lineno,
+                frame.name,
+                frame.line,
+            ]
+            self.writer.writerow(row)
+
         data = self.output.getvalue()
         self.output.truncate(0)
         self.output.seek(0)
@@ -291,22 +299,34 @@ class StructuredFormatter(BaseFormatter):
             >>> try:
             ...     1 / 0
             ... except:
-            ...     result = loads(formatter.formatException(sys.exc_info()))
+            ...     result = loads(formatter.formatException(sys.exc_info()))[0]
             >>>
-            >>> keys = sorted(result.keys())
-            >>> keys == [
-            ...     'filename', 'function', 'lineno', 'text', 'type', 'value']
-            True
-            >>> [result[k] for k in keys if k not in {'filename', 'type'}] == [
-            ...     '<module>', 2, '1 / 0', 'division by zero']
-            True
-            >>> result['type'][-17:] == 'ZeroDivisionError'
-            True
+            >>> sorted(result.keys())
+            ['filename', 'frame', 'function', 'lineno', 'text', 'type', 'value']
+            >>> result['type']
+            'ZeroDivisionError'
+            >>> result['value']
+            'division by zero'
+            >>> result['text']
+            '1 / 0'
         """
-        keys = ["type", "value", "filename", "lineno", "function", "text"]
+        keys = ["type", "value", "frame", "filename", "lineno", "function", "text"]
         type_, value, trcbk = exc_info
-        values = it.chain([type_.__name__, value], *traceback.extract_tb(trcbk))
-        return str(CustomEncoder().encode(dict(zip(keys, values))))
+        rows = []
+
+        for pos, frame in enumerate(traceback.extract_tb(trcbk)):
+            values = [
+                type_.__name__,
+                value,
+                pos,
+                frame.filename,
+                frame.lineno,
+                frame.name,
+                frame.line,
+            ]
+            rows.append(dict(zip(keys, values)))
+
+        return str(CustomEncoder().encode(rows))
 
 
 class ColorizedFormatter(BaseFormatter):
