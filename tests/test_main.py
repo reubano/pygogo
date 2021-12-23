@@ -59,7 +59,7 @@ class TestMain(BaseTest):
         # csv_formatter
         formatter = gogo.formatters.csv_formatter
         csv_logger = gogo.Gogo("csv", low_formatter=formatter).logger
-        csv_logger.debug("hello")
+        csv_logger.debug('hello "world"')
 
         # console_formatter
         formatter = gogo.formatters.console_formatter
@@ -67,8 +67,10 @@ class TestMain(BaseTest):
         console_lggr.debug("hello")
 
         console_msg = (
-            'stdout\nstderr\n{"time": "20...", "name": "json.base", "level": '
-            '"DEBUG", "message": "hello"}\n20...,csv.base,DEBUG,"hello"\n'
+            "stdout\n"
+            "stderr\n"
+            '{"time": "20...", "name": "js...", "level": "DEBUG", "message": "hello"}\n'
+            '"20...","csv.base","DEBUG","hello ""world"""\n'
             "console.base: DEBUG    hello"
         )
 
@@ -306,3 +308,11 @@ class TestMain(BaseTest):
         lines = sys.stdout.getvalue().strip().split("\n")
         nt.assert_not_equal(*(loads(i)["test"] for i in lines[0:2]))
         nt.assert_not_equal(*(loads(i)["test"] for i in lines[2:4]))
+
+    def test_extra(self):
+        extra = {"additional": True}
+        logger1 = gogo.Gogo("basic").get_structured_logger("base2", context=True)
+        logger1.debug("basic", extra=extra)
+
+        result = loads(sys.stdout.getvalue().strip())
+        nt.assert_equal(result["context"], extra["context"])

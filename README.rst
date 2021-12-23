@@ -802,7 +802,7 @@ License
 pygogo is distributed under the `MIT License`_.
 
 .. |travis| image:: https://img.shields.io/travis/reubano/pygogo/master.svg
-    :target: https://travis-ci.org/reubano/pygogo
+    :target: https://app.travis-ci.com/github/reubano/pygogo
 
 .. |versions| image:: https://img.shields.io/pypi/pyversions/pygogo.svg
     :target: https://pypi.python.org/pypi/pygogo
