@@ -90,7 +90,7 @@ class BaseFormatter(logging.Formatter):
         Args:
             fmt (string): Log message format.
 
-            datefmt (dict): Log date format.
+            datefmt (string): Log date format.
 
         Returns:
             New instance of :class:`BaseFormatter`
@@ -112,7 +112,7 @@ class CsvFormatter(BaseFormatter):
     Args:
         fmt (string): Log message format.
 
-        datefmt (dict): Log date format.
+        datefmt (string): Log date format.
 
     Returns:
         New instance of :class:`CsvFormatter`
@@ -137,7 +137,7 @@ class CsvFormatter(BaseFormatter):
         Args:
             fmt (string): Log message format.
 
-            datefmt (dict): Log date format.
+            datefmt (string): Log date format.
 
         Returns:
             New instance of :class:`CsvFormatter`
@@ -151,7 +151,7 @@ class CsvFormatter(BaseFormatter):
         self.writer = csv.writer(self.output, quoting=quoting, **kwargs)
 
     def format(self, record):
-        """ Formats a record as a dict string
+        """ Formats a record as a csv string
 
         Args:
             record (object): The event to format.
@@ -178,7 +178,7 @@ class CsvFormatter(BaseFormatter):
         return data.strip()
 
     def formatException(self, exc_info):
-        """Formats an exception as a dict string
+        """Formats an exception as a csv string
 
         Args:
             exc_info (tuple[type, value, traceback]): Exception tuple as
@@ -214,7 +214,7 @@ class StructuredFormatter(BaseFormatter):
     Args:
         fmt (string): Log message format.
 
-        datefmt (dict): Log date format.
+        datefmt (string): Log date format.
 
     Returns:
         New instance of :class:`StructuredFormatter`
@@ -317,7 +317,7 @@ class ColorizedFormatter(BaseFormatter):
     Args:
         fmt (string): Log message format.
 
-        datefmt (dict): Log date format.
+        datefmt (string): Log date format.
 
     Returns:
         New instance of :class:`ColorizedFormatter`
