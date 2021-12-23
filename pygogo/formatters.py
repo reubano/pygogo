@@ -71,6 +71,13 @@ JSON_FORMAT = (
 
 DATEFMT = "%Y-%m-%d %H:%M:%S"
 
+# https://stackoverflow.com/a/56944256/408556
+GREY = "\x1b[38;21m"
+YELLOW = "\x1b[33;21m"
+RED = "\x1b[31;21m"
+BOLD_RED = "\x1b[31;1m"
+RESET = "\x1b[0m"
+
 module_hdlr = logging.StreamHandler(sys.stdout)
 module_logger = logging.getLogger(__name__)
 module_logger.addHandler(module_hdlr)
@@ -304,6 +311,43 @@ class StructuredFormatter(BaseFormatter):
         return str(CustomEncoder().encode(dict(zip(keys, values))))
 
 
+class ColorizedFormatter(BaseFormatter):
+    """A logging formatter that creates a colorized log
+
+    Args:
+        fmt (string): Log message format.
+
+        datefmt (dict): Log date format.
+
+    Returns:
+        New instance of :class:`ColorizedFormatter`
+
+    Examples:
+        >>> from io import StringIO
+        >>>
+        >>> s = StringIO()
+        >>> logger = logging.getLogger()
+        >>> formatter = ColorizedFormatter(datefmt=DATEFMT)
+        >>> hdlr = logging.StreamHandler(s)
+        >>> hdlr.setFormatter(formatter)
+        >>> logger.addHandler(hdlr)
+        >>> logger.info('hello world')
+        >>> s.getvalue().strip()
+        'hello world'
+    """
+    def format(self, record):
+        FORMATS = {
+            logging.DEBUG: f"{GREY} {self._fmt} {RESET}",
+            logging.INFO: f"{GREY} {self._fmt} {RESET}",
+            logging.WARNING: f"{YELLOW} {self._fmt} {RESET}",
+            logging.ERROR: f"{RED} {self._fmt} {RESET}",
+            logging.CRITICAL: f"{BOLD_RED} {self._fmt} {RESET}",
+        }
+
+        log_fmt = FORMATS.get(record.levelno)
+        return BaseFormatter(log_fmt).format(record)
+
+
 basic_formatter = logging.Formatter(BASIC_FORMAT)
 bom_formatter = logging.Formatter(BOM_FORMAT)
 console_formatter = logging.Formatter(CONSOLE_FORMAT)
@@ -311,3 +355,4 @@ fixed_formatter = logging.Formatter(FIXED_FORMAT, datefmt=DATEFMT)
 csv_formatter = CsvFormatter(BASIC_FORMAT, datefmt=DATEFMT)
 json_formatter = logging.Formatter(JSON_FORMAT, datefmt=DATEFMT)
 structured_formatter = StructuredFormatter(BASIC_FORMAT, datefmt=DATEFMT)
+colorized_formatter = ColorizedFormatter(BASIC_FORMAT, datefmt=DATEFMT)
