@@ -306,3 +306,11 @@ class TestMain(BaseTest):
         lines = sys.stdout.getvalue().strip().split("\n")
         nt.assert_not_equal(*(loads(i)["test"] for i in lines[0:2]))
         nt.assert_not_equal(*(loads(i)["test"] for i in lines[2:4]))
+
+    def test_extra(self):
+        extra = {"additional": True}
+        logger1 = gogo.Gogo("basic").get_structured_logger("base2", context=True)
+        logger1.debug("basic", extra=extra)
+
+        result = loads(sys.stdout.getvalue().strip())
+        nt.assert_equal(result["context"], extra["context"])
