@@ -49,6 +49,24 @@ Attributes:
     JSON_FORMAT (str): A json format
 
     DATEFMT (str): Standard date format
+
+    GREY (str): Grey escape color sequence
+
+    GREEN (str): Green escape color sequence
+
+    YELLOW (str): Yellow escape color sequence
+
+    BLUE (str): Blue escape color sequence
+
+    LIGHT_BLUE (str): Light blue escape color sequence
+
+    PURPLE (str): Purple escape color sequence
+
+    RED = (str): Red escape color sequence
+
+    BOLD_RED = (str): Bold red escape color sequence
+
+    RESET = (str): Reset escape color sequence
 """
 
 import logging
@@ -72,8 +90,13 @@ JSON_FORMAT = (
 DATEFMT = "%Y-%m-%d %H:%M:%S"
 
 # https://stackoverflow.com/a/56944256/408556
+# https://stackoverflow.com/a/61996622/408556
 GREY = "\x1b[38;21m"
+GREEN = "\x1b[1;32m"
 YELLOW = "\x1b[33;21m"
+BLUE = "\x1b[1;34m"
+LIGHT_BLUE = "\x1b[1;36m"
+PURPLE = "\x1b[1;35m"
 RED = "\x1b[31;21m"
 BOLD_RED = "\x1b[31;1m"
 RESET = "\x1b[0m"
@@ -347,7 +370,7 @@ class ColorizedFormatter(BaseFormatter):
     Examples:
         >>> s = StringIO()
         >>> logger = logging.getLogger()
-        >>> formatter = ColorizedFormatter(datefmt=DATEFMT)
+        >>> formatter = ColorizedFormatter(datefmt=DATEFMT, info_color=BLUE)
         >>> hdlr = logging.StreamHandler(s)
         >>> hdlr.setFormatter(formatter)
         >>> logger.addHandler(hdlr)
@@ -355,17 +378,80 @@ class ColorizedFormatter(BaseFormatter):
         >>> s.getvalue().strip()
         'hello world'
     """
-    def format(self, record):
-        FORMATS = {
-            logging.DEBUG: f"{GREY} {self._fmt} {RESET}",
-            logging.INFO: f"{GREY} {self._fmt} {RESET}",
-            logging.WARNING: f"{YELLOW} {self._fmt} {RESET}",
-            logging.ERROR: f"{RED} {self._fmt} {RESET}",
-            logging.CRITICAL: f"{BOLD_RED} {self._fmt} {RESET}",
+
+    def __init__(self, fmt=None, datefmt=None, **kwargs):
+        """Initialization method.
+
+        Args:
+            fmt (string): Log message format.
+
+            datefmt (string): Log date format.
+
+        Returns:
+            New instance of :class:`ColorizedFormatter`
+
+        Examples:
+            >>> ColorizedFormatter("%(message)s")  # doctest: +ELLIPSIS
+            <pygogo.formatters.ColorizedFormatter object at 0x...>
+        """
+        super().__init__(fmt=fmt, datefmt=datefmt)
+        debug_color = kwargs.get("debug_color", GREY)
+        info_color = kwargs.get("info_color", GREEN)
+        warning_color = kwargs.get("warning_color", YELLOW)
+        error_color = kwargs.get("error_color", RED)
+        critical_color = kwargs.get("critical_color", BOLD_RED)
+
+        self.FORMATS = {
+            logging.DEBUG: f"{debug_color} {self._fmt} {RESET}",
+            logging.INFO: f"{info_color} {self._fmt} {RESET}",
+            logging.WARNING: f"{warning_color} {self._fmt} {RESET}",
+            logging.ERROR: f"{error_color} {self._fmt} {RESET}",
+            logging.CRITICAL: f"{critical_color} {self._fmt} {RESET}",
         }
 
-        log_fmt = FORMATS.get(record.levelno)
+    def format(self, record):
+        """ Formats a record as a colorized string
+
+        Args:
+            record (object): The event to format.
+
+        Returns:
+            str: The formatted content
+
+        Examples:
+            >>> formatter = ColorizedFormatter(datefmt='%Y')
+            >>> logger = logging.getLogger()
+            >>> args = (logging.INFO, '.', 0, 'hello world', [], None)
+            >>> record = logger.makeRecord('root', *args)
+            >>> formatter.format(record)
+            'hello world'
+        """
+        log_fmt = self.FORMATS.get(record.levelno)
         return BaseFormatter(log_fmt).format(record)
+
+    def formatException(self, exc_info):
+        """Formats an exception as a colorized string
+
+        Args:
+            exc_info (tuple[type, value, traceback]): Exception tuple as
+                returned by `sys.exc_info()`
+
+        Returns:
+            str: The formatted exception
+
+        Examples:
+            >>> formatter = ColorizedFormatter()
+            >>>
+            >>> try:
+            ...     1 / 0
+            ... except:
+            ...     result = formatter.formatException(sys.exc_info())
+            >>>
+            >>> result.strip()  # doctest: +ELLIPSIS
+            'Traceback... File "<doctest...", line 2... 1 / 0...ZeroDivisionError...'
+        """
+        traces = traceback.format_exception(*exc_info)
+        return "\n".join(traces)
 
 
 basic_formatter = logging.Formatter(BASIC_FORMAT)
