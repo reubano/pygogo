@@ -15,10 +15,9 @@ DEF_WHERE = ["pygogo", "bin", "tests", "manage.py", "examples.py", "setup.py"]
 
 def _upload():
     """Upload distribution files"""
-    # check_call(['twine', 'upload', p.join(BASEDIR, 'dist', '*')])
     _uploaddir = p.join(BASEDIR, "dist", "*")
     url = "https://upload.pypi.org/legacy/"
-    check_call(f"twine upload --repository-url {url} {_uploaddir}", shell=True)
+    check_call(["twine", "upload", "--repository-url", url, _uploaddir])
 
 
 def _sdist():
