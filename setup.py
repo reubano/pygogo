@@ -5,17 +5,15 @@ import sys
 import pkutils
 
 from os import path as p
+from setuptools import setup, find_packages
 
-try:
-    from setuptools import setup, find_packages
-except ImportError:
-    from distutils.core import setup, find_packages
+PARENT_DIR = p.abspath(p.dirname(__file__))
 
 sys.dont_write_bytecode = True
 dev_requirements = list(pkutils.parse_requirements("dev-requirements.txt"))
 readme = pkutils.read("README.rst")
-changes = pkutils.read(p.join("docs", "CHANGES.rst"))
-module = pkutils.parse_module(p.join("pygogo", "__init__.py"))
+changes = pkutils.read(p.join(PARENT_DIR, "docs", "CHANGES.rst"))
+module = pkutils.parse_module(p.join(PARENT_DIR, "pygogo", "__init__.py"))
 license = module.__license__
 version = module.__version__
 project = module.__title__
