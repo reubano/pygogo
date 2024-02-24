@@ -1,7 +1,7 @@
 pip>20.0
 wheel>=0.29.0
 black>=19.3b0,<22.0
-coverage>=4.0.0,<7.0.0
+coverage==7.4.3
 flake8>=3.7.9,<5.0.0
 flake8-black>=0.1.1,<0.3.0
 manage.py>=0.2.10,<0.3.0
